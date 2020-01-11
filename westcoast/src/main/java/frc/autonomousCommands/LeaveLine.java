@@ -15,6 +15,8 @@ public class LeaveLine extends CommandBase {
   private Encoder encoder;
   private AHRS ahrs;
   private double dist;
+  private double wait;
+  private boolean end;
 
   public LeaveLine(
     DifferentialDrive drive,
@@ -30,6 +32,7 @@ public class LeaveLine extends CommandBase {
 
   @Override
   public void initialize() {
+    wait = 0;
     encoder.reset();
     ahrs.reset();
 
@@ -37,7 +40,7 @@ public class LeaveLine extends CommandBase {
     hold = new PIDController(0.5, 0, 0);
     
     forward.reset();
-    forward.setTolerance(1);
+    forward.setTolerance(5);
     forward.disableContinuousInput();
 
     hold.reset();
@@ -53,6 +56,19 @@ public class LeaveLine extends CommandBase {
     double headinglock = MathUtil.clamp(-hold.calculate(0, ahrs.getRate()), -0.8, 0.8);
 
     drive.arcadeDrive(distancecalc, headinglock);
+
+    if(forward.atSetpoint() == true){
+      wait = wait + 1;
+      if(wait >= 10){
+        end = true;
+      }
+      else{
+        end = false;
+      }
+    }
+    else{
+      end = false;
+    }
   }
 
   @Override
@@ -65,6 +81,11 @@ public class LeaveLine extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return false;
+    if(end){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 }
