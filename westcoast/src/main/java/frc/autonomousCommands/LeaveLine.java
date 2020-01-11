@@ -33,24 +33,24 @@ public class LeaveLine extends CommandBase {
     encoder.reset();
     ahrs.reset();
 
+    forward = new PIDController(0.5, 0.1, 0);
+    hold = new PIDController(0.5, 0, 0);
+    
     forward.reset();
-    forward.setTolerance(10);
+    forward.setTolerance(1);
     forward.disableContinuousInput();
 
     hold.reset();
-    hold.setTolerance(0.5);
+    hold.setTolerance(0.1);
     hold.disableContinuousInput();
-
-    forward = new PIDController(0.07, 0.025, 0.15, 0.1);
-    hold = new PIDController(0.07, 0, 0.15, 0.1);
   }
 
   @Override
   public void execute() {
-    double distance = dist*5; //i need to find multiplier for how many ticks are per inch/foot.
+    double distance = dist*50; //i need to find multiplier for how many ticks are per inch/foot.
     double forwardraw = forward.calculate(distance, encoder.getDistance());
-    double distancecalc = MathUtil.clamp(forwardraw, -0.6, 0.6);
-    double headinglock = hold.calculate(0, ahrs.getRate());
+    double distancecalc = MathUtil.clamp(forwardraw, -0.5, 0.5);
+    double headinglock = MathUtil.clamp(-hold.calculate(0, ahrs.getRate()), -0.8, 0.8);
 
     drive.arcadeDrive(distancecalc, headinglock);
   }
@@ -65,11 +65,6 @@ public class LeaveLine extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    if(forward.atSetpoint() == true){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return false;
   }
 }

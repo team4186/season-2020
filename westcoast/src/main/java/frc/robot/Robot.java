@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.SPI;
 import frc.autonomousCommands.LeaveLine;
 import frc.commands.*;
@@ -34,8 +36,8 @@ public class Robot extends TimedRobot {
   private final Joystick joystick = new Joystick(0);
   
   //Commands
-  //private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
-  private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
+  private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
+  //private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
 
   //Autonomous Commands
   private final LeaveLine leaveLine = new LeaveLine(drive, rightEncoder, ahrs, 10);
@@ -43,7 +45,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     joystick.setTwistChannel(5);
-    drive.setSafetyEnabled(true);
+    drive.setSafetyEnabled(false);
   }
 
   @Override
@@ -58,8 +60,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousPeriodic() {
-    Scheduler.getInstance().run();
-
+    CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Encoder Distance", rightEncoder.getDistance());
   }
 
   @Override
@@ -69,7 +71,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    Scheduler.getInstance().run();
-  
+    CommandScheduler.getInstance().run();
   }
 }

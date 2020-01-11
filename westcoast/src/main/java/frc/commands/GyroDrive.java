@@ -28,22 +28,21 @@ public class GyroDrive extends CommandBase {
 
   @Override
   public void initialize() {
-    pid.reset();
-    pid.setTolerance(1);
-    pid.disableContinuousInput();
+    pid = new PIDController(0.5, 0.15, 0);
 
-    double P = SmartDashboard.getNumber("P", 0.07);
-    double I = SmartDashboard.getNumber("I", 0.025);
-    double D = SmartDashboard.getNumber("D", 0.15);
-    pid = new PIDController(P, I, D, 0.1);
+    ahrs.reset();
+    pid.reset();
+    pid.setTolerance(0.5);
+    pid.disableContinuousInput();
   }
 
   @Override
   public void execute() {
-    double input = MathUtil.clamp(ahrs.getRate(),-4, 4);
-    double pidraw = pid.calculate(input, attenuate(joy.getTwist())*4);
-    double output = MathUtil.clamp(pidraw,-0.6, 0.6);
-    drive.arcadeDrive(attenuate(joy.getY()), output, false);
+    double input = MathUtil.clamp(ahrs.getRate(),-6, 6);
+    double pidraw = pid.calculate(input, attenuate(joy.getTwist())*4.6);
+    double output = MathUtil.clamp(-pidraw,-0.8, 0.8);
+    double deadband = deadband(output, 0.05);
+    drive.arcadeDrive(attenuate(joy.getY()), deadband, false);
 
     SmartDashboard.putBoolean("On Target?", pid.atSetpoint());
     SmartDashboard.putNumber("Error", pid.getPositionError());
@@ -67,5 +66,14 @@ public class GyroDrive extends CommandBase {
   private double attenuate(double value){
     double calculated = Math.signum(value)*Math.pow(Math.abs(value), 1.3);
     return calculated;
+  }
+  
+  private double deadband(double value, double deadzone){
+    if(value<deadzone&&value>deadzone*(-1)){
+      return 0;
+    }
+    else{
+      return value;
+    }
   }
 }
