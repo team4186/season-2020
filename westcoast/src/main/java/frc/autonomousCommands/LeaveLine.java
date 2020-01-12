@@ -5,6 +5,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 
@@ -33,33 +34,34 @@ public class LeaveLine extends CommandBase {
   @Override
   public void initialize() {
     wait = 0;
-    encoder.reset();
-    ahrs.reset();
 
-    forward = new PIDController(0.5, 0.1, 0);
-    hold = new PIDController(0.5, 0, 0);
+    forward = new PIDController(0.5, 0.1, 0.1);
+    hold = new PIDController(0.1, 0.15, 0.2);
     
     forward.reset();
     forward.setTolerance(5);
     forward.disableContinuousInput();
 
     hold.reset();
-    hold.setTolerance(0.1);
+    hold.setTolerance(1);
     hold.disableContinuousInput();
   }
 
   @Override
   public void execute() {
-    double distance = dist*50; //i need to find multiplier for how many ticks are per inch/foot.
+    double distance = dist*83; //i need to find multiplier for how many ticks are per inch/foot.
     double forwardraw = forward.calculate(distance, encoder.getDistance());
     double distancecalc = MathUtil.clamp(forwardraw, -0.5, 0.5);
-    double headinglock = MathUtil.clamp(-hold.calculate(0, ahrs.getRate()), -0.8, 0.8);
+    double yaw = ahrs.getYaw();
+    double headinglock = MathUtil.clamp(hold.calculate(0, deadband(yaw, 3)), -0.4, 0.4);
 
     drive.arcadeDrive(distancecalc, headinglock);
 
+  SmartDashboard.putNumber("YAWWW", ahrs.getYaw());
+
     if(forward.atSetpoint() == true){
       wait = wait + 1;
-      if(wait >= 10){
+      if(wait >= 5){
         end = true;
       }
       else{
@@ -86,6 +88,15 @@ public class LeaveLine extends CommandBase {
     }
     else{
       return false;
+    }
+  }
+
+  private double deadband(double value, double deadzone){
+    if(value<deadzone&&value>deadzone*(-1)){
+      return 0;
+    }
+    else{
+      return value;
     }
   }
 }

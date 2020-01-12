@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.SPI;
 import frc.autonomousCommands.LeaveLine;
+import frc.autonomousCommands.PerfectTurn;
 import frc.commands.*;
 import frc.motorFactory.*;
 
@@ -35,15 +36,16 @@ public class Robot extends TimedRobot {
   private final Joystick joystick = new Joystick(0);
   
   //Commands
-  private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
-  //private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
+  private final GyroDrive teleOp = new GyroDrive(drive, joystick, ahrs);
+  private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
 
   //Autonomous Commands
   private final LeaveLine leaveLine = new LeaveLine(drive, rightEncoder, ahrs, 10);
+  private final PerfectTurn perfectTurn = new PerfectTurn(drive, ahrs, 90);
 
   @Override
   public void robotInit() {
-    joystick.setTwistChannel(5);
+    joystick.setTwistChannel(4);
     drive.setSafetyEnabled(false);
   }
 
@@ -54,7 +56,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    leaveLine.schedule();
+    ahrs.reset();
+    leftEncoder.reset();
+    rightEncoder.reset();
+
+    //leaveLine.schedule();
+    perfectTurn.schedule();
   }
 
   @Override
@@ -64,7 +71,16 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    teleop.schedule();
+    ahrs.reset();
+    leftEncoder.reset();
+    rightEncoder.reset();
+    
+    if(joystick.getTwist() >= 0){
+      teleOp.schedule();
+    }
+    else{
+      teleop.schedule();
+    }
   }
 
   @Override
