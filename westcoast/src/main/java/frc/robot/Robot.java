@@ -8,11 +8,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.SPI;
-import frc.autonomousCommands.LeaveLine;
-import frc.autonomousCommands.PerfectTurn;
+import frc.autonomousCommands.*;
 import frc.commands.*;
 import frc.motorFactory.*;
 
@@ -34,14 +33,18 @@ public class Robot extends TimedRobot {
 
   //Inputs
   private final Joystick joystick = new Joystick(0);
+  private final JoystickButton buttonA = new JoystickButton(joystick, 3);
+  private final JoystickButton buttonB = new JoystickButton(joystick, 4);
+  private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
   
   //Commands
-  private final GyroDrive teleOp = new GyroDrive(drive, joystick, ahrs);
-  private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
+  private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs, leftEncoder);
+  //private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
 
   //Autonomous Commands
-  private final LeaveLine leaveLine = new LeaveLine(drive, rightEncoder, ahrs, 10);
-  private final PerfectTurn perfectTurn = new PerfectTurn(drive, ahrs, 90);
+  private final LeaveLine leaveLine = new LeaveLine(drive, leftEncoder, ahrs, 10);
+  //private final PerfectTurn perfectTurn = new PerfectTurn(drive, ahrs, 90);
+  //private final Autonomous auton = new Autonomous(drive, ahrs, leftEncoder, 10, 90, 10, 90);
 
   @Override
   public void robotInit() {
@@ -60,8 +63,7 @@ public class Robot extends TimedRobot {
     leftEncoder.reset();
     rightEncoder.reset();
 
-    //leaveLine.schedule();
-    perfectTurn.schedule();
+    leaveLine.schedule();
   }
 
   @Override
@@ -71,20 +73,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    leaveLine.cancel();
+
     ahrs.reset();
     leftEncoder.reset();
     rightEncoder.reset();
     
-    if(joystick.getTwist() >= 0){
-      teleOp.schedule();
-    }
-    else{
-      teleop.schedule();
-    }
+    teleop.schedule();
   }
 
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
+
   }
 }

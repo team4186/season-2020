@@ -11,8 +11,7 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.math.*;
 
 public class PerfectTurn extends CommandBase {
   private AHRS ahrs;
@@ -36,6 +35,8 @@ public class PerfectTurn extends CommandBase {
   public void initialize() {
     wait = 0;
 
+    ahrs.reset();
+
     turn = new PIDController(0.6, 0.15, 0.1);
 
     turn.reset();
@@ -45,9 +46,9 @@ public class PerfectTurn extends CommandBase {
 
   @Override
   public void execute() {
-    double angleturned = MathUtil.clamp(turn.calculate(-angle+5, deadband(ahrs.getYaw(), 2)), -0.5, 0.5);
+    double angleturned = Maths.clamp(turn.calculate(-angle+5, Maths.deadband(ahrs.getYaw(), 2)), 0.3);
 
-    drive.arcadeDrive(0, angleturned);
+    drive.tankDrive(angleturned, -angleturned, false);
 
     if(turn.atSetpoint() == true){
       wait = wait + 1;
@@ -65,6 +66,8 @@ public class PerfectTurn extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    ahrs.reset();
+
     turn.reset();
     drive.stopMotor();
   }
@@ -76,15 +79,6 @@ public class PerfectTurn extends CommandBase {
     }
     else{
       return false;
-    }
-  }
-
-  private double deadband(double value, double deadzone){
-    if(value<deadzone&&value>deadzone*(-1)){
-      return 0;
-    }
-    else{
-      return value;
     }
   }
 }
