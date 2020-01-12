@@ -9,19 +9,21 @@ package frc.autonomousCommands;
 
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.math.*;
 
-public class PerfectTurn extends CommandBase {
+public class ProfiledPerfectTurn extends CommandBase {
   private AHRS ahrs;
   private DifferentialDrive drive;
-  private PIDController turn;
+  private ProfiledPIDController turn;
   private double angle;
   private double wait;
   private boolean end;
+  private Constraints constraints;
 
-  public PerfectTurn(
+  public ProfiledPerfectTurn(
     DifferentialDrive drive,
     AHRS ahrs,
     double angle
@@ -37,16 +39,17 @@ public class PerfectTurn extends CommandBase {
 
     ahrs.reset();
 
-    turn = new PIDController(0.6, 0.15, 0.1);
+    constraints = new Constraints(3, 1);
+    turn = new ProfiledPIDController(0.6, 0.15, 0.1, constraints);
 
-    turn.reset();
+    turn.reset(0, 0);
     turn.setTolerance(1);
     turn.disableContinuousInput();
   }
 
   @Override
   public void execute() {
-    double angleturned = Maths.clamp(turn.calculate(-angle+5, Maths.deadband(ahrs.getYaw(), 2)), 0.3);
+    double angleturned = turn.calculate(Maths.deadband(ahrs.getYaw(), 2), angle);
 
     drive.tankDrive(angleturned, -angleturned, false);
 
@@ -68,7 +71,7 @@ public class PerfectTurn extends CommandBase {
   public void end(boolean interrupted) {
     ahrs.reset();
 
-    turn.reset();
+    turn.reset(0, 0);
     drive.stopMotor();
   }
 

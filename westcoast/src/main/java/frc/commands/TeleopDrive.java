@@ -3,6 +3,7 @@ package frc.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.math.Maths;
 
 public class TeleopDrive extends CommandBase {
   private DifferentialDrive drive;
@@ -36,13 +37,6 @@ public class TeleopDrive extends CommandBase {
   }
   
   private double attenuate(double value) {
-    double v = value;
-    boolean raw = joy.getRawButton(5);
-    if(raw == true){ 
-        return (0.5*v);
-    }
-    else{
-        return (Math.signum(v) * Math.pow(Math.abs(v), 1.2));
-    }
-}
+    return Maths.attenuate(value);
+  }
 }

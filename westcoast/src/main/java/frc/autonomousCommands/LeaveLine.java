@@ -5,9 +5,8 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
+import frc.math.*;
 
 public class LeaveLine extends CommandBase {
   private DifferentialDrive drive;
@@ -35,11 +34,14 @@ public class LeaveLine extends CommandBase {
   public void initialize() {
     wait = 0;
 
-    forward = new PIDController(0.5, 0.1, 0.1);
-    hold = new PIDController(0.1, 0.15, 0.2);
+    ahrs.reset();
+    encoder.reset();
+
+    forward = new PIDController(0.85, 0, 0.001);
+    hold = new PIDController(0.1, 0, 0.2);
     
     forward.reset();
-    forward.setTolerance(5);
+    forward.setTolerance(1);
     forward.disableContinuousInput();
 
     hold.reset();
@@ -51,17 +53,14 @@ public class LeaveLine extends CommandBase {
   public void execute() {
     double distance = dist*83; //i need to find multiplier for how many ticks are per inch/foot.
     double forwardraw = forward.calculate(distance, encoder.getDistance());
-    double distancecalc = MathUtil.clamp(forwardraw, -0.5, 0.5);
-    double yaw = ahrs.getYaw();
-    double headinglock = MathUtil.clamp(hold.calculate(0, deadband(yaw, 3)), -0.4, 0.4);
+    double distancecalc = Maths.clamp(forwardraw, 0.5);
+    double headinglock = Maths.clamp(hold.calculate(0, Maths.deadband(ahrs.getYaw(), 3)), 0.4);
 
     drive.arcadeDrive(distancecalc, headinglock);
 
-  SmartDashboard.putNumber("YAWWW", ahrs.getYaw());
-
     if(forward.atSetpoint() == true){
       wait = wait + 1;
-      if(wait >= 5){
+      if(wait >= 10){
         end = true;
       }
       else{
@@ -70,15 +69,18 @@ public class LeaveLine extends CommandBase {
     }
     else{
       end = false;
+      //wait = 0;
     }
   }
 
   @Override
   public void end(boolean interrupted) {
+    ahrs.reset();
+    encoder.reset();
+
     drive.stopMotor();
     forward.reset();
     hold.reset();
-    encoder.reset();
   }
 
   @Override
@@ -88,15 +90,6 @@ public class LeaveLine extends CommandBase {
     }
     else{
       return false;
-    }
-  }
-
-  private double deadband(double value, double deadzone){
-    if(value<deadzone&&value>deadzone*(-1)){
-      return 0;
-    }
-    else{
-      return value;
     }
   }
 }
