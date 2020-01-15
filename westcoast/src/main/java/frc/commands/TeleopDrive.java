@@ -8,6 +8,12 @@ public class TeleopDrive extends CommandBase {
   private DifferentialDrive drive;
   private Joystick joy;
 
+/**
+ * Driving :) xD uwu owo plz use this documentation plz notice me senpai oh god oh fuck.
+ * @param drive The drivetrain.
+ * @param joystick The joystick.
+ */
+
   public TeleopDrive(
     DifferentialDrive drive,
     Joystick joystick
