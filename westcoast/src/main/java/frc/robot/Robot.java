@@ -17,35 +17,35 @@ import frc.motorFactory.*;
 
 public class Robot extends TimedRobot {
 
-  //Drivetrain
+  // Drivetrain
   MotorFactory hybridFactory = new MotorFactoryHybrid();
   private final SpeedController leftMain = hybridFactory.create(2, 1, 3);
   private final SpeedController rightMain = hybridFactory.create(5, 4 ,6);
   private final DifferentialDrive drive = new DifferentialDrive(leftMain, rightMain);
 
-  //Subsystem Motors
+  // Subsystem Motors
   private final WPI_TalonSRX intake = new WPI_TalonSRX(7);
 
-  //Sensors
+  // Sensors
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
   private final Encoder leftEncoder = new Encoder(0, 1);
   private final Encoder rightEncoder = new Encoder(3, 2);
 
-  //Inputs
+  // Inputs
   private final Joystick joystick = new Joystick(0);
   private final JoystickButton buttonA = new JoystickButton(joystick, 3);
   private final JoystickButton buttonB = new JoystickButton(joystick, 4);
   private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
   
-  //Commands
-  private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs, leftEncoder);
-  //private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
+  // Commands
+  private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
+  // private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
+  
 
-  //Autonomous Commands
-  private final LeaveLine leaveLine = new LeaveLine(drive, leftEncoder, ahrs, 10);
-  //private final PerfectTurn perfectTurn = new PerfectTurn(drive, ahrs, 90);
-  //private final Autonomous auton = new Autonomous(drive, ahrs, leftEncoder, 10, 90, 10, 90);
-
+  // Autonomous Commands
+  private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
+  // private final Autonomous auton = new Autonomous(drive, ahrs, rightEncoder, leftEncoder, 10, 90);
+  
   @Override
   public void robotInit() {
     joystick.setTwistChannel(4);
@@ -59,11 +59,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    auton.cancel();
+
     ahrs.reset();
     leftEncoder.reset();
     rightEncoder.reset();
 
-    leaveLine.schedule();
+    auton.schedule();
   }
 
   @Override
@@ -73,7 +75,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    leaveLine.cancel();
+    auton.cancel();
 
     ahrs.reset();
     leftEncoder.reset();
@@ -85,6 +87,5 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
-
   }
 }

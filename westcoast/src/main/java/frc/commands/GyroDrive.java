@@ -2,12 +2,9 @@ package frc.commands;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.math.Maths;
 
@@ -17,18 +14,22 @@ public class GyroDrive extends CommandBase {
   private PIDController pid;
   private Joystick joy;
   private AHRS ahrs;
-  private Encoder encoder;
+
+/**
+ * Driving more accurately.
+ * @param drive The drivetrain.
+ * @param joystick The joystick.
+ * @param ahrs The navX.
+ */
 
   public GyroDrive(
     DifferentialDrive drive,
     Joystick joystick,
-    AHRS ahrs,
-    Encoder encoder
+    AHRS ahrs
   ) {
     this.ahrs = ahrs;
     this.drive = drive;
     this.joy = joystick;
-    this.encoder = encoder;
   }
 
   @Override
