@@ -1,11 +1,13 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -24,7 +26,10 @@ public class Robot extends TimedRobot {
   private final DifferentialDrive drive = new DifferentialDrive(leftMain, rightMain);
 
   // Subsystem Motors
-  private final WPI_TalonSRX intake = new WPI_TalonSRX(7);
+  private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
+  private final WPI_TalonSRX shooter1 = new WPI_TalonSRX(8);
+  private final WPI_TalonSRX shooter2 = new WPI_TalonSRX(9);
+  private final SpeedControllerGroup shooter = new SpeedControllerGroup(shooter1, shooter2);
 
   // Sensors
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
@@ -36,11 +41,12 @@ public class Robot extends TimedRobot {
   private final JoystickButton buttonA = new JoystickButton(joystick, 3);
   private final JoystickButton buttonB = new JoystickButton(joystick, 4);
   private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
+  private final JoystickButton bottomTrigger = new JoystickButton(joystick, 6);
   
   // Commands
   private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
-  // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
   // private final EncoderDrive teleop = new EncoderDrive(drive, joystick, leftEncoder, rightEncoder);
+  // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
 
   // Autonomous Commands
   private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
@@ -50,6 +56,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     joystick.setTwistChannel(4);
     drive.setSafetyEnabled(false);
+    shooter2.setInverted(true);
   }
 
   @Override
@@ -88,5 +95,9 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
+
+    // topTrigger.whenHeld(new SetMotor(intake, -1));
+    // bottomTrigger.whenHeld(new SetMotor(intake, 1));
+    topTrigger.whenHeld(new SetMotor(shooter, 1));
   }
 }
