@@ -1,18 +1,11 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.*;
 import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.drive.*;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.*;
 import frc.autonomousCommands.*;
 import frc.commands.*;
 import frc.motorFactory.*;
@@ -27,9 +20,9 @@ public class Robot extends TimedRobot {
 
   // Subsystem Motors
   private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
-  private final WPI_TalonSRX shooter1 = new WPI_TalonSRX(8);
-  private final WPI_TalonSRX shooter2 = new WPI_TalonSRX(9);
-  private final SpeedControllerGroup shooter = new SpeedControllerGroup(shooter1, shooter2);
+  private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
+  private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
+  // private final SpeedControllerGroup shooter = new SpeedControllerGroup(leftShooter, rightShooter);
 
   // Sensors
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
@@ -54,9 +47,7 @@ public class Robot extends TimedRobot {
   
   @Override
   public void robotInit() {
-    joystick.setTwistChannel(4);
-    drive.setSafetyEnabled(false);
-    shooter2.setInverted(true);
+   drive.setSafetyEnabled(false);
   }
 
   @Override
@@ -98,6 +89,7 @@ public class Robot extends TimedRobot {
 
     // topTrigger.whenHeld(new SetMotor(intake, -1));
     // bottomTrigger.whenHeld(new SetMotor(intake, 1));
-    topTrigger.whenHeld(new SetMotor(shooter, 1));
+    // topTrigger.whenHeld(new SetMotor(shooter, 1));
+    topTrigger.whileHeld(new SetTwoMotors(joystick, leftShooter, rightShooter));
   }
 }

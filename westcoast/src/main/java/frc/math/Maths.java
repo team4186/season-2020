@@ -26,6 +26,15 @@ public final class Maths{
         }
     }
 
+    public static double antiband(double value, double antizone){
+        if(value<antizone*(-1)||value>antizone){
+            return Math.signum(value)*1;
+        }
+        else{
+            return value;
+        }
+    }
+
     /**
      * Attenuates a value by some amount to make the control curve cleaner.
      * @param value Value to be attenuated.

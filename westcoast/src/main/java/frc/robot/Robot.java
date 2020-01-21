@@ -1,16 +1,12 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.*;
 import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.drive.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.button.*;
 import frc.autonomousCommands.*;
 import frc.commands.*;
 import frc.motorFactory.*;
@@ -24,7 +20,10 @@ public class Robot extends TimedRobot {
   private final DifferentialDrive drive = new DifferentialDrive(leftMain, rightMain);
 
   // Subsystem Motors
-  private final WPI_TalonSRX intake = new WPI_TalonSRX(7);
+  private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
+  private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
+  private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
+  // private final SpeedControllerGroup shooter = new SpeedControllerGroup(leftShooter, rightShooter);
 
   // Sensors
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
@@ -36,10 +35,11 @@ public class Robot extends TimedRobot {
   private final JoystickButton buttonA = new JoystickButton(joystick, 3);
   private final JoystickButton buttonB = new JoystickButton(joystick, 4);
   private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
+  private final JoystickButton bottomTrigger = new JoystickButton(joystick, 6);
   
   // Commands
-  private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
-  // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
+  private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
+  // private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
   // private final EncoderDrive teleop = new EncoderDrive(drive, joystick, leftEncoder, rightEncoder);
 
   // Autonomous Commands
@@ -48,7 +48,6 @@ public class Robot extends TimedRobot {
   
   @Override
   public void robotInit() {
-    joystick.setTwistChannel(4);
     drive.setSafetyEnabled(false);
   }
 
@@ -88,5 +87,10 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
+
+    topTrigger.whileHeld(new SetTwoMotors(joystick, leftShooter, rightShooter));
+
+    SmartDashboard.putNumber("vectoring", joystick.getRawAxis(4));
+
   }
 }
