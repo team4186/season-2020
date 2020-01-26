@@ -2,6 +2,11 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -10,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import frc.autonomousCommands.*;
 import frc.commands.*;
 import frc.motorFactory.*;
+import frc.vision.GripPipeline;
 
 public class Robot extends TimedRobot {
 
@@ -30,6 +36,10 @@ public class Robot extends TimedRobot {
   private final Encoder leftEncoder = new Encoder(0, 1);
   private final Encoder rightEncoder = new Encoder(3, 2);
 
+  // Vision
+  private final GripPipeline pipeline = new GripPipeline();
+  private final NetworkTable filteredContours = NetworkTableInstance.getDefault().getTable("GRIP/filteredReport");
+
   // Inputs
   private final Joystick joystick = new Joystick(0);
   private final JoystickButton buttonA = new JoystickButton(joystick, 3);
@@ -49,6 +59,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     drive.setSafetyEnabled(false);
+    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
+    camera.setResolution(320, 240);
   }
 
   @Override
@@ -81,16 +93,13 @@ public class Robot extends TimedRobot {
     leftEncoder.reset();
     rightEncoder.reset();
     
-    teleop.schedule();
+    // teleop.schedule();
   }
 
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
 
-    topTrigger.whileHeld(new SetTwoMotors(joystick, leftShooter, rightShooter));
-
-    SmartDashboard.putNumber("vectoring", joystick.getRawAxis(4));
-
+    // topTrigger.whileHeld(new SetTwoMotors(joystick, leftShooter, rightShooter));
   }
 }
