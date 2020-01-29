@@ -3,6 +3,7 @@ package frc.autonomousCommands;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class Square extends SequentialCommandGroup {
 
@@ -24,21 +25,21 @@ public class Square extends SequentialCommandGroup {
   ) {
     super(
     new ProfiledLeaveLine(drive, leftEncoder, rightEncoder, distance),
-    new Wait(1),
+    new WaitCommand(1),
     new ProfiledPerfectTurn(drive, leftEncoder, rightEncoder, rotation),
-    new Wait(1),
+    new WaitCommand(1),
     new ProfiledLeaveLine(drive, leftEncoder, rightEncoder, distance),
-    new Wait(1),
+    new WaitCommand(1),
     new ProfiledPerfectTurn(drive, leftEncoder, rightEncoder, rotation),
-    new Wait(1),   
+    new WaitCommand(1),
     new ProfiledLeaveLine(drive, leftEncoder, rightEncoder, distance),
-    new Wait(1),
+    new WaitCommand(1),
     new ProfiledPerfectTurn(drive, leftEncoder, rightEncoder, rotation),
-    new Wait(1),   
+    new WaitCommand(1),
     new ProfiledLeaveLine(drive, leftEncoder, rightEncoder, distance),
-    new Wait(1),
+    new WaitCommand(1),
     new ProfiledPerfectTurn(drive, leftEncoder, rightEncoder, rotation),
-    new Wait(1)
+    new WaitCommand(1)
     );
   }
 }

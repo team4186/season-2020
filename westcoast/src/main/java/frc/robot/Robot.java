@@ -2,20 +2,22 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.kauailabs.navx.frc.AHRS;
-
+import org.opencv.core.Rect;
+import org.opencv.imgproc.Imgproc;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
+import edu.wpi.first.wpilibj.TimedRobot;
 import frc.autonomousCommands.*;
 import frc.commands.*;
+import frc.math.DistanceToTarget;
 import frc.motorFactory.*;
-import frc.vision.GripPipeline;
+import frc.vision.*;
 
 public class Robot extends TimedRobot {
 
@@ -29,7 +31,6 @@ public class Robot extends TimedRobot {
   private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
   private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
   private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
-  // private final SpeedControllerGroup shooter = new SpeedControllerGroup(leftShooter, rightShooter);
 
   // Sensors
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
@@ -37,8 +38,10 @@ public class Robot extends TimedRobot {
   private final Encoder rightEncoder = new Encoder(3, 2);
 
   // Vision
-  private final GripPipeline pipeline = new GripPipeline();
-  private final NetworkTable filteredContours = NetworkTableInstance.getDefault().getTable("GRIP/filteredReport");
+  private VisionThread visionThread;
+  private final Object imgLock = new Object();
+  private double centerX = 0.0;
+  private double height = 0.0;
 
   // Inputs
   private final Joystick joystick = new Joystick(0);
@@ -53,19 +56,38 @@ public class Robot extends TimedRobot {
   // private final EncoderDrive teleop = new EncoderDrive(drive, joystick, leftEncoder, rightEncoder);
 
   // Autonomous Commands
-  private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
-  // private final Autonomous auton = new Autonomous(drive, ahrs, rightEncoder, leftEncoder, 10, 90);
-  
+  // private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
+  private final AlignToTarget auton = new AlignToTarget(drive, leftEncoder, rightEncoder,"CenterX");
+
   @Override
   public void robotInit() {
     drive.setSafetyEnabled(false);
-    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture(0);
+    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
     camera.setResolution(320, 240);
+    
+    visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
+      if (!pipeline.filterContoursOutput().isEmpty()) {
+          Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+          synchronized (imgLock) {
+              centerX = r.x + (r.width / 2);
+              height = r.height;
+          }
+      }
+  });
+  visionThread.start();
   }
 
   @Override
   public void robotPeriodic() {
-
+    double centerX;
+    double height;
+    synchronized(imgLock){
+      centerX = this.centerX;
+      height = this.height;
+    }
+    SmartDashboard.putNumber("CenterX", centerX);
+    SmartDashboard.putNumber("Height", height);
+    SmartDashboard.putNumber("Distance", DistanceToTarget.distance("Height"));
   }
 
   @Override
