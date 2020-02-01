@@ -51,8 +51,8 @@ public class Robot extends TimedRobot {
   private final JoystickButton bottomTrigger = new JoystickButton(joystick, 6);
   
   // Commands
-  private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
-  // private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
+  // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
+  private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
   // private final EncoderDrive teleop = new EncoderDrive(drive, joystick, leftEncoder, rightEncoder);
 
   // Autonomous Commands
@@ -115,7 +115,7 @@ public class Robot extends TimedRobot {
     leftEncoder.reset();
     rightEncoder.reset();
     
-    // teleop.schedule();
+    teleop.schedule();
   }
 
   @Override
@@ -123,5 +123,24 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     // topTrigger.whileHeld(new SetTwoMotors(joystick, leftShooter, rightShooter));
+  }
+
+  @Override
+  public void testInit(){
+    auton.cancel();
+    teleop.cancel();
+
+    ahrs.reset();
+    leftEncoder.reset();
+    rightEncoder.reset();
+    
+    teleop.schedule();
+  }
+
+  @Override
+  public void testPeriodic(){
+    CommandScheduler.getInstance().run();
+
+    topTrigger.whileHeld(new SetMotor(intake, -0.8));
   }
 }
