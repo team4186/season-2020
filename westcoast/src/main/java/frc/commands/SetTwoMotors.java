@@ -2,7 +2,6 @@ package frc.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.math.Maths;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -11,9 +10,6 @@ public class SetTwoMotors extends CommandBase {
   private Joystick joystick;
   private SpeedController leftMotor;
   private SpeedController rightMotor;
-  private double speed;
-  private double leftSpeed;
-  private double rightSpeed;
 
   public SetTwoMotors(
     Joystick joystick,
@@ -25,35 +21,44 @@ public class SetTwoMotors extends CommandBase {
     this.rightMotor = rightMotor;
   }
 
+
+  long activeCycleMs = 0;
+  int activeCycleNs = 0;
+  long dutyCycleTimeMs = 2; 
+  int dutyCycleTimeNs = 2 * 1_000_000;
+  boolean isRunning = true;
+  Thread t = new Thread() {
+    @Override
+    public void run() {
+      while(isRunning) {
+        try {
+          leftMotor.set(1);
+          rightMotor.set(1);
+          Thread.sleep(0, activeCycleNs);
+          leftMotor.set(0);
+          rightMotor.set(0);
+          Thread.sleep(0, dutyCycleTimeNs - activeCycleNs);
+        }
+        catch(InterruptedException e) { 
+          // empty
+        }
+      }
+    }
+  };
+
   @Override
   public void initialize() {
     rightMotor.setInverted(true);
+    t.start();
+    
   }
 
   @Override
   public void execute() {
-    speed = (-joystick.getZ() + 1.0) * 0.5;
-    if(joystick.getRawAxis(4) < -0.2) {
-      leftSpeed = speed + Maths.antiband(joystick.getRawAxis(4), 0.8) * speed;
-      // leftSpeed = 0;
-      rightSpeed = speed;
-    }
-    else if(joystick.getRawAxis(4) > 0.2) {
-      leftSpeed = speed;
-      rightSpeed = speed - Maths.antiband(joystick.getRawAxis(4), 0.8) * speed;
-      // rightSpeed = 0;
-    }
-    else {
-      leftSpeed = speed;
-      rightSpeed = speed;
-    }
-
-    leftMotor.set(leftSpeed);// + 0.15 / (4 * speed));
-    rightMotor.set(rightSpeed);
-
-    SmartDashboard.putNumber("Speed", speed);
-    SmartDashboard.putNumber("leftSpeed", rightSpeed);
-    SmartDashboard.putNumber("rightSpeed", leftSpeed);
+    double input = dutyCycleTimeNs * ((-joystick.getZ() + 1.0) * 0.5);
+    activeCycleNs = (int)input;
+ 
+    SmartDashboard.putNumber("Speed", activeCycleMs);
 
     
 
@@ -62,7 +67,9 @@ public class SetTwoMotors extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     leftMotor.stopMotor();
-    rightMotor.stopMotor();
+    rightMotor.stopMotor(); 
+    t.interrupt();
+    isRunning = false;
   }
 
   @Override

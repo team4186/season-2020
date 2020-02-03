@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.autonomousCommands.*;
 import frc.commands.*;
-import frc.math.DistanceToTarget;
 import frc.motorFactory.*;
 import frc.vision.*;
 
@@ -87,7 +86,6 @@ public class Robot extends TimedRobot {
     }
     SmartDashboard.putNumber("CenterX", centerX);
     SmartDashboard.putNumber("Height", height);
-    SmartDashboard.putNumber("Distance", DistanceToTarget.distance("Height"));
   }
 
   @Override
@@ -122,7 +120,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
 
-    // topTrigger.whileHeld(new SetTwoMotors(joystick, leftShooter, rightShooter));
+    topTrigger.whileHeld(new SetTwoMotors(joystick, leftShooter, rightShooter));
   }
 
   @Override
@@ -141,6 +139,6 @@ public class Robot extends TimedRobot {
   public void testPeriodic(){
     CommandScheduler.getInstance().run();
 
-    topTrigger.whileHeld(new SetMotor(intake, -0.8));
+    topTrigger.whileHeld(new SetMotor(intake, 0.5));
   }
 }
