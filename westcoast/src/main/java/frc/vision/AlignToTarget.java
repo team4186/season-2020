@@ -57,11 +57,11 @@ public class AlignToTarget extends CommandBase {
     turnRight = new ProfiledPIDController(P, I, D, constraints);
 
     turnLeft.reset(0, 0);
-    turnLeft.setTolerance(5, 50);
+    turnLeft.setTolerance(10, 50);
     turnLeft.disableContinuousInput();
 
     turnRight.reset(0, 0);
-    turnRight.setTolerance(5, 50);
+    turnRight.setTolerance(10, 50);
     turnRight.disableContinuousInput();
   }
 
@@ -103,7 +103,8 @@ public class AlignToTarget extends CommandBase {
     turnRight.reset(0, 0);
     leftEncoder.reset();
     rightEncoder.reset();
-    System.out.println("Aligned");
+    drive.stopMotor();
+    System.out.println("what t-the fuck did you just fuckinyg say a-about me, y-you wittwe b-bitch? i-i’ww h-have you k-knyow i-i gwaduated top o-of m-my c-cwass iny the ny-nyavy s-seaws, anyd i-i’ve beeny inyvowved iny nyumewous secwet w-waids ony a-aw-quaeda, anyd i have uvw 300 conyfiwmed kiwws. i am twainyed iny gowiwwa wawfawe anyd i-i’m t-the top s-snyipew iny t-the enytiwe us a-awmed fowces. you awe ny-nyothinyg to me b-but just anyothew t-tawget. i-i w-wiww wipe you t-the fuck out w-with p-pwecisiony the wikes of which has nyevew b-beeny seeny b-befowe ony this e-eawth, mawk m-my fuckinyg wowds. you t-thinyk you c-cany get away with sayinyg that shit to m-me uvw t-the inytewnyet? thinyk againy, fuckew. a-as we speak i-i am conytactinyg my secwet ny-nyetwowk o-of spies acwoss t-the u-usa anyd youw ip is b-beinyg t-twaced w-wight nyow s-so you bettew p-pwepawe fow the s-stowm, m-maggot. the stowm that wipes o-out the pathetic wittwe thinyg you c-caww youw w-wife. y-you’we f-fuckinyg dead, kid. i cany be a-anyywhewe, anyytime, anyd i-i c-cany k-kiww y-you iny o-uvw seveny hunydwed ways, anyd that’s just with my bawe hanyds. nyot onywy am i extenysivewy t-twainyed iny unyawmed combat, but i-i h-have access to the e-enytiwe awsenyaw o-of the u-unyited states mawinye cowps a-anyd i wiww use it to its fuww extenyt to wipe youw m-misewabwe ass o-off the f-face o-of the c-conytinyenyt, y-you wittwe s-shit. i-if onywy y-you couwd h-have knyowny what unyhowy w-wetwibutiony y-youw wittwe “cwevew” commenyt was about to b-bwinyg downy upony y-you, maybe you w-wouwd have hewd youw fuckinyg t-tonygue. b-but you c-couwdny’t, y-you didny’t, anyd ny-nyow you’we p-payinyg the p-pwice, you goddamny i-idiot. i-i wiww s-shit fuwy a-aww uvw you anyd y-you w-wiww dwowny iny it. y-you’we f-fuckinyg dead, k-kiddo. x3");
     cache = false;
   }
 

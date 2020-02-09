@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.autonomousCommands.*;
 import frc.commands.*;
+import frc.math.DistanceToTarget;
 import frc.motorFactory.*;
 import frc.vision.*;
 
@@ -40,6 +41,7 @@ public class Robot extends TimedRobot {
   private VisionThread visionThread;
   private final Object imgLock = new Object();
   private double centerX = 0.0;
+  private double centerY = 0.0;
   private double height = 0.0;
 
   // Inputs
@@ -69,6 +71,7 @@ public class Robot extends TimedRobot {
           Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
           synchronized (imgLock) {
               centerX = r.x + (r.width / 2);
+              centerY = r.y + (r.height / 2);
               height = r.height;
           }
       }
@@ -82,10 +85,13 @@ public class Robot extends TimedRobot {
     double height;
     synchronized(imgLock){
       centerX = this.centerX;
+      centerY = this.centerY;
       height = this.height;
     }
     SmartDashboard.putNumber("CenterX", centerX);
+    SmartDashboard.putNumber("CenterY", centerY);
     SmartDashboard.putNumber("Height", height);
+    SmartDashboard.putNumber("distance", DistanceToTarget.distance("Height"));
   }
 
   @Override
@@ -139,6 +145,6 @@ public class Robot extends TimedRobot {
   public void testPeriodic(){
     CommandScheduler.getInstance().run();
 
-    topTrigger.whileHeld(new SetMotor(intake, 0.5));
+    topTrigger.whileHeld(new SetMotor(leftShooter, 1));
   }
 }

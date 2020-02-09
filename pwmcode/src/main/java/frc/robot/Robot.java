@@ -30,13 +30,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-  //  double x = joystick.getX();
-    double y = joystick.getY();
-    double y2 = joystick2.getY();
-    rightMotor.set(y2);
-    leftMotor.set(-y);
+  // double x = joystick.getX();
+  //   double y = joystick.getY();
+  //   double y2 = joystick2.getY();
+  //   rightMotor.set(y2);
+  //   leftMotor.set(-y);
   
-
+    drive.arcadeDrive(-joystick.getY(), joystick.getX());
 
     // boolean buttonPushedThisFrame = topTrigger.get();
 

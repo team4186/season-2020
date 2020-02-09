@@ -17,7 +17,11 @@ public class DistanceToTarget {
         double calibratedHeight = 48;
         double focalLength = (calibratedHeight * 10)/realHeight; //Calibrated Height vs Real Height at a calibration distance (10 feet here)
 
+        if(SmartDashboard.getNumber("Height", 0) <= calibratedHeight) {
         distance = (realHeight* focalLength)/(observedHeight);
+        } else{
+            distance = 9;
+        }
 
         return distance;
     }
