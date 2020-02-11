@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class SetMotor extends CommandBase {
   private SpeedController motor;
   private double value;
-  private ThreadMotor threadMotor;
 
   public SetMotor(
     SpeedController motor,
@@ -18,17 +17,16 @@ public class SetMotor extends CommandBase {
 
   @Override
   public void initialize() {
-    threadMotor = new ThreadMotor(motor, value);
-    threadMotor.run();
   }
 
   @Override
   public void execute() {
+    motor.set(value);
   }
 
   @Override
   public void end(boolean interrupted) {
-    threadMotor.interrupt();
+    motor.stopMotor();
   }
 
   @Override

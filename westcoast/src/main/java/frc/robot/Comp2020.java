@@ -13,13 +13,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.autonomousCommands.*;
+// import frc.autonomousCommands.*;
 import frc.commands.*;
 import frc.math.DistanceToTarget;
 import frc.motorFactory.*;
 import frc.vision.*;
 
-public class Robot extends TimedRobot {
+public class Comp2020 extends TimedRobot {
 
   // Drivetrain
   MotorFactory hybridFactory = new MotorFactoryHybrid();
@@ -46,10 +46,10 @@ public class Robot extends TimedRobot {
 
   // Inputs
   private final Joystick joystick = new Joystick(0);
-  private final JoystickButton buttonA = new JoystickButton(joystick, 3);
-  private final JoystickButton buttonB = new JoystickButton(joystick, 4);
   private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
-  private final JoystickButton bottomTrigger = new JoystickButton(joystick, 6);
+  // private final JoystickButton bottomTrigger = new JoystickButton(joystick, 6);
+  // private final JoystickButton buttonA = new JoystickButton(joystick, 3);
+  // private final JoystickButton buttonB = new JoystickButton(joystick, 4);
   
   // Commands
   // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
@@ -65,15 +65,24 @@ public class Robot extends TimedRobot {
     drive.setSafetyEnabled(false);
     UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
     camera.setResolution(320, 240);
+    camera.setFPS(30);
+    camera.setExposureManual(20);
     
     visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
       if (!pipeline.filterContoursOutput().isEmpty()) {
-          Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
-          synchronized (imgLock) {
-              centerX = r.x + (r.width / 2);
-              centerY = r.y + (r.height / 2);
-              height = r.height;
-          }
+        Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+        synchronized (imgLock) {
+            centerX = r.x + (r.width / 2);
+            centerY = r.y + (r.height / 2);
+            height = r.height;
+        }
+      }
+      else{
+        synchronized (imgLock) {
+          centerX = 160;
+          centerY = 120;
+          height = 0;
+        }
       }
   });
   visionThread.start();
@@ -82,6 +91,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     double centerX;
+    double centerY;
     double height;
     synchronized(imgLock){
       centerX = this.centerX;
@@ -126,7 +136,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
 
-    topTrigger.whileHeld(new SetTwoMotors(joystick, leftShooter, rightShooter));
+    topTrigger.whileHeld(new SetTwoMotors(leftShooter, rightShooter, 1));
   }
 
   @Override
@@ -145,6 +155,6 @@ public class Robot extends TimedRobot {
   public void testPeriodic(){
     CommandScheduler.getInstance().run();
 
-    topTrigger.whileHeld(new SetMotor(leftShooter, 1));
+    topTrigger.whileHeld(new SetMotor(intake, 1));
   }
 }

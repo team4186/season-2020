@@ -15,6 +15,11 @@ public class ConstantlyAlignToTarget extends CommandBase {
   private double value;
   private double distance;
 
+  /**
+   * Moves to a target found by GRIP
+   * @param name The name of the SmartDashboard published value.
+   * @param drive The drivetrain.
+   */
   public ConstantlyAlignToTarget(
     String name,
     DifferentialDrive drive

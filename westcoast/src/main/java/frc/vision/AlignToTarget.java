@@ -27,7 +27,7 @@ public class AlignToTarget extends CommandBase {
    * @param drive The drivetrain.
    * @param leftEncoder The drivetrain leftEncoder.
    * @param rightEncoder The drivetrain rightEncoder.
-   * @param name The name of the SmartDashboard published value
+   * @param name The name of the SmartDashboard published value.
    */
   public AlignToTarget(
     DifferentialDrive drive,

@@ -14,7 +14,7 @@ public class DistanceToTarget {
         double observedHeight = SmartDashboard.getNumber(name, 0);
         double distance = 0;
         double realHeight = 17/12;
-        double calibratedHeight = 48;
+        double calibratedHeight = 17; //35 for the shooter target, 17 for the wide strip of vision tape.
         double focalLength = (calibratedHeight * 10)/realHeight; //Calibrated Height vs Real Height at a calibration distance (10 feet here)
 
         if(SmartDashboard.getNumber("Height", 0) <= calibratedHeight) {

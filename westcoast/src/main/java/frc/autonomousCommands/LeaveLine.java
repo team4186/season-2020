@@ -1,32 +1,38 @@
 package frc.autonomousCommands;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
+import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
 
 public class LeaveLine extends CommandBase {
   private DifferentialDrive drive;
-  private PIDController forward;
-  private PIDController hold;
-  private Encoder encoder;
-  private AHRS ahrs;
+  private ProfiledPIDController left;
+  private ProfiledPIDController right;
+  private Encoder leftEncoder;
+  private Encoder rightEncoder;
   private double dist;
   private double wait;
   private boolean end;
+  private Constraints constraints;
+
+  /**
+   * Goes to a certain distance defined by "distance"
+   * @param drive The drivetrain.
+   * @param leftEncoder The drivetrain leftEncoder.
+   * @param rightEncoder The drivetrain rightEncoder.
+   * @param distance The distance it goes to.
+   */
 
   public LeaveLine(
     DifferentialDrive drive,
-    Encoder encoder,
-    AHRS ahrs,
+    Encoder leftEncoder,
+    Encoder rightEncoder,
     double distance
   ) {
-    this.encoder = encoder;
-    this.ahrs = ahrs;
+    this.leftEncoder = leftEncoder;
+    this.rightEncoder = rightEncoder;
     this.drive = drive;
     this.dist = distance;
   }
@@ -35,33 +41,33 @@ public class LeaveLine extends CommandBase {
   public void initialize() {
     wait = 0;
 
-    forward = new PIDController(0.5, 0.1, 0.1);
-    hold = new PIDController(0.1, 0.15, 0.2);
-    
-    forward.reset();
-    forward.setTolerance(5);
-    forward.disableContinuousInput();
+    rightEncoder.reset();
+    leftEncoder.reset();
 
-    hold.reset();
-    hold.setTolerance(1);
-    hold.disableContinuousInput();
+    constraints = new Constraints(600, 500);
+    right = new ProfiledPIDController(0.1, 0, 0, constraints);
+    left = new ProfiledPIDController(0.1, 0, 0, constraints);
+    
+    right.reset(0, 0);
+    right.setTolerance(5, 100);
+    right.disableContinuousInput();
+
+    left.reset(0, 0);
+    left.setTolerance(5, 100);
+    left.disableContinuousInput();
   }
 
   @Override
   public void execute() {
-    double distance = dist*83; //i need to find multiplier for how many ticks are per inch/foot.
-    double forwardraw = forward.calculate(distance, encoder.getDistance());
-    double distancecalc = MathUtil.clamp(forwardraw, -0.5, 0.5);
-    double yaw = ahrs.getYaw();
-    double headinglock = MathUtil.clamp(hold.calculate(0, deadband(yaw, 3)), -0.4, 0.4);
+    double distance = dist*85;
+    double rightOut = right.calculate(rightEncoder.get(), distance);
+    double leftOut = left.calculate(leftEncoder.get(), distance);
 
-    drive.arcadeDrive(distancecalc, headinglock);
+    drive.tankDrive(-leftOut, -rightOut, false);
 
-  SmartDashboard.putNumber("YAWWW", ahrs.getYaw());
-
-    if(forward.atSetpoint() == true){
+    if(right.atGoal() && left.atGoal() == true){
       wait = wait + 1;
-      if(wait >= 5){
+      if(wait >= 10){
         end = true;
       }
       else{
@@ -70,15 +76,18 @@ public class LeaveLine extends CommandBase {
     }
     else{
       end = false;
+      wait = 0;
     }
   }
 
   @Override
   public void end(boolean interrupted) {
+    rightEncoder.reset();
+    leftEncoder.reset();
+
     drive.stopMotor();
-    forward.reset();
-    hold.reset();
-    encoder.reset();
+    right.reset(0, 0);
+    left.reset(0, 0);
   }
 
   @Override
@@ -88,15 +97,6 @@ public class LeaveLine extends CommandBase {
     }
     else{
       return false;
-    }
-  }
-
-  private double deadband(double value, double deadzone){
-    if(value<deadzone&&value>deadzone*(-1)){
-      return 0;
-    }
-    else{
-      return value;
     }
   }
 }

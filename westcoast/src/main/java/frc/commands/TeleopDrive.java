@@ -7,19 +7,34 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class TeleopDrive extends CommandBase {
   private DifferentialDrive drive;
   private Joystick joy;
+  private double direction;
 
-/**
- * Driving :) xD uwu owo plz use this documentation plz notice me senpai oh god oh fuck.
+  /**
+ * Driving :).
+ * @param drive The drivetrain.
+ * @param joystick The joystick.
+ * @param reversed The direction of the drivetrain.
+ */
+  public TeleopDrive(
+    DifferentialDrive drive,
+    Joystick joystick,
+    boolean reversed
+  ) {
+    this.drive = drive;
+    this.joy = joystick;
+    this.direction = reversed ? -1.0 : 1.0;
+  }
+
+  /**
+ * Driving :).
  * @param drive The drivetrain.
  * @param joystick The joystick.
  */
-
   public TeleopDrive(
     DifferentialDrive drive,
     Joystick joystick
   ) {
-    this.drive = drive;
-    this.joy = joystick;
+    this(drive, joystick, false);
   }
 
   @Override
@@ -28,7 +43,7 @@ public class TeleopDrive extends CommandBase {
 
   @Override
   public void execute() {
-    drive.arcadeDrive(attenuate(joy.getY()), attenuate(-joy.getX()), false);
+    drive.arcadeDrive(attenuate(direction*joy.getY()), attenuate(-direction*joy.getX()), false);
   }
 
   @Override
@@ -40,7 +55,7 @@ public class TeleopDrive extends CommandBase {
   public boolean isFinished() {
     return false;
   }
-  
+
   private double attenuate(double value) {
     double v = value;
     boolean raw = joy.getRawButton(5);

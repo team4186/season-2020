@@ -24,21 +24,21 @@ public class Square extends SequentialCommandGroup {
     double rotation
   ) {
     super(
-    new ProfiledLeaveLine(drive, leftEncoder, rightEncoder, distance),
+    new LeaveLine(drive, leftEncoder, rightEncoder, distance),
     new WaitCommand(1),
-    new ProfiledPerfectTurn(drive, leftEncoder, rightEncoder, rotation),
+    new PerfectTurn(drive, leftEncoder, rightEncoder, rotation),
     new WaitCommand(1),
-    new ProfiledLeaveLine(drive, leftEncoder, rightEncoder, distance),
+    new LeaveLine(drive, leftEncoder, rightEncoder, distance),
     new WaitCommand(1),
-    new ProfiledPerfectTurn(drive, leftEncoder, rightEncoder, rotation),
+    new PerfectTurn(drive, leftEncoder, rightEncoder, rotation),
     new WaitCommand(1),
-    new ProfiledLeaveLine(drive, leftEncoder, rightEncoder, distance),
+    new LeaveLine(drive, leftEncoder, rightEncoder, distance),
     new WaitCommand(1),
-    new ProfiledPerfectTurn(drive, leftEncoder, rightEncoder, rotation),
+    new PerfectTurn(drive, leftEncoder, rightEncoder, rotation),
     new WaitCommand(1),
-    new ProfiledLeaveLine(drive, leftEncoder, rightEncoder, distance),
+    new LeaveLine(drive, leftEncoder, rightEncoder, distance),
     new WaitCommand(1),
-    new ProfiledPerfectTurn(drive, leftEncoder, rightEncoder, rotation),
+    new PerfectTurn(drive, leftEncoder, rightEncoder, rotation),
     new WaitCommand(1)
     );
   }
