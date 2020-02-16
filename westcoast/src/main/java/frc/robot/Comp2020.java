@@ -58,7 +58,7 @@ public class Comp2020 extends TimedRobot {
 
   // Autonomous Commands
   // private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
-  private final AlignToTarget auton = new AlignToTarget(drive, leftEncoder, rightEncoder,"CenterX");
+  private final AlignToTarget auton = new AlignToTarget(drive,"CenterX");
 
   @Override
   public void robotInit() {
@@ -69,8 +69,8 @@ public class Comp2020 extends TimedRobot {
     camera.setExposureManual(20);
     
     visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
-      if (!pipeline.filterContoursOutput().isEmpty()) {
-        Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
+      if (!pipeline.convexHullsOutput().isEmpty()) {
+        Rect r = Imgproc.boundingRect(pipeline.convexHullsOutput().get(0));
         synchronized (imgLock) {
             centerX = r.x + (r.width / 2);
             centerY = r.y + (r.height / 2);

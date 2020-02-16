@@ -2,9 +2,14 @@ package frc.vision;
 
 import java.util.ArrayList;
 import java.util.List;
-import edu.wpi.first.vision.VisionPipeline;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.HashMap;
+
 import org.opencv.core.*;
 import org.opencv.imgproc.*;
+
+import edu.wpi.first.vision.VisionPipeline;
 
 /**
 * GripPipeline class.
@@ -16,12 +21,11 @@ import org.opencv.imgproc.*;
 public class GripPipeline implements VisionPipeline {
 
 	//Outputs
+	private Mat cvMedianblurOutput = new Mat();
 	private Mat hslThresholdOutput = new Mat();
 	private Mat cvCannyOutput = new Mat();
-	private Mat cvMedianblurOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> convexHullsOutput = new ArrayList<MatOfPoint>();
-	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -30,51 +34,44 @@ public class GripPipeline implements VisionPipeline {
 	/**
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
-	@Override	public void process(Mat source0) {
+	public void process(Mat source0) {
+		// Step CV_medianBlur0:
+		Mat cvMedianblurSrc = source0;
+		double cvMedianblurKsize = 5.0;
+		cvMedianblur(cvMedianblurSrc, cvMedianblurKsize, cvMedianblurOutput);
+
 		// Step HSL_Threshold0:
-		Mat hslThresholdInput = source0;
-		double[] hslThresholdHue = {65.03597122302159, 114.84848484848482};
-		double[] hslThresholdSaturation = {179.98971818274978, 255.0};
-		double[] hslThresholdLuminance = {135.29676258992808, 255.0};
+		Mat hslThresholdInput = cvMedianblurOutput;
+		double[] hslThresholdHue = {64.40677157903121, 129.73260400129513};
+		double[] hslThresholdSaturation = {111.85977041013105, 255.0};
+		double[] hslThresholdLuminance = {19.209039548022602, 126.21210098266602};
 		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation, hslThresholdLuminance, hslThresholdOutput);
 
 		// Step CV_Canny0:
 		Mat cvCannyImage = hslThresholdOutput;
 		double cvCannyThreshold1 = 0.0;
 		double cvCannyThreshold2 = 100.0;
-		double cvCannyAperturesize = 3.0;
-		boolean cvCannyL2gradient = false;
+		double cvCannyAperturesize = 5.0;
+		boolean cvCannyL2gradient = true;
 		cvCanny(cvCannyImage, cvCannyThreshold1, cvCannyThreshold2, cvCannyAperturesize, cvCannyL2gradient, cvCannyOutput);
 
-		// Step CV_medianBlur0:
-		Mat cvMedianblurSrc = cvCannyOutput;
-		double cvMedianblurKsize = 1.0;
-		cvMedianblur(cvMedianblurSrc, cvMedianblurKsize, cvMedianblurOutput);
-
 		// Step Find_Contours0:
-		Mat findContoursInput = cvMedianblurOutput;
-		boolean findContoursExternalOnly = false;
+		Mat findContoursInput = cvCannyOutput;
+		boolean findContoursExternalOnly = true;
 		findContours(findContoursInput, findContoursExternalOnly, findContoursOutput);
 
 		// Step Convex_Hulls0:
 		ArrayList<MatOfPoint> convexHullsContours = findContoursOutput;
 		convexHulls(convexHullsContours, convexHullsOutput);
 
-		// Step Filter_Contours0:
-		ArrayList<MatOfPoint> filterContoursContours = convexHullsOutput;
-		double filterContoursMinArea = 10.0;
-		double filterContoursMinPerimeter = 100.0;
-		double filterContoursMinWidth = 40.0;
-		double filterContoursMaxWidth = 1000.0;
-		double filterContoursMinHeight = 0.0;
-		double filterContoursMaxHeight = 1000.0;
-		double[] filterContoursSolidity = {0.0, 100.0};
-		double filterContoursMaxVertices = 1000000.0;
-		double filterContoursMinVertices = 0.0;
-		double filterContoursMinRatio = 0.0;
-		double filterContoursMaxRatio = 1000.0;
-		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
+	}
 
+	/**
+	 * This method is a generated getter for the output of a CV_medianBlur.
+	 * @return Mat output from CV_medianBlur.
+	 */
+	public Mat cvMedianblurOutput() {
+		return cvMedianblurOutput;
 	}
 
 	/**
@@ -94,14 +91,6 @@ public class GripPipeline implements VisionPipeline {
 	}
 
 	/**
-	 * This method is a generated getter for the output of a CV_medianBlur.
-	 * @return Mat output from CV_medianBlur.
-	 */
-	public Mat cvMedianblurOutput() {
-		return cvMedianblurOutput;
-	}
-
-	/**
 	 * This method is a generated getter for the output of a Find_Contours.
 	 * @return ArrayList<MatOfPoint> output from Find_Contours.
 	 */
@@ -117,14 +106,16 @@ public class GripPipeline implements VisionPipeline {
 		return convexHullsOutput;
 	}
 
-	/**
-	 * This method is a generated getter for the output of a Filter_Contours.
-	 * @return ArrayList<MatOfPoint> output from Filter_Contours.
-	 */
-	public ArrayList<MatOfPoint> filterContoursOutput() {
-		return filterContoursOutput;
-	}
 
+	/**
+	 * Performs a median blur on the image.
+	 * @param src image to blur.
+	 * @param kSize size of blur.
+	 * @param dst output of blur.
+	 */
+	private void cvMedianblur(Mat src, double kSize, Mat dst) {
+		Imgproc.medianBlur(src, dst, (int)kSize);
+	}
 
 	/**
 	 * Segment an image based on hue, saturation, and luminance ranges.
@@ -154,16 +145,6 @@ public class GripPipeline implements VisionPipeline {
 	private void cvCanny(Mat image, double thres1, double thres2,
 		double apertureSize, boolean gradient, Mat edges) {
 		Imgproc.Canny(image, edges, thres1, thres2, (int)apertureSize, gradient);
-	}
-
-	/**
-	 * Performs a median blur on the image.
-	 * @param src image to blur.
-	 * @param kSize size of blur.
-	 * @param dst output of blur.
-	 */
-	private void cvMedianblur(Mat src, double kSize, Mat dst) {
-		Imgproc.medianBlur(src, dst, (int)kSize);
 	}
 
 	/**
@@ -208,55 +189,6 @@ public class GripPipeline implements VisionPipeline {
 				mopHull.put(j, 0, point);
 			}
 			outputContours.add(mopHull);
-		}
-	}
-
-
-	/**
-	 * Filters out contours that do not meet certain criteria.
-	 * @param inputContours is the input list of contours
-	 * @param output is the the output list of contours
-	 * @param minArea is the minimum area of a contour that will be kept
-	 * @param minPerimeter is the minimum perimeter of a contour that will be kept
-	 * @param minWidth minimum width of a contour
-	 * @param maxWidth maximum width
-	 * @param minHeight minimum height
-	 * @param maxHeight maximimum height
-	 * @param Solidity the minimum and maximum solidity of a contour
-	 * @param minVertexCount minimum vertex Count of the contours
-	 * @param maxVertexCount maximum vertex Count
-	 * @param minRatio minimum ratio of width to height
-	 * @param maxRatio maximum ratio of width to height
-	 */
-	private void filterContours(List<MatOfPoint> inputContours, double minArea,
-		double minPerimeter, double minWidth, double maxWidth, double minHeight, double
-		maxHeight, double[] solidity, double maxVertexCount, double minVertexCount, double
-		minRatio, double maxRatio, List<MatOfPoint> output) {
-		final MatOfInt hull = new MatOfInt();
-		output.clear();
-		//operation
-		for (int i = 0; i < inputContours.size(); i++) {
-			final MatOfPoint contour = inputContours.get(i);
-			final Rect bb = Imgproc.boundingRect(contour);
-			if (bb.width < minWidth || bb.width > maxWidth) continue;
-			if (bb.height < minHeight || bb.height > maxHeight) continue;
-			final double area = Imgproc.contourArea(contour);
-			if (area < minArea) continue;
-			if (Imgproc.arcLength(new MatOfPoint2f(contour.toArray()), true) < minPerimeter) continue;
-			Imgproc.convexHull(contour, hull);
-			MatOfPoint mopHull = new MatOfPoint();
-			mopHull.create((int) hull.size().height, 1, CvType.CV_32SC2);
-			for (int j = 0; j < hull.size().height; j++) {
-				int index = (int)hull.get(j, 0)[0];
-				double[] point = new double[] { contour.get(index, 0)[0], contour.get(index, 0)[1]};
-				mopHull.put(j, 0, point);
-			}
-			final double solid = 100 * area / Imgproc.contourArea(mopHull);
-			if (solid < solidity[0] || solid > solidity[1]) continue;
-			if (contour.rows() < minVertexCount || contour.rows() > maxVertexCount)	continue;
-			final double ratio = bb.width / (double)bb.height;
-			if (ratio < minRatio || ratio > maxRatio) continue;
-			output.add(contour);
 		}
 	}
 
