@@ -31,14 +31,14 @@ public class ConstantlyAlignToTarget extends CommandBase {
   @Override
   public void initialize() {
     turn = new PIDController(0.2, 0, 0.03);
-    forward = new PIDController(0.05, 0, 0.005);
+    forward = new PIDController(0.1, 0, 0.01);
 
     turn.reset();
     turn.setTolerance(0);
     turn.disableContinuousInput();
     
     forward.reset();
-    forward.setTolerance(0);
+    forward.setTolerance(0.2);
     forward.disableContinuousInput();
   }
 
@@ -51,7 +51,7 @@ public class ConstantlyAlignToTarget extends CommandBase {
     }
     
     double turnpower = Maths.clamp(turn.calculate(value, 0), 0.4);
-    double forwardpower = Maths.clamp(forward.calculate(distance, 5), 0.3);
+    double forwardpower = Maths.clamp(forward.calculate(distance, 5), 0.4);
 
     drive.arcadeDrive(-forwardpower, turnpower, false);
   }

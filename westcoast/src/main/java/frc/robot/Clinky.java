@@ -58,19 +58,25 @@ public class Clinky extends TimedRobot {
 
   // Autonomous Commands
   // private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
-  private final AlignToTarget auton = new AlignToTarget(drive,"CenterX");
+  private final ConstantlyAlignToTarget auton = new ConstantlyAlignToTarget("CenterX", drive);
+  // private final AlignToTarget auton = new AlignToTarget(drive,"CenterX");
 
   @Override
   public void robotInit() {
     drive.setSafetyEnabled(false);
     UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
     camera.setResolution(320, 240);
+    // camera.setResolution(640, 480);
     camera.setFPS(30);
     camera.setExposureManual(20);
-    
+ 
+    SmartDashboard.putNumber("Align To Target - P", 0.2);
+    SmartDashboard.putNumber("Align To Target - I", 0);
+    SmartDashboard.putNumber("Align To Target - D", 0.01);
+
     visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
-      if (!pipeline.convexHullsOutput().isEmpty()) {
-        Rect r = Imgproc.boundingRect(pipeline.convexHullsOutput().get(0));
+      if (!pipeline.filterContoursOutput().isEmpty()) {
+        Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
         synchronized (imgLock) {
             centerX = r.x + (r.width / 2);
             centerY = r.y + (r.height / 2);

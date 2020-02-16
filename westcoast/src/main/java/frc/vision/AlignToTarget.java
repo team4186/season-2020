@@ -9,18 +9,14 @@ import frc.math.*;
 public class AlignToTarget extends CommandBase {
   private String name;
   private DifferentialDrive drive;
-  private PIDController forward;
   private PIDController turn;
   private double wait;
   private double value;
   private boolean end;
-  private double distance;
 
   /**
    * Turns to a target found by GRIP.
    * @param drive The drivetrain.
-   * @param leftEncoder The drivetrain leftEncoder.
-   * @param rightEncoder The drivetrain rightEncoder.
    * @param name The name of the SmartDashboard published value.
    */
   public AlignToTarget(
@@ -35,38 +31,29 @@ public class AlignToTarget extends CommandBase {
   public void initialize() {
     wait = 0;
 
-    forward.reset();
-    turn.reset();
-
-    forward = new PIDController(0.2, 0, 0.03);
-    turn = new PIDController(0.05, 0, 0.005);
-
-    forward.reset();
-    forward.setTolerance(10, 50);
-    forward.disableContinuousInput();
+    double p = SmartDashboard.getNumber("Align To Target - P", 0.2);
+    double i = SmartDashboard.getNumber("Align To Target - I", 0);
+    double d = SmartDashboard.getNumber("Align To Target - D", 0.01);
+    
+    turn = new PIDController(p, i, d);
 
     turn.reset();
-    turn.setTolerance(10, 50);
+    turn.setTolerance(0);
     turn.disableContinuousInput();
   }
 
   @Override
   public void execute() {
-    value = SmartDashboard.getNumber(name, 160);
-    distance = DistanceToTarget.distance("Height");
-    if(Double.isInfinite(distance)){
-      distance = 5;
-    }
+    value = scaler(SmartDashboard.getNumber(name, 160));
 
-    double turnpower = Maths.clamp(turn.calculate(value, 0), 0.3);
-    double forwardpower = Maths.clamp(forward.calculate(distance, 5), 0.4);
+    double turnpower = Maths.clamp(turn.calculate(value, 0), 0.4);
 
-    drive.arcadeDrive(-forwardpower, turnpower, false);
+    drive.arcadeDrive(0, turnpower, false);
 
-    if(forward.atSetpoint() && turn.atSetpoint()){
+    if(turn.atSetpoint()){
       wait = wait + 1;
       if(wait >= 10){
-        end = true;
+        end = false;
       }
       else{
         end = false;
@@ -76,12 +63,12 @@ public class AlignToTarget extends CommandBase {
       end = false;
     }
 
+    SmartDashboard.putNumber("output", turnpower);
     SmartDashboard.putNumber("Offset", scaler(value));
   }
 
   @Override
   public void end(boolean interrupted) {
-    forward.reset();
     turn.reset();
     drive.stopMotor();
   }

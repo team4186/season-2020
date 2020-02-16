@@ -2,14 +2,9 @@ package frc.vision;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.HashMap;
-
+import edu.wpi.first.vision.VisionPipeline;
 import org.opencv.core.*;
 import org.opencv.imgproc.*;
-
-import edu.wpi.first.vision.VisionPipeline;
 
 /**
 * GripPipeline class.
@@ -26,6 +21,7 @@ public class GripPipeline implements VisionPipeline {
 	private Mat cvCannyOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> convexHullsOutput = new ArrayList<MatOfPoint>();
+	private ArrayList<MatOfPoint> filterContoursOutput = new ArrayList<MatOfPoint>();
 
 	static {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
@@ -34,7 +30,7 @@ public class GripPipeline implements VisionPipeline {
 	/**
 	 * This is the primary method that runs the entire pipeline and updates the outputs.
 	 */
-	public void process(Mat source0) {
+	@Override	public void process(Mat source0) {
 		// Step CV_medianBlur0:
 		Mat cvMedianblurSrc = source0;
 		double cvMedianblurKsize = 5.0;
@@ -42,9 +38,9 @@ public class GripPipeline implements VisionPipeline {
 
 		// Step HSL_Threshold0:
 		Mat hslThresholdInput = cvMedianblurOutput;
-		double[] hslThresholdHue = {64.40677157903121, 129.73260400129513};
-		double[] hslThresholdSaturation = {111.85977041013105, 255.0};
-		double[] hslThresholdLuminance = {19.209039548022602, 126.21210098266602};
+		double[] hslThresholdHue = {29.37853336334229, 117.96792463822797};
+		double[] hslThresholdSaturation = {160.07532918520567, 255.0};
+		double[] hslThresholdLuminance = {20.042523011896524, 173.1818181818182};
 		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation, hslThresholdLuminance, hslThresholdOutput);
 
 		// Step CV_Canny0:
@@ -63,6 +59,21 @@ public class GripPipeline implements VisionPipeline {
 		// Step Convex_Hulls0:
 		ArrayList<MatOfPoint> convexHullsContours = findContoursOutput;
 		convexHulls(convexHullsContours, convexHullsOutput);
+
+		// Step Filter_Contours0:
+		ArrayList<MatOfPoint> filterContoursContours = convexHullsOutput;
+		double filterContoursMinArea = 0.0;
+		double filterContoursMinPerimeter = 5.0;
+		double filterContoursMinWidth = 5.0;
+		double filterContoursMaxWidth = 500.0;
+		double filterContoursMinHeight = 0.0;
+		double filterContoursMaxHeight = 500.0;
+		double[] filterContoursSolidity = {0.0, 100.0};
+		double filterContoursMaxVertices = 1000000.0;
+		double filterContoursMinVertices = 0.0;
+		double filterContoursMinRatio = 0.0;
+		double filterContoursMaxRatio = 1000.0;
+		filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, filterContoursOutput);
 
 	}
 
@@ -104,6 +115,14 @@ public class GripPipeline implements VisionPipeline {
 	 */
 	public ArrayList<MatOfPoint> convexHullsOutput() {
 		return convexHullsOutput;
+	}
+
+	/**
+	 * This method is a generated getter for the output of a Filter_Contours.
+	 * @return ArrayList<MatOfPoint> output from Filter_Contours.
+	 */
+	public ArrayList<MatOfPoint> filterContoursOutput() {
+		return filterContoursOutput;
 	}
 
 
@@ -189,6 +208,55 @@ public class GripPipeline implements VisionPipeline {
 				mopHull.put(j, 0, point);
 			}
 			outputContours.add(mopHull);
+		}
+	}
+
+
+	/**
+	 * Filters out contours that do not meet certain criteria.
+	 * @param inputContours is the input list of contours
+	 * @param output is the the output list of contours
+	 * @param minArea is the minimum area of a contour that will be kept
+	 * @param minPerimeter is the minimum perimeter of a contour that will be kept
+	 * @param minWidth minimum width of a contour
+	 * @param maxWidth maximum width
+	 * @param minHeight minimum height
+	 * @param maxHeight maximimum height
+	 * @param Solidity the minimum and maximum solidity of a contour
+	 * @param minVertexCount minimum vertex Count of the contours
+	 * @param maxVertexCount maximum vertex Count
+	 * @param minRatio minimum ratio of width to height
+	 * @param maxRatio maximum ratio of width to height
+	 */
+	private void filterContours(List<MatOfPoint> inputContours, double minArea,
+		double minPerimeter, double minWidth, double maxWidth, double minHeight, double
+		maxHeight, double[] solidity, double maxVertexCount, double minVertexCount, double
+		minRatio, double maxRatio, List<MatOfPoint> output) {
+		final MatOfInt hull = new MatOfInt();
+		output.clear();
+		//operation
+		for (int i = 0; i < inputContours.size(); i++) {
+			final MatOfPoint contour = inputContours.get(i);
+			final Rect bb = Imgproc.boundingRect(contour);
+			if (bb.width < minWidth || bb.width > maxWidth) continue;
+			if (bb.height < minHeight || bb.height > maxHeight) continue;
+			final double area = Imgproc.contourArea(contour);
+			if (area < minArea) continue;
+			if (Imgproc.arcLength(new MatOfPoint2f(contour.toArray()), true) < minPerimeter) continue;
+			Imgproc.convexHull(contour, hull);
+			MatOfPoint mopHull = new MatOfPoint();
+			mopHull.create((int) hull.size().height, 1, CvType.CV_32SC2);
+			for (int j = 0; j < hull.size().height; j++) {
+				int index = (int)hull.get(j, 0)[0];
+				double[] point = new double[] { contour.get(index, 0)[0], contour.get(index, 0)[1]};
+				mopHull.put(j, 0, point);
+			}
+			final double solid = 100 * area / Imgproc.contourArea(mopHull);
+			if (solid < solidity[0] || solid > solidity[1]) continue;
+			if (contour.rows() < minVertexCount || contour.rows() > maxVertexCount)	continue;
+			final double ratio = bb.width / (double)bb.height;
+			if (ratio < minRatio || ratio > maxRatio) continue;
+			output.add(contour);
 		}
 	}
 
