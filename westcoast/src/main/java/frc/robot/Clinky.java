@@ -9,10 +9,14 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.*;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.autonomousCommands.CenterAutonomous;
+import frc.autonomousCommands.LoadingBayAutonomous;
+import frc.autonomousCommands.TargetAutonomous;
 // import frc.autonomousCommands.*;
 import frc.commands.*;
 import frc.math.DistanceToTarget;
@@ -57,9 +61,14 @@ public class Clinky extends TimedRobot {
   // private final EncoderDrive teleop = new EncoderDrive(drive, joystick, leftEncoder, rightEncoder);
 
   // Autonomous Commands
+  private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
+  private Command autonomous = new TargetAutonomous(drive, leftEncoder, rightEncoder, 3, "CenterX");
   // private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
-  private final ConstantlyAlignToTarget auton = new ConstantlyAlignToTarget("CenterX", drive);
+  // private final ConstantlyAlignToTarget auton = new ConstantlyAlignToTarget("CenterX", drive);
   // private final AlignToTarget auton = new AlignToTarget(drive,"CenterX");
+  private final TargetAutonomous autonTarget = new TargetAutonomous(drive, leftEncoder, rightEncoder, 3, "CenterX");
+  private final CenterAutonomous autonCenter = new CenterAutonomous(drive, leftEncoder, rightEncoder, 3, -30, "CenterX");
+  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(drive, leftEncoder, rightEncoder, 3, -40, "CenterX");
 
   @Override
   public void robotInit() {
@@ -69,10 +78,6 @@ public class Clinky extends TimedRobot {
     // camera.setResolution(640, 480);
     camera.setFPS(30);
     camera.setExposureManual(20);
- 
-    SmartDashboard.putNumber("Align To Target - P", 0.2);
-    SmartDashboard.putNumber("Align To Target - I", 0);
-    SmartDashboard.putNumber("Align To Target - D", 0.01);
 
     visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
       if (!pipeline.filterContoursOutput().isEmpty()) {
@@ -90,8 +95,13 @@ public class Clinky extends TimedRobot {
           height = 0;
         }
       }
-  });
-  visionThread.start();
+    });
+    visionThread.start();
+
+    autonomousChooser.setDefaultOption("Target", autonTarget);
+    autonomousChooser.setDefaultOption("Center", autonCenter);
+    autonomousChooser.setDefaultOption("LoadingBay", autonBay);
+    SmartDashboard.putData("Autonomous Mode", autonomousChooser);
   }
 
   @Override
@@ -112,13 +122,13 @@ public class Clinky extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    auton.cancel();
+    autonomous = autonomousChooser.getSelected();
 
     ahrs.reset();
     leftEncoder.reset();
     rightEncoder.reset();
 
-    auton.schedule();
+    autonomous.schedule();
   }
 
   @Override
@@ -128,7 +138,6 @@ public class Clinky extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    auton.cancel();
     teleop.cancel();
 
     ahrs.reset();
@@ -136,18 +145,17 @@ public class Clinky extends TimedRobot {
     rightEncoder.reset();
     
     teleop.schedule();
+
+    topTrigger.whileHeld(new SetTwoMotors(leftShooter, rightShooter, 1, true));
   }
 
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
-
-    topTrigger.whileHeld(new SetTwoMotors(leftShooter, rightShooter, 1));
   }
 
   @Override
   public void testInit(){
-    auton.cancel();
     teleop.cancel();
 
     ahrs.reset();
@@ -155,12 +163,12 @@ public class Clinky extends TimedRobot {
     rightEncoder.reset();
     
     teleop.schedule();
+
+    topTrigger.whileHeld(new SetMotor(intake, 1));
   }
 
   @Override
   public void testPeriodic(){
     CommandScheduler.getInstance().run();
-
-    topTrigger.whileHeld(new SetMotor(intake, 1));
   }
 }

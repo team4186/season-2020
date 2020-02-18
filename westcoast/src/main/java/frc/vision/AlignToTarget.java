@@ -12,7 +12,6 @@ public class AlignToTarget extends CommandBase {
   private PIDController turn;
   private double wait;
   private double value;
-  private boolean end;
 
   /**
    * Turns to a target found by GRIP.
@@ -30,15 +29,11 @@ public class AlignToTarget extends CommandBase {
   @Override
   public void initialize() {
     wait = 0;
-
-    double p = SmartDashboard.getNumber("Align To Target - P", 0.2);
-    double i = SmartDashboard.getNumber("Align To Target - I", 0);
-    double d = SmartDashboard.getNumber("Align To Target - D", 0.01);
     
-    turn = new PIDController(p, i, d);
+    turn = new PIDController(0.2, 0.15, 0);
 
     turn.reset();
-    turn.setTolerance(0);
+    turn.setTolerance(0.1);
     turn.disableContinuousInput();
   }
 
@@ -52,35 +47,23 @@ public class AlignToTarget extends CommandBase {
 
     if(turn.atSetpoint()){
       wait = wait + 1;
-      if(wait >= 10){
-        end = false;
-      }
-      else{
-        end = false;
-      }
     }
     else{
-      end = false;
+      wait = 0;
     }
-
-    SmartDashboard.putNumber("output", turnpower);
-    SmartDashboard.putNumber("Offset", scaler(value));
   }
 
   @Override
   public void end(boolean interrupted) {
     turn.reset();
     drive.stopMotor();
+
+    System.out.println("Ready, Aim, Fire!");
   }
 
   @Override
   public boolean isFinished() {
-    if(end){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return wait >= 10;
   }
 
   private double scaler(double value){

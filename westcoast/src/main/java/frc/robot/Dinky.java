@@ -21,22 +21,24 @@ public class Dinky extends TimedRobot {
   // Subsystem Motors
   private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
   private final WPI_TalonSRX mag = new WPI_TalonSRX(8);
+  private final WPI_TalonSRX index = new WPI_TalonSRX(9);
+  // private final StopAllMotors allmotors = new StopAllMotors(intake, mag, index);
   // private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
   // private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
 
-  // Sensors
+  // Sensors  
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
 
   // Inputs
   private final Joystick joystick = new Joystick(0);
   private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
   private final JoystickButton bottomTrigger = new JoystickButton(joystick, 6);
-  private final JoystickButton buttonA = new JoystickButton(joystick, 3);
-  private final JoystickButton buttonB = new JoystickButton(joystick, 4);
+  // private final JoystickButton deepTrigger = new JoystickButton(joystick, 15);
+  // private final JoystickButton buttonA = new JoystickButton(joystick, 3);
+  // private final JoystickButton buttonB = new JoystickButton(joystick, 4);
   private final JoystickButton buttonC = new JoystickButton(joystick, 5);
   
   // Commands
-  // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
   private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
 
   // Autonomous Commands
@@ -51,7 +53,7 @@ public class Dinky extends TimedRobot {
   public void robotPeriodic() {
   }
 
-  @Override
+  /*@Override
   public void teleopInit() {
     teleop.schedule();
   }
@@ -59,23 +61,21 @@ public class Dinky extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
-
-    // topTrigger.whileHeld(new SetTwoMotors(leftShooter, rightShooter, 1));
-  }
+  }*/
 
   @Override
   public void testInit(){
+    teleop.cancel();
     teleop.schedule();
+
+    topTrigger.whileHeld(new SetTwoMotors(intake, index, -0.4));
+    bottomTrigger.whileHeld(new SetTwoMotors(mag, index, 0.5, true));
+    buttonC.whileHeld(new SetTwoMotors(mag, index, -0.5, true));
+    buttonC.whileHeld(new SetMotor(intake, 0.4));
   }
 
   @Override
   public void testPeriodic(){
     CommandScheduler.getInstance().run();
-
-    topTrigger.whileHeld(new SetMotor(intake, -0.4));
-    bottomTrigger.whileHeld(new SetMotor(intake, 0.4));
-    buttonA.whileHeld(new SetMotor(mag, 0.5));
-    buttonB.whileHeld(new SetMotor(mag, -0.5));
-    buttonC.whenPressed(new DistanceMotor(mag, 0.2, 0.5));
   }
 }

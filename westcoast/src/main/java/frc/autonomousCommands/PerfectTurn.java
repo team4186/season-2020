@@ -15,7 +15,6 @@ public class PerfectTurn extends CommandBase {
   private Encoder leftEncoder;
   private Encoder rightEncoder;
   private double wait;
-  private boolean end;
   private Constraints constraints;
 
   /**
@@ -71,33 +70,26 @@ public class PerfectTurn extends CommandBase {
 
     if(turnRight.atGoal() && turnLeft.atGoal()){
       wait = wait + 1;
-      if(wait >= 10){
-        end = true;
-      }
-      else{
-        end = false;
-      }
     }
     else{
-      end = false;
+      wait = 0;
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    turnLeft.reset(0, 0);
-    turnRight.reset(0, 0);
-    leftEncoder.reset();
     rightEncoder.reset();
+    leftEncoder.reset();
+
+    drive.stopMotor();
+    turnRight.reset(0, 0);
+    turnLeft.reset(0, 0);
+
+    System.out.println("Turn Finished!");
   }
 
   @Override
   public boolean isFinished() {
-    if(end){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return wait >= 10;
   }
 }

@@ -29,8 +29,8 @@ public class Comp2020 extends TimedRobot {
 
   // Subsystem Motors
   private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
-  private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
-  private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
+  // private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
+  // private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
 
   // Sensors
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
@@ -135,8 +135,6 @@ public class Comp2020 extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
-
-    topTrigger.whileHeld(new SetTwoMotors(leftShooter, rightShooter, 1));
   }
 
   @Override
@@ -149,12 +147,12 @@ public class Comp2020 extends TimedRobot {
     rightEncoder.reset();
     
     teleop.schedule();
+
+    topTrigger.whileHeld(new SetMotor(intake, 1));
   }
 
   @Override
   public void testPeriodic(){
     CommandScheduler.getInstance().run();
-
-    topTrigger.whileHeld(new SetMotor(intake, 1));
   }
 }

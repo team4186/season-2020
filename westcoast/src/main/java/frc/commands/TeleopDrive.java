@@ -43,7 +43,7 @@ public class TeleopDrive extends CommandBase {
 
   @Override
   public void execute() {
-    drive.arcadeDrive(attenuate(direction*joy.getY()), attenuate(-direction*joy.getX()), false);
+    drive.arcadeDrive(attenuate(direction*joy.getY()), attenuate(-direction*joy.getX()));
   }
 
   @Override

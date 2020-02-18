@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.math.Maths;
 
 public class LeaveLine extends CommandBase {
   private DifferentialDrive drive;
@@ -14,7 +15,6 @@ public class LeaveLine extends CommandBase {
   private Encoder rightEncoder;
   private double dist;
   private double wait;
-  private boolean end;
   private Constraints constraints;
 
   /**
@@ -60,22 +60,15 @@ public class LeaveLine extends CommandBase {
   @Override
   public void execute() {
     double distance = dist*85;
-    double rightOut = right.calculate(rightEncoder.get(), distance);
-    double leftOut = left.calculate(leftEncoder.get(), distance);
+    double rightOut = Maths.clamp(right.calculate(rightEncoder.get(), distance), 0.4);
+    double leftOut = Maths.clamp(left.calculate(leftEncoder.get(), distance), 0.4);
 
     drive.tankDrive(-leftOut, -rightOut, false);
 
     if(right.atGoal() && left.atGoal() == true){
       wait = wait + 1;
-      if(wait >= 10){
-        end = true;
-      }
-      else{
-        end = false;
-      }
     }
     else{
-      end = false;
       wait = 0;
     }
   }
@@ -88,15 +81,12 @@ public class LeaveLine extends CommandBase {
     drive.stopMotor();
     right.reset(0, 0);
     left.reset(0, 0);
+
+    System.out.println("Line Left!");
   }
 
   @Override
   public boolean isFinished() {
-    if(end){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return wait >= 10;
   }
 }

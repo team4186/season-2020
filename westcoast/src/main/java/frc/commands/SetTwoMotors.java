@@ -4,35 +4,46 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.SpeedController;
 
 public class SetTwoMotors extends CommandBase {
-  private SpeedController leftMotor;
-  private SpeedController rightMotor;
+  private SpeedController mainMotor;
+  private SpeedController reversibleMotor;
   private double speed;
+  private boolean inverted;
 
   public SetTwoMotors(
-    SpeedController leftMotor,
-    SpeedController rightMotor,
-    double speed
+    SpeedController mainMotor,
+    SpeedController reversibleMotor,
+    double speed,
+    boolean isInverted
   ) {
-    this.leftMotor = leftMotor;
-    this.rightMotor = rightMotor;
+    this.mainMotor = mainMotor;
+    this.reversibleMotor = reversibleMotor;
     this.speed = speed;
+    this.inverted = isInverted;
+  }
+
+  public SetTwoMotors(
+    SpeedController mainMotor,
+    SpeedController secondMotor,
+    double speed
+  ){
+    this(mainMotor, secondMotor, speed, false);
   }
 
   @Override
   public void initialize() {
-    rightMotor.setInverted(true);
+    reversibleMotor.setInverted(inverted);
   }
 
   @Override
   public void execute() {  
-    leftMotor.set(speed);// + 0.15 / (4 * speed));
-    rightMotor.set(speed);
+    mainMotor.set(speed);
+    reversibleMotor.set(speed);
   }
 
   @Override
   public void end(boolean interrupted) {
-    leftMotor.stopMotor();
-    rightMotor.stopMotor();
+    mainMotor.stopMotor();
+    reversibleMotor.stopMotor();
   }
 
   @Override
