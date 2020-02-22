@@ -23,8 +23,8 @@ public class Comp2020 extends TimedRobot {
 
   // Drivetrain
   MotorFactory hybridFactory = new MotorFactoryHybrid();
-  private final SpeedController leftMain = hybridFactory.create(2, 1, 3);
-  private final SpeedController rightMain = hybridFactory.create(5, 4 ,6);
+  private final SpeedController leftMain = hybridFactory.create(15, 14, 16);
+  private final SpeedController rightMain = hybridFactory.create(2, 1 ,3);
   private final DifferentialDrive drive = new DifferentialDrive(leftMain, rightMain);
 
   // Subsystem Motors
@@ -58,7 +58,7 @@ public class Comp2020 extends TimedRobot {
 
   // Autonomous Commands
   // private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
-  private final AlignToTarget auton = new AlignToTarget(drive,"CenterX");
+  private final AlignToTarget auton = new AlignToTarget(drive, false);
 
   @Override
   public void robotInit() {

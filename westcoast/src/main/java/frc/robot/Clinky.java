@@ -14,14 +14,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.autonomousCommands.CenterAutonomous;
-import frc.autonomousCommands.LoadingBayAutonomous;
-import frc.autonomousCommands.TargetAutonomous;
-// import frc.autonomousCommands.*;
+import frc.autonomousCommands.*;
 import frc.commands.*;
-import frc.math.DistanceToTarget;
 import frc.motorFactory.*;
 import frc.vision.*;
+import frc.math.*;
 
 public class Clinky extends TimedRobot {
 
@@ -62,13 +59,13 @@ public class Clinky extends TimedRobot {
 
   // Autonomous Commands
   private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
-  private Command autonomous = new TargetAutonomous(drive, leftEncoder, rightEncoder, 3, "CenterX");
+  private Command autonomous = new TargetAutonomous(drive, leftEncoder, rightEncoder, 3, false);
   // private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
   // private final ConstantlyAlignToTarget auton = new ConstantlyAlignToTarget("CenterX", drive);
   // private final AlignToTarget auton = new AlignToTarget(drive,"CenterX");
-  private final TargetAutonomous autonTarget = new TargetAutonomous(drive, leftEncoder, rightEncoder, 3, "CenterX");
-  private final CenterAutonomous autonCenter = new CenterAutonomous(drive, leftEncoder, rightEncoder, 3, -30, "CenterX");
-  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(drive, leftEncoder, rightEncoder, 3, -40, "CenterX");
+  private final TargetAutonomous autonTarget = new TargetAutonomous(drive, leftEncoder, rightEncoder, 3, false);
+  private final CenterAutonomous autonCenter = new CenterAutonomous(drive, leftEncoder, rightEncoder, 3, -30, false);
+  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(drive, leftEncoder, rightEncoder, 3, -40, false);
 
   @Override
   public void robotInit() {

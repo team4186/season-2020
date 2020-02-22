@@ -15,14 +15,15 @@ public class LoadingBayAutonomous extends SequentialCommandGroup {
     Encoder rightEncoder,
     double distance,
     double angle,
-    String name
+    boolean lime
   ) {
 
     super(
       new LeaveLine(drive, leftEncoder, rightEncoder, distance),
       new WaitCommand(1),
       new PerfectTurn(drive, leftEncoder, rightEncoder, angle),
-      new AlignToTarget(drive, name),
+      new WaitCommand(1),
+      new AlignToTarget(drive, lime),
       new Shoot()
     );
   }
