@@ -2,9 +2,11 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.commands.*;
+import frc.vision.*;
 
 public class Janky extends TimedRobot {
 
@@ -19,6 +21,10 @@ public class Janky extends TimedRobot {
   // Commands
   private final TeleopDrive teleop = new TeleopDrive(drive, joystick, true);
 
+  //Vision
+  // private final AlignToTarget align = new AlignToTarget(drive);
+  private final LimelightRunner lime = new LimelightRunner();
+
   @Override
   public void robotInit() {
     drive.setSafetyEnabled(false);
@@ -26,6 +32,7 @@ public class Janky extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    SmartDashboard.putBoolean("Target Lock", lime.hasTarget());
   }
 
   @Override
