@@ -8,20 +8,20 @@ public class LimelightRunner {
     private double ty;
 
     public LimelightRunner(){
-        tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
-        tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-        ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
     }
 
     public boolean hasTarget(){
+        tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
         return tv == 1;
     }
 
     public double xOffset(){
+        ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
         return tx;
     }
 
     public double yOffset(){
+        ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
         return ty;
     }
 

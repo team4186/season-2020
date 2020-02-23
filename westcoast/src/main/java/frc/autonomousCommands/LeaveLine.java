@@ -60,8 +60,8 @@ public class LeaveLine extends CommandBase {
   @Override
   public void execute() {
     double distance = dist*85;
-    double rightOut = Maths.clamp(right.calculate(rightEncoder.get(), distance), 0.4);
-    double leftOut = Maths.clamp(left.calculate(leftEncoder.get(), distance), 0.4);
+    double rightOut = Maths.clamp(right.calculate(rightEncoder.getDistance(), distance), 0.4);
+    double leftOut = Maths.clamp(left.calculate(leftEncoder.getDistance(), distance), 0.4);
 
     drive.tankDrive(-leftOut, -rightOut, false);
 

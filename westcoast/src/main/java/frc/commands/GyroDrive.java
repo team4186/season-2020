@@ -31,6 +31,7 @@ public class GyroDrive extends CommandBase {
   ) {
     this.drive = drive;
     this.joy = joystick;
+    this.ahrs = ahrs;
     this.direction = reversed ? -1.0 : 1.0;
   }
 
