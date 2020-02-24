@@ -3,6 +3,7 @@ package frc.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class Shoot extends CommandBase {
+  private boolean end;
 
   public Shoot() {
   }
@@ -14,6 +15,7 @@ public class Shoot extends CommandBase {
 
   @Override
   public void execute() {
+    end = true;
   }
 
   @Override
@@ -22,6 +24,6 @@ public class Shoot extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return false;
+    return end;
   }
 }

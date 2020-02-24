@@ -1,10 +1,10 @@
 package frc.autonomousCommands;
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.Encoder;
+import frc.robotMaps.*;
 import frc.math.*;
 
 public class PerfectTurn extends CommandBase {
@@ -15,7 +15,7 @@ public class PerfectTurn extends CommandBase {
   private Encoder leftEncoder;
   private Encoder rightEncoder;
   private double wait;
-  private Constraints constraints;
+  private RobotMap map;
 
   /**
    * Turns to a certain angle defined by "angle"
@@ -26,11 +26,13 @@ public class PerfectTurn extends CommandBase {
    */
 
   public PerfectTurn(
+    RobotMap map,
     DifferentialDrive drive,
     Encoder leftEncoder,
     Encoder rightEncoder,
     double angle
   ) {
+    this.map = map;
     this.drive = drive;
     this.angle = angle;
     this.leftEncoder = leftEncoder;
@@ -44,20 +46,8 @@ public class PerfectTurn extends CommandBase {
     leftEncoder.reset();
     rightEncoder.reset();
 
-    constraints = new Constraints(150, 150);
-    double P = 0.1;
-    double I = 0;
-    double D = 0;
-    turnLeft = new ProfiledPIDController(P, I, D, constraints);
-    turnRight = new ProfiledPIDController(P, I, D, constraints);
-
-    turnLeft.reset(0, 0);
-    turnLeft.setTolerance(5, 50);
-    turnLeft.disableContinuousInput();
-
-    turnRight.reset(0, 0);
-    turnRight.setTolerance(5, 50);
-    turnRight.disableContinuousInput();
+    turnLeft = map.makePTPIDs();
+    turnRight = map.makePTPIDs();
   }
 
   @Override

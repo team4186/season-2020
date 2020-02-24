@@ -2,53 +2,39 @@ package frc.vision;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.math.DistanceToTarget;
+import frc.robotMaps.*;
 import frc.math.Maths;
 
 public class ConstantlyAlignToTarget extends CommandBase {
-  private String name;
   private DifferentialDrive drive;
   private PIDController turn;
   private PIDController forward;
   private double value;
   private double distance;
+  private VisionRunner vision;
+  private RobotMap map;
 
-  /**
-   * Moves to a target found by GRIP
-   * @param name The name of the SmartDashboard published value.
-   * @param drive The drivetrain.
-   */
   public ConstantlyAlignToTarget(
-    String name,
-    DifferentialDrive drive
+    RobotMap map,
+    DifferentialDrive drive,
+    VisionRunner vision
   ) {
-    this.name = name;
+    this.map = map;
     this.drive = drive;
+    this.vision = vision;
   }
 
   @Override
   public void initialize() {
-    turn = new PIDController(0.2, 0, 0.03);
-    forward = new PIDController(0.1, 0, 0.01);
-
-    turn.reset();
-    turn.setTolerance(0);
-    turn.disableContinuousInput();
-    
-    forward.reset();
-    forward.setTolerance(0.2);
-    forward.disableContinuousInput();
+    turn = map.makeTurnCAlignPIDs();
+    forward = map.makeForwardCAlignPIDs();
   }
 
   @Override
   public void execute() {
-    value = scaler(SmartDashboard.getNumber(name, 160));
-    distance = DistanceToTarget.distance("Height");
-    if(Double.isInfinite(distance)){
-      distance = 5;
-    }
+    value = vision.getAlignX();
+    distance = vision.getDistance();
     
     double turnpower = Maths.clamp(turn.calculate(value, 0), 0.4);
     double forwardpower = Maths.clamp(forward.calculate(distance, 5), 0.4);
@@ -65,9 +51,5 @@ public class ConstantlyAlignToTarget extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  private double scaler(double value){
-    return ((value-160)/160);
   }
 }

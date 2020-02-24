@@ -17,7 +17,7 @@ public class GripPipeline implements VisionPipeline {
 
 	//Outputs
 	private Mat cvMedianblurOutput = new Mat();
-	private Mat hslThresholdOutput = new Mat();
+	private Mat hsvThresholdOutput = new Mat();
 	private Mat cvCannyOutput = new Mat();
 	private ArrayList<MatOfPoint> findContoursOutput = new ArrayList<MatOfPoint>();
 	private ArrayList<MatOfPoint> convexHullsOutput = new ArrayList<MatOfPoint>();
@@ -36,15 +36,15 @@ public class GripPipeline implements VisionPipeline {
 		double cvMedianblurKsize = 5.0;
 		cvMedianblur(cvMedianblurSrc, cvMedianblurKsize, cvMedianblurOutput);
 
-		// Step HSL_Threshold0:
-		Mat hslThresholdInput = cvMedianblurOutput;
-		double[] hslThresholdHue = {29.37853336334229, 117.96792463822797};
-		double[] hslThresholdSaturation = {104, 255.0};
-		double[] hslThresholdLuminance = {20.042523011896524, 173.1818181818182};
-		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation, hslThresholdLuminance, hslThresholdOutput);
+		// Step HSV_Threshold0:
+		Mat hsvThresholdInput = cvMedianblurOutput;
+		double[] hsvThresholdHue = {0.0, 159.67914846491686};
+		double[] hsvThresholdSaturation = {144.0677966101695, 255.0};
+		double[] hsvThresholdValue = {121.65725008916047, 255.0};
+		hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvThresholdOutput);
 
 		// Step CV_Canny0:
-		Mat cvCannyImage = hslThresholdOutput;
+		Mat cvCannyImage = hsvThresholdOutput;
 		double cvCannyThreshold1 = 0.0;
 		double cvCannyThreshold2 = 100.0;
 		double cvCannyAperturesize = 5.0;
@@ -86,11 +86,11 @@ public class GripPipeline implements VisionPipeline {
 	}
 
 	/**
-	 * This method is a generated getter for the output of a HSL_Threshold.
-	 * @return Mat output from HSL_Threshold.
+	 * This method is a generated getter for the output of a HSV_Threshold.
+	 * @return Mat output from HSV_Threshold.
 	 */
-	public Mat hslThresholdOutput() {
-		return hslThresholdOutput;
+	public Mat hsvThresholdOutput() {
+		return hsvThresholdOutput;
 	}
 
 	/**
@@ -137,19 +137,19 @@ public class GripPipeline implements VisionPipeline {
 	}
 
 	/**
-	 * Segment an image based on hue, saturation, and luminance ranges.
+	 * Segment an image based on hue, saturation, and value ranges.
 	 *
 	 * @param input The image on which to perform the HSL threshold.
 	 * @param hue The min and max hue
 	 * @param sat The min and max saturation
-	 * @param lum The min and max luminance
+	 * @param val The min and max value
 	 * @param output The image in which to store the output.
 	 */
-	private void hslThreshold(Mat input, double[] hue, double[] sat, double[] lum,
-		Mat out) {
-		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HLS);
-		Core.inRange(out, new Scalar(hue[0], lum[0], sat[0]),
-			new Scalar(hue[1], lum[1], sat[1]), out);
+	private void hsvThreshold(Mat input, double[] hue, double[] sat, double[] val,
+	    Mat out) {
+		Imgproc.cvtColor(input, out, Imgproc.COLOR_BGR2HSV);
+		Core.inRange(out, new Scalar(hue[0], sat[0], val[0]),
+			new Scalar(hue[1], sat[1], val[1]), out);
 	}
 
 	/**

@@ -2,10 +2,10 @@ package frc.autonomousCommands;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.*;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.math.Maths;
+import frc.robotMaps.*;
 
 public class LeaveLine extends CommandBase {
   private DifferentialDrive drive;
@@ -15,7 +15,7 @@ public class LeaveLine extends CommandBase {
   private Encoder rightEncoder;
   private double dist;
   private double wait;
-  private Constraints constraints;
+  private RobotMap map;
 
   /**
    * Goes to a certain distance defined by "distance"
@@ -26,14 +26,16 @@ public class LeaveLine extends CommandBase {
    */
 
   public LeaveLine(
+    RobotMap map,
     DifferentialDrive drive,
     Encoder leftEncoder,
     Encoder rightEncoder,
     double distance
-  ) {
+  ) {    
+    this.map = map;
+    this.drive = drive;
     this.leftEncoder = leftEncoder;
     this.rightEncoder = rightEncoder;
-    this.drive = drive;
     this.dist = distance;
   }
 
@@ -44,17 +46,8 @@ public class LeaveLine extends CommandBase {
     rightEncoder.reset();
     leftEncoder.reset();
 
-    constraints = new Constraints(600, 500);
-    right = new ProfiledPIDController(0.1, 0, 0, constraints);
-    left = new ProfiledPIDController(0.1, 0, 0, constraints);
-    
-    right.reset(0, 0);
-    right.setTolerance(5, 100);
-    right.disableContinuousInput();
-
-    left.reset(0, 0);
-    left.setTolerance(5, 100);
-    left.disableContinuousInput();
+    right = map.makeLLPIDs();
+    left = map.makeLLPIDs();
   }
 
   @Override

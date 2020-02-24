@@ -2,11 +2,6 @@ package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 import com.kauailabs.navx.frc.AHRS;
-import org.opencv.core.Rect;
-import org.opencv.imgproc.Imgproc;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.drive.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -17,11 +12,14 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.autonomousCommands.*;
 import frc.commands.*;
 import frc.motorFactory.*;
+import frc.robotMaps.*;
 import frc.vision.*;
-import frc.math.*;
 
-public class Comp2020 extends TimedRobot {
+public class ShinDestroyer extends TimedRobot {
 
+  // Robot Map
+  private RobotMap map = new ShinDestroyerMap();
+  
   // Drivetrain
   MotorFactory hybridFactory = new MotorFactoryHybrid();
   private final SpeedController leftMain = hybridFactory.create(14, 13, 15);
@@ -39,11 +37,7 @@ public class Comp2020 extends TimedRobot {
   private final Encoder rightEncoder = new Encoder(6, 7);
 
   // Vision
-  private VisionThread visionThread;
-  private final Object imgLock = new Object();
-  private double centerX = 0.0;
-  private double centerY = 0.0;
-  private double height = 0.0;
+  private final VisionRunner vision = new LimelightRunner();
 
   // Inputs
   private final Joystick joystick = new Joystick(0);
@@ -54,47 +48,21 @@ public class Comp2020 extends TimedRobot {
 
   // Commands
   // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
-  private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
-  // private final EncoderDrive teleop = new EncoderDrive(drive, joystick, leftEncoder, rightEncoder);
+  private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
 
   // Autonomous Commands
   private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
-  private Command autonomous = new TargetAutonomous(drive, leftEncoder, rightEncoder, 3, false);
-  // private final AVeryMarkCommand auton = new AVeryMarkCommand(drive, rightEncoder, leftEncoder);
-  // private final ConstantlyAlignToTarget auton = new ConstantlyAlignToTarget("CenterX", drive);
-  // private final AlignToTarget auton = new AlignToTarget(drive,"CenterX");
-  private final TargetAutonomous autonTarget = new TargetAutonomous(drive, leftEncoder, rightEncoder, 3, false);
-  private final CenterAutonomous autonCenter = new CenterAutonomous(drive, leftEncoder, rightEncoder, 3, -30, false);
-  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(drive, leftEncoder, rightEncoder, 3, -40, false);
+  private Command autonomous = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, -3, vision);
+  private final TargetAutonomous autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, -3, vision);
+  private final CenterAutonomous autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, -3, -30, vision);
+  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, -3, -40, vision);
 
   @Override
   public void robotInit() {
     drive.setSafetyEnabled(false);
-    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-    camera.setResolution(320, 240);
-    camera.setFPS(30);
-    camera.setExposureManual(20);
+    
     leftEncoder.setDistancePerPulse(0.390625);
     rightEncoder.setDistancePerPulse(0.390625);
-
-    visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
-      if (!pipeline.filterContoursOutput().isEmpty()) {
-        Rect r = Imgproc.boundingRect(pipeline.filterContoursOutput().get(0));
-        synchronized (imgLock) {
-            centerX = r.x + (r.width / 2);
-            centerY = r.y + (r.height / 2);
-            height = r.height;
-        }
-      }
-      else{
-        synchronized (imgLock) {
-          centerX = 160;
-          centerY = 120;
-          height = 0;
-        }
-      }
-    });
-    visionThread.start();
 
     autonomousChooser.setDefaultOption("Target", autonTarget);
     autonomousChooser.setDefaultOption("Center", autonCenter);
@@ -104,18 +72,7 @@ public class Comp2020 extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    double centerX;
-    double centerY;
-    double height;
-    synchronized(imgLock){
-      centerX = this.centerX;
-      centerY = this.centerY;
-      height = this.height;
-    }
-    SmartDashboard.putNumber("CenterX", centerX);
-    SmartDashboard.putNumber("CenterY", centerY);
-    SmartDashboard.putNumber("Height", height);
-    SmartDashboard.putNumber("distance", DistanceToTarget.distance("Height"));
+
   }
 
   @Override

@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robotMaps.*;
 import frc.math.Maths;
 
 
@@ -15,25 +16,7 @@ public class GyroDrive extends CommandBase {
   private Joystick joy;
   private AHRS ahrs;
   private double direction;
-
-  /**
- * Driving more accurately.
- * @param drive The drivetrain.
- * @param joystick The joystick.
- * @param ahrs The navX.
- * @param reversed The direction of the drivetrain.
- */
-  public GyroDrive(
-    DifferentialDrive drive,
-    Joystick joystick,
-    AHRS ahrs,
-    boolean reversed
-  ) {
-    this.drive = drive;
-    this.joy = joystick;
-    this.ahrs = ahrs;
-    this.direction = reversed ? -1.0 : 1.0;
-  }
+  private RobotMap map;  
 
   /**
  * Driving more accurately.
@@ -42,21 +25,24 @@ public class GyroDrive extends CommandBase {
  * @param ahrs The navX.
  */
   public GyroDrive(
+    RobotMap map,
     DifferentialDrive drive,
     Joystick joystick,
     AHRS ahrs
   ) {
-    this(drive, joystick, ahrs, false);
+    this.map = map;
+    this.drive = drive;
+    this.joy = joystick;
+    this.ahrs = ahrs;
   }
 
   @Override
   public void initialize() {
-    pid = new PIDController(0.5, 0.15, 0);
+    direction = map.getReversed() ? -1.0 : 1.0;
+
+    pid = map.makeDrivePIDs();
 
     ahrs.reset();
-    pid.reset();
-    pid.setTolerance(0.5);
-    pid.disableContinuousInput();
   }
 
   @Override

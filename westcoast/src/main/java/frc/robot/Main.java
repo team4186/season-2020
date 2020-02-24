@@ -27,6 +27,6 @@ public final class Main {
     RobotBase.startRobot(Clinky::new);
     // RobotBase.startRobot(Dinky::new);
     // RobotBase.startRobot(Janky::new);
-    // RobotBase.startRobot(Comp2020::new);
+    // RobotBase.startRobot(ShinDestroyer::new);
   }
 }

@@ -18,24 +18,24 @@
       </edu.wpi.grip.core.sockets.InputSocketImpl>
       <edu.wpi.grip.core.sockets.OutputSocketImpl step="0" socket="0" previewed="false"/>
     </edu.wpi.grip.core.Step>
-    <edu.wpi.grip.core.Step name="HSL Threshold">
+    <edu.wpi.grip.core.Step name="HSV Threshold">
       <edu.wpi.grip.core.sockets.InputSocketImpl step="1" socket="0"/>
       <edu.wpi.grip.core.sockets.InputSocketImpl step="1" socket="1">
         <value>
-          <double>29.37853336334229</double>
-          <double>117.96792463822797</double>
+          <double>0.0</double>
+          <double>159.67914846491686</double>
         </value>
       </edu.wpi.grip.core.sockets.InputSocketImpl>
       <edu.wpi.grip.core.sockets.InputSocketImpl step="1" socket="2">
         <value>
-          <double>160.07532918520567</double>
+          <double>144.0677966101695</double>
           <double>255.0</double>
         </value>
       </edu.wpi.grip.core.sockets.InputSocketImpl>
       <edu.wpi.grip.core.sockets.InputSocketImpl step="1" socket="3">
         <value>
-          <double>20.042523011896524</double>
-          <double>173.1818181818182</double>
+          <double>121.65725008916047</double>
+          <double>255.0</double>
         </value>
       </edu.wpi.grip.core.sockets.InputSocketImpl>
       <edu.wpi.grip.core.sockets.OutputSocketImpl step="1" socket="0" previewed="true"/>
@@ -110,28 +110,28 @@
   </steps>
   <connections>
     <edu.wpi.grip.core.Connection>
-      <edu.wpi.grip.core.sockets.OutputSocketImpl step="2" socket="0" previewed="false"/>
-      <edu.wpi.grip.core.sockets.InputSocketImpl step="3" socket="0"/>
-    </edu.wpi.grip.core.Connection>
-    <edu.wpi.grip.core.Connection>
-      <edu.wpi.grip.core.sockets.OutputSocketImpl step="1" socket="0" previewed="true"/>
-      <edu.wpi.grip.core.sockets.InputSocketImpl step="2" socket="0"/>
-    </edu.wpi.grip.core.Connection>
-    <edu.wpi.grip.core.Connection>
       <edu.wpi.grip.core.sockets.OutputSocketImpl source="2" socket="0" previewed="true"/>
       <edu.wpi.grip.core.sockets.InputSocketImpl step="0" socket="0"/>
     </edu.wpi.grip.core.Connection>
     <edu.wpi.grip.core.Connection>
-      <edu.wpi.grip.core.sockets.OutputSocketImpl step="4" socket="0" previewed="true"/>
-      <edu.wpi.grip.core.sockets.InputSocketImpl step="5" socket="0"/>
+      <edu.wpi.grip.core.sockets.OutputSocketImpl step="0" socket="0" previewed="false"/>
+      <edu.wpi.grip.core.sockets.InputSocketImpl step="1" socket="0"/>
+    </edu.wpi.grip.core.Connection>
+    <edu.wpi.grip.core.Connection>
+      <edu.wpi.grip.core.sockets.OutputSocketImpl step="2" socket="0" previewed="false"/>
+      <edu.wpi.grip.core.sockets.InputSocketImpl step="3" socket="0"/>
     </edu.wpi.grip.core.Connection>
     <edu.wpi.grip.core.Connection>
       <edu.wpi.grip.core.sockets.OutputSocketImpl step="3" socket="0" previewed="true"/>
       <edu.wpi.grip.core.sockets.InputSocketImpl step="4" socket="0"/>
     </edu.wpi.grip.core.Connection>
     <edu.wpi.grip.core.Connection>
-      <edu.wpi.grip.core.sockets.OutputSocketImpl step="0" socket="0" previewed="false"/>
-      <edu.wpi.grip.core.sockets.InputSocketImpl step="1" socket="0"/>
+      <edu.wpi.grip.core.sockets.OutputSocketImpl step="4" socket="0" previewed="true"/>
+      <edu.wpi.grip.core.sockets.InputSocketImpl step="5" socket="0"/>
+    </edu.wpi.grip.core.Connection>
+    <edu.wpi.grip.core.Connection>
+      <edu.wpi.grip.core.sockets.OutputSocketImpl step="1" socket="0" previewed="true"/>
+      <edu.wpi.grip.core.sockets.InputSocketImpl step="2" socket="0"/>
     </edu.wpi.grip.core.Connection>
   </connections>
   <settings>

@@ -1,11 +1,12 @@
 package frc.vision;
 
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.vision.VisionThread;
 import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
-public class RioVisionRunner {
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.vision.VisionThread;
+
+public class RioVisionRunner implements VisionRunner{
   private VisionThread visionThread;
   private final UsbCamera camera;
   private final Object imgLock = new Object();
@@ -40,15 +41,27 @@ public class RioVisionRunner {
     visionThread.start();
   }
 
-  public double getCenterX(){
+  public boolean hasTarget(){
+    return true;
+  }
+
+  public double getAlignX(){
     double centerX;
     synchronized(imgLock){
         centerX = this.centerX;    
     }
-    return centerX;
+    return scaler(centerX);
   }
   
-  public double getCenterY(){
+  public double xOffset(){
+    double centerX;
+    synchronized(imgLock){
+        centerX = this.centerX;    
+    }
+    return scaler(centerX);
+  }
+
+  public double yOffset(){
     double centerY;
     synchronized(imgLock){
         centerY = this.centerY;
@@ -56,7 +69,7 @@ public class RioVisionRunner {
     return centerY;
   }
   
-  public double getHeight(){
+  public double height(){
     double height;
     synchronized(imgLock) {
         height = this.height;
@@ -65,19 +78,21 @@ public class RioVisionRunner {
   }
 
   public double getDistance(){
-        double observedHeight = getHeight();
-        double distance = 0;
-        double realHeight = 17/12;
-        double calibratedHeight = 17; //35 for the shooter target, 17 for the wide strip of vision tape.
-        double focalLength = (calibratedHeight * 10)/realHeight; //Calibrated Height vs Real Height at a calibration distance (10 feet here)
-
-        // if(height <= calibratedHeight) {
+        // double observedHeight = height();
+        // double distance = 0;
+        // double realHeight = 17/12;
+        // double calibratedHeight = 17; //35 for the shooter target, 17 for the wide strip of vision tape.
+        // double focalLength = (calibratedHeight * 10)/realHeight; //Calibrated Height vs Real Height at a calibration distance (10 feet here)
+        
         // distance = (realHeight* focalLength)/(observedHeight);
-        // } else{
-        //     distance = 9;
-        // }
-        distance = (realHeight* focalLength)/(observedHeight);
-
-        return distance;
+        
+        // if(Double.isInfinite(distance)){
+        //     distance = 15;
+        //   }
+        return 5;
     }
+
+  private double scaler(double value){
+    return ((value-160)/160);
+  }
 }

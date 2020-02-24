@@ -9,8 +9,12 @@ import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.commands.*;
 import frc.motorFactory.*;
+import frc.robotMaps.*;
 
 public class Dinky extends TimedRobot {
+
+  //Robot Map
+  private final RobotMap map = new DinkyMap();
 
   // Drivetrain
   MotorFactory hybridFactory = new MotorFactoryHybrid();
@@ -39,7 +43,7 @@ public class Dinky extends TimedRobot {
   private final JoystickButton buttonC = new JoystickButton(joystick, 5);
   
   // Commands
-  private final TeleopDrive teleop = new TeleopDrive(drive, joystick);
+  private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
 
   // Autonomous Commands
 

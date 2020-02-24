@@ -3,11 +3,13 @@ package frc.commands;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robotMaps.*;
 
 public class TeleopDrive extends CommandBase {
   private DifferentialDrive drive;
   private Joystick joy;
   private double direction;
+  private RobotMap map;
 
   /**
  * Driving :).
@@ -16,29 +18,18 @@ public class TeleopDrive extends CommandBase {
  * @param reversed The direction of the drivetrain.
  */
   public TeleopDrive(
-    DifferentialDrive drive,
-    Joystick joystick,
-    boolean reversed
-  ) {
-    this.drive = drive;
-    this.joy = joystick;
-    this.direction = reversed ? -1.0 : 1.0;
-  }
-
-  /**
- * Driving :).
- * @param drive The drivetrain.
- * @param joystick The joystick.
- */
-  public TeleopDrive(
+    RobotMap map,
     DifferentialDrive drive,
     Joystick joystick
   ) {
-    this(drive, joystick, false);
+    this.drive = drive;
+    this.joy = joystick;
+    this.map = map;
   }
 
   @Override
   public void initialize() {
+    direction = map.getReversed() ? -1.0 : 1.0;
   }
 
   @Override

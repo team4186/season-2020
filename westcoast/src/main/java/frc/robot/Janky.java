@@ -5,10 +5,14 @@ import edu.wpi.first.wpilibj.drive.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robotMaps.*;
 import frc.commands.*;
 import frc.vision.*;
 
 public class Janky extends TimedRobot {
+
+  //Robot Map
+  private final RobotMap map = new JankyMap();
 
   // Drivetrain
   private final Spark rightMotor = new Spark(0);
@@ -19,7 +23,7 @@ public class Janky extends TimedRobot {
   private final Joystick joystick = new Joystick(0);
   
   // Commands
-  private final TeleopDrive teleop = new TeleopDrive(drive, joystick, true);
+  private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
 
   //Vision
   // private final AlignToTarget align = new AlignToTarget(drive);
