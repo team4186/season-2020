@@ -52,7 +52,7 @@ public class PerfectTurn extends CommandBase {
 
   @Override
   public void execute() {
-    double setpoint = angle*1.45;
+    double setpoint = angle*map.getPTMult();
     double rightside = Maths.clamp(turnRight.calculate(-rightEncoder.getDistance(), -setpoint),0.4);
     double leftside = Maths.clamp(turnLeft.calculate(-leftEncoder.getDistance(), setpoint),0.4);
 

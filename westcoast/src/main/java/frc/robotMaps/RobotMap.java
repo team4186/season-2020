@@ -11,4 +11,6 @@ public interface RobotMap {
     public PIDController makeForwardCAlignPIDs();
     public PIDController makeTurnCAlignPIDs();
     public boolean getReversed();
+    public double getLLMult();
+    public double getPTMult();
 }

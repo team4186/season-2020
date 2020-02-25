@@ -1,18 +1,16 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.*;
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.drive.*;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj2.command.button.*;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.*;
+import com.ctre.phoenix.motorcontrol.can.*;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj.drive.*;
+import com.kauailabs.navx.frc.AHRS;
 import frc.autonomousCommands.*;
-import frc.commands.*;
+import edu.wpi.first.wpilibj.*;
 import frc.motorFactory.*;
 import frc.robotMaps.*;
+import frc.commands.*;
 import frc.vision.*;
 
 public class ShinDestroyer extends TimedRobot {
@@ -100,28 +98,11 @@ public class ShinDestroyer extends TimedRobot {
     rightEncoder.reset();
     
     teleop.schedule();
+    topTrigger.whenPressed(new SetMotor(intake, 1));
   }
 
   @Override
   public void teleopPeriodic() {
-    CommandScheduler.getInstance().run();
-  }
-
-  @Override
-  public void testInit(){
-    teleop.cancel();
-
-    ahrs.reset();
-    leftEncoder.reset();
-    rightEncoder.reset();
-    
-    teleop.schedule();
-
-    topTrigger.whileHeld(new SetMotor(intake, 1));
-  }
-
-  @Override
-  public void testPeriodic(){
     CommandScheduler.getInstance().run();
   }
 }

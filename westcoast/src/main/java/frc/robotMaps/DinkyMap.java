@@ -57,4 +57,12 @@ public class DinkyMap implements RobotMap {
     public boolean getReversed() {
         return false;
     }
+
+    public double getLLMult() {
+        return 0;
+    }
+
+    public double getPTMult() {
+        return 0;
+    }
 }

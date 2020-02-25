@@ -52,7 +52,7 @@ public class LeaveLine extends CommandBase {
 
   @Override
   public void execute() {
-    double distance = dist*85;
+    double distance = dist*map.getLLMult();
     double rightOut = Maths.clamp(right.calculate(rightEncoder.getDistance(), distance), 0.4);
     double leftOut = Maths.clamp(left.calculate(leftEncoder.getDistance(), distance), 0.4);
 
@@ -80,6 +80,6 @@ public class LeaveLine extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return wait >= 10;
+    return wait >= 15;
   }
 }

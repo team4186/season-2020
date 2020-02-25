@@ -15,8 +15,8 @@ public class ShinDestroyerMap implements RobotMap {
     }
 
     public ProfiledPIDController makePTPIDs() {
-        ProfiledPIDController pid = new ProfiledPIDController(0.1, 0, 0, new Constraints(150, 150)); //untuned
-        pid.setTolerance(5, 50); //untuned
+        ProfiledPIDController pid = new ProfiledPIDController(0.05, 0, 0, new Constraints(500, 300)); //untuned
+        pid.setTolerance(5, 50);
         pid.disableContinuousInput();
         pid.reset(0, 0);
         return pid;
@@ -59,5 +59,13 @@ public class ShinDestroyerMap implements RobotMap {
 
     public boolean getReversed() {
         return false;
+    }
+
+    public double getLLMult() {
+    return 62;
+    }
+
+    public double getPTMult() {
+        return 1.04;
     }
 }

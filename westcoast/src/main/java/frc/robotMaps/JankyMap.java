@@ -57,4 +57,12 @@ public class JankyMap implements RobotMap {
     public boolean getReversed() {
         return true;
     }
+
+    public double getLLMult() {
+        return 0;
+    }
+
+    public double getPTMult() {
+        return 0;
+    }
 }

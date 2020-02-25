@@ -1,17 +1,15 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj2.command.button.*;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 import com.ctre.phoenix.motorcontrol.can.*;
+import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj.drive.*;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.drive.*;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.*;
-import edu.wpi.first.wpilibj2.command.button.*;
-import edu.wpi.first.wpilibj.TimedRobot;
 import frc.autonomousCommands.*;
+import edu.wpi.first.wpilibj.*;
 import frc.motorFactory.*;
 import frc.robotMaps.*;
 import frc.commands.*;
@@ -58,11 +56,9 @@ public class Clinky extends TimedRobot {
   private TargetAutonomous autonTarget;
   private CenterAutonomous autonCenter;
   private LoadingBayAutonomous autonBay;
-  private Command align;
 
   @Override
   public void robotInit() {
-    System.out.println("frick");
     drive.setSafetyEnabled(false);
     
     camera = CameraServer.getInstance().startAutomaticCapture();
@@ -72,10 +68,9 @@ public class Clinky extends TimedRobot {
     vision = new RioVisionRunner(camera);
     vision.init();
 
-    autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, -3, vision);
-    autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, -3, -30, vision);
-    autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, -3, -40, vision);
-    align  = new AlignToTarget(map, drive, vision);
+    autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, 3, vision);
+    autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, 3, 30, vision);
+    autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, 3, -40, vision);
 
     autonomousChooser.setDefaultOption("Target", autonTarget);
     autonomousChooser.setDefaultOption("Center", autonCenter);
@@ -90,13 +85,14 @@ public class Clinky extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    CommandScheduler.getInstance().cancelAll();
     autonomous = autonomousChooser.getSelected();
 
     ahrs.reset();
     leftEncoder.reset();
     rightEncoder.reset();
 
-    align.schedule();
+    autonomous.schedule();
   }
 
   @Override

@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
 public class ClinkyMap implements RobotMap {
 
     public ProfiledPIDController makeLLPIDs() {
-        ProfiledPIDController pid = new ProfiledPIDController(0.1, 0, 0, new Constraints(600, 500));
+        ProfiledPIDController pid = new ProfiledPIDController(0.05, 0, 0, new Constraints(600, 500));
         pid.setTolerance(5, 100);
         pid.disableContinuousInput();
         pid.reset(0, 0);
@@ -56,5 +56,13 @@ public class ClinkyMap implements RobotMap {
 
     public boolean getReversed() {
         return false;
+    }
+
+    public double getLLMult() {
+        return 85;
+    }
+
+    public double getPTMult() {
+        return 1.45;
     }
 }
