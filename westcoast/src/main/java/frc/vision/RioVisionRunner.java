@@ -4,23 +4,26 @@ import org.opencv.core.Rect;
 import org.opencv.imgproc.Imgproc;
 
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.vision.VisionThread;
 
 public class RioVisionRunner implements VisionRunner{
   private VisionThread visionThread;
-  private final UsbCamera camera;
   private final Object imgLock = new Object();
   private double centerX = 0.0;
   private double centerY = 0.0;
   private double height = 0.0;
 
-  public RioVisionRunner(
-    UsbCamera camera
-  ) {
-    this.camera = camera;
+  public RioVisionRunner(){
+
   }
 
   public void init() {
+    UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+    camera.setResolution(320, 240);
+    camera.setFPS(30);
+    camera.setExposureManual(20);
+
     visionThread = new VisionThread(camera, new GripPipeline(), pipeline -> {
       if (!pipeline.convexHullsOutput().isEmpty()) {
         Rect r = Imgproc.boundingRect(pipeline.convexHullsOutput().get(0));

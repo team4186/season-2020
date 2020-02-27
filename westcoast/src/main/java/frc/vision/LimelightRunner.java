@@ -1,5 +1,6 @@
 package frc.vision;
 
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class LimelightRunner implements VisionRunner{
@@ -7,6 +8,7 @@ public class LimelightRunner implements VisionRunner{
     private double tx;
     private double ty;
     private double height;
+    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 
     public LimelightRunner(){
     }
@@ -16,27 +18,26 @@ public class LimelightRunner implements VisionRunner{
     }
 
     public boolean hasTarget(){
-        tv = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tv").getDouble(0);
+        tv = table.getEntry("tv").getDouble(0);
         return tv == 1;
     }
 
     public double xOffset(){
-        tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
+        tx = table.getEntry("tx").getDouble(0);
         return tx;
     }
 
     public double getAlignX(){
-        tx = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx").getDouble(0);
-        return scaler(tx);
+        return scaler(xOffset());
     }
 
     public double yOffset(){
-        ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+        ty = table.getEntry("ty").getDouble(0);
         return ty;
     }
 
     public double height(){
-        height = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tvert").getDouble(0);
+        height = table.getEntry("tvert").getDouble(0);
         return height;
     }
 

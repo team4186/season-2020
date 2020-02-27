@@ -1,13 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.*;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
 import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.cscore.UsbCamera;
 import frc.autonomousCommands.*;
 import edu.wpi.first.wpilibj.*;
 import frc.motorFactory.*;
@@ -37,8 +35,7 @@ public class Clinky extends TimedRobot {
   private final Encoder rightEncoder = new Encoder(3, 2);
 
   // Vision
-  private UsbCamera camera;
-  private VisionRunner vision;
+  private final VisionRunner vision = new RioVisionRunner();
 
   // Inputs
   private final Joystick joystick = new Joystick(0);
@@ -53,24 +50,13 @@ public class Clinky extends TimedRobot {
   // Autonomous Commands
   private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
   private Command autonomous;
-  private TargetAutonomous autonTarget;
-  private CenterAutonomous autonCenter;
-  private LoadingBayAutonomous autonBay;
+  private final TargetAutonomous autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, 3, vision);
+  private final CenterAutonomous autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, 3, 30, vision);
+  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, 3, -40, vision);
 
   @Override
   public void robotInit() {
     drive.setSafetyEnabled(false);
-    
-    camera = CameraServer.getInstance().startAutomaticCapture();
-    camera.setResolution(320, 240);
-    camera.setFPS(30);
-    camera.setExposureManual(20);
-    vision = new RioVisionRunner(camera);
-    vision.init();
-
-    autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, 3, vision);
-    autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, 3, 30, vision);
-    autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, 3, -40, vision);
 
     autonomousChooser.setDefaultOption("Target", autonTarget);
     autonomousChooser.setDefaultOption("Center", autonCenter);
