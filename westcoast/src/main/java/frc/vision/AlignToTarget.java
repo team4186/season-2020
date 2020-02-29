@@ -13,6 +13,8 @@ public class AlignToTarget extends CommandBase {
   private double value;
   private VisionRunner vision;
   private RobotMap map;
+  private double previousdir; 
+  private double turnpower;
   
   /**
    * Turns to a target found by GRIP.
@@ -34,15 +36,25 @@ public class AlignToTarget extends CommandBase {
     wait = 0;
     
     turn = map.makeAlignPIDs();
+
+    previousdir = 0;
   }
 
   @Override
   public void execute() {
-    value = vision.getAlignX();
-    
-    double turnpower = Maths.clamp(turn.calculate(value, 0), 0.4);
+    if(vision.hasTarget()){
 
+       value = vision.getAlignX();
+       turnpower = Maths.clamp(turn.calculate(value, 0), 0.4);
+    }
+    else{
+      turnpower = previousdir*0;
+      value = 0;
+    } 
+    
     drive.arcadeDrive(0, turnpower, false);
+
+    previousdir = Math.signum(turnpower);
 
     if(turn.atSetpoint()){
       wait = wait + 1;
@@ -62,6 +74,6 @@ public class AlignToTarget extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return wait >= 10;
+    return wait >= 10 && vision.hasTarget();
   }
 }

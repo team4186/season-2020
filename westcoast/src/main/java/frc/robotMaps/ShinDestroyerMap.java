@@ -23,8 +23,8 @@ public class ShinDestroyerMap implements RobotMap {
     }
 
     public PIDController makeDrivePIDs() {
-        PIDController pid = new PIDController(0.5, 0.15, 0); //untuned
-        pid.setTolerance(0.5); //untuned
+        PIDController pid = new PIDController(0.4, 0.12, 0.01);
+        pid.setTolerance(0.5);
         pid.disableContinuousInput();
         pid.reset();
         return pid;

@@ -45,8 +45,7 @@ public class ShinDestroyer extends TimedRobot {
   // private final JoystickButton buttonB = new JoystickButton(joystick, 4);
 
   // Commands
-  // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
-  private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
+  private final GyroDrive teleop = new GyroDrive(map, drive, joystick, ahrs);
 
   // Autonomous Commands
   private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
@@ -54,6 +53,7 @@ public class ShinDestroyer extends TimedRobot {
   private final TargetAutonomous autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, -3, vision);
   private final CenterAutonomous autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, -3, -30, vision);
   private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, -3, -40, vision);
+
 
   @Override
   public void robotInit() {
@@ -91,6 +91,7 @@ public class ShinDestroyer extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    autonomous.cancel();
     teleop.cancel();
 
     ahrs.reset();
