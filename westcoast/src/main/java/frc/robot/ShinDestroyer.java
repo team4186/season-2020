@@ -53,7 +53,8 @@ public class ShinDestroyer extends TimedRobot {
   private final TargetAutonomous autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, -3, vision);
   private final CenterAutonomous autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, -3, -30, vision);
   private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, -3, -40, vision);
-
+  private final Command spinnyCommand = new SequentialCommandGroup(new FindTarget(drive, vision), new AlignToTarget(map, drive, vision));
+  private final FlexAuto phlexAuto = new FlexAuto(map, drive, leftEncoder, rightEncoder, vision);
 
   @Override
   public void robotInit() {
@@ -65,12 +66,13 @@ public class ShinDestroyer extends TimedRobot {
     autonomousChooser.setDefaultOption("Target", autonTarget);
     autonomousChooser.setDefaultOption("Center", autonCenter);
     autonomousChooser.setDefaultOption("LoadingBay", autonBay);
+    autonomousChooser.setDefaultOption("SpinFast", spinnyCommand);
+    autonomousChooser.setDefaultOption("Flex on Mr. Felipe", phlexAuto);
     SmartDashboard.putData("Autonomous Mode", autonomousChooser);
   }
 
   @Override
   public void robotPeriodic() {
-
   }
 
   @Override

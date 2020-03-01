@@ -18,12 +18,14 @@ public class LimelightRunner implements VisionRunner{
     }
 
     public boolean hasTarget(){
-        tv = table.getEntry("tv").getDouble(0);
+        if(yOffset() >= 0) tv = table.getEntry("tv").getDouble(0);
+        else tv = 0;
         return tv == 1;
     }
 
     public double xOffset(){
-        tx = table.getEntry("tx").getDouble(0);
+        if(hasTarget()) tx = table.getEntry("tx").getDouble(0);
+        else tx = 0;
         return tx;
     }
 
@@ -42,10 +44,16 @@ public class LimelightRunner implements VisionRunner{
     }
 
     public double getDistance(){
-        // if(Double.isInfinite(distance)){
-        //     distance = 15;
-        //   }
-        return 5; //WIP, use http://docs.limelightvision.io/en/latest/cs_estimating_distance.html to build the math for this. 
+        double targetHeight = 98.125;
+        double cameraHeight = 14; //Subject to change
+        double cameraAngle = 12.632155; //Subject to change (ish)
+        double targetAngle = yOffset();
+        double totalAngleRad = Math.toRadians(cameraAngle+targetAngle);
+        double distance = (targetHeight - cameraHeight) / Math.tan(totalAngleRad);
+        if(hasTarget()) return distance/12;
+        else return Double.NaN;
+        // double findAngle = Math.toDegrees(Math.atan((targetHeight-cameraHeight)/144)) - targetAngle;
+        // return findAngle;
     }
 
     private double scaler(double value){
