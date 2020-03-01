@@ -25,6 +25,8 @@ public class Dinky extends TimedRobot {
   private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
   private final WPI_TalonSRX mag = new WPI_TalonSRX(8);
   private final WPI_TalonSRX index = new WPI_TalonSRX(9);
+  private final VictorSP leftShooter = new VictorSP(10);
+  private final VictorSP rightShooter = new VictorSP(12);
   // private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
   // private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
 
@@ -35,13 +37,26 @@ public class Dinky extends TimedRobot {
   private final Joystick joystick = new Joystick(0);
   private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
   private final JoystickButton bottomTrigger = new JoystickButton(joystick, 6);
+  private final JoystickButton deepTrigger = new JoystickButton(joystick, 15);
   private final JoystickButton buttonA = new JoystickButton(joystick, 3);
   private final JoystickButton buttonB = new JoystickButton(joystick, 4);
   private final JoystickButton buttonC = new JoystickButton(joystick, 5);
   
+  // topTrigger.whileHeld(new SetMotor(intake, -0.4));
+  // bottomTrigger.whileHeld(new SetTwoMotors(mag, index, 0.5));
+  // buttonA.whileHeld(new SetTwoMotors(index, intake, -0.5));
+  // buttonB.whileHeld(new SetTwoMotors(mag, index, 0.4));
+  // buttonC.whenPressed(new DistanceMotor(mag, 0.2, 0.5));
+
   // Commands
   // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
   private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
+  // private final Command setIntake = new SetMotor(intake, -0.4);
+  private final Command intakedex = new SetTwoMotors(intake, index, 0.5);
+  private final Command ingazine = new SetTwoMotors(index, mag, 0.4);
+  private final Command setShooter = new SetTwoMotors(leftShooter, rightShooter, -0.9, true);
+  private final Command constFeedShot = new SetMotor(mag, 0.8);
+  private final Command shoot = new SetTwoMotors(leftShooter, rightShooter, -0.8, true);
 
   // Autonomous Commands
 
@@ -57,23 +72,20 @@ public class Dinky extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    teleop.schedule();
+    topTrigger.whileHeld(intakedex);
+    bottomTrigger.whileHeld(ingazine);
+    deepTrigger.whileHeld((setShooter.raceWith(new WaitCommand(0.5))).andThen(shoot.alongWith(constFeedShot)));
+    // teleop.schedule();
   }
 
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
-    topTrigger.whileHeld(new SetMotor(intake, -0.4));
-    bottomTrigger.whileHeld(new SetTwoMotors(mag, index, 0.5));
-    buttonA.whileHeld(new SetTwoMotors(index, intake, -0.5));
-    buttonB.whileHeld(new SetTwoMotors(mag, index, 0.4));
-    buttonC.whenPressed(new DistanceMotor(mag, 0.2, 0.5));
-    // topTrigger.whileHeld(new SetTwoMotors(leftShooter, rightShooter, 1));
   }
 
   @Override
   public void testInit(){
-    teleop.schedule();
+    // teleop.schedule();
   }
 
   @Override

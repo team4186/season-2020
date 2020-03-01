@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class Robot extends TimedRobot {
   // Sensor
@@ -21,6 +22,8 @@ public class Robot extends TimedRobot {
   DifferentialDrive drive = new DifferentialDrive(leftMotor, rightMotor);
 
   DriveCommand driveCommand = new DriveCommand(joystick, drive);
+  LineFollower lineFollower = new LineFollower(drive, indexSensor);
+  
   @Override
   public void robotInit() {
    
@@ -47,12 +50,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    driveCommand.start();
+   // driveCommand.start();
+    lineFollower.schedule();
   }
   
   @Override
   public void teleopPeriodic() {
-    Scheduler.getInstance().run();
+    CommandScheduler.getInstance().run();
   }
 
   @Override
