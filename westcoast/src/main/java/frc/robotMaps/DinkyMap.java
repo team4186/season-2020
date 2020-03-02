@@ -54,6 +54,14 @@ public class DinkyMap implements RobotMap {
         return pid;
     }
 
+    public PIDController makeStayOnTargetPIDs() {
+        PIDController pid = new PIDController(0.1, 0, 0);
+        pid.disableContinuousInput();
+        pid.setTolerance(0.2);
+        pid.reset();
+        return pid;
+    }
+
     public boolean getReversed() {
         return false;
     }

@@ -1,5 +1,10 @@
 package frc.robotMaps;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
@@ -57,6 +62,14 @@ public class ShinDestroyerMap implements RobotMap {
         return pid;
     }
 
+    public PIDController makeStayOnTargetPIDs() {
+        PIDController pid = new PIDController(0.1, 0, 0);
+        pid.disableContinuousInput();
+        pid.setTolerance(0.2);
+        pid.reset();
+        return pid;
+    }
+
     public boolean getReversed() {
         return false;
     }
@@ -67,5 +80,45 @@ public class ShinDestroyerMap implements RobotMap {
 
     public double getPTMult() {
         return 1.04;
+    }
+
+    @Override
+    public DigitalInput getIndexSensor() {
+        return new DigitalInput(0);
+    }
+
+    @Override
+    public DigitalInput getMagSensor() {
+        return new DigitalInput(1);
+    }
+
+    @Override
+    public DigitalInput getShooterSensor() {
+        return new DigitalInput(2);
+    }
+
+    @Override
+    public WPI_TalonSRX getMainShooter() {
+        return new WPI_TalonSRX(14);
+    }
+
+    @Override
+    public SpeedController getSecondaryShooter() {
+        return new WPI_VictorSPX(15);
+    }
+
+    @Override
+    public SpeedController getIntakeMotor() {
+        return new WPI_VictorSPX(13);
+    }
+
+    @Override
+    public SpeedController getIndexMotor() {
+        return new WPI_TalonSRX(11);
+    }
+
+    @Override
+    public SpeedController getMagMotor() {
+        return new WPI_VictorSPX(12);
     }
 }

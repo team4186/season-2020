@@ -1,23 +1,32 @@
 package frc.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robotMaps.RobotMap;
+
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class BallHandlingSubsystem extends SubsystemBase {
-  private SpeedController intakeMotor = new WPI_VictorSPX(7);
-  private SpeedController indexMotor = new WPI_TalonSRX(8);
-  private SpeedController magMotor = new WPI_TalonSRX(9);
-  private SpeedController leftShooter = new WPI_VictorSPX(10);
-  private SpeedController rightShooter = new WPI_VictorSPX(11);
-  private SpeedControllerGroup shooter = new SpeedControllerGroup(leftShooter, rightShooter);
-  private DigitalInput intakeSensor = new DigitalInput(4);
-  private DigitalInput indexSensor = new DigitalInput(5);
-  private DigitalInput shooterSensor = new DigitalInput(6);
+  private SpeedController intakeMotor;
+  private SpeedController indexMotor;
+  private SpeedController magMotor;
+  private WPI_TalonSRX leftShooter;
+  private SpeedController rightShooter;
+  private DigitalInput headSensor;
+  private DigitalInput abSensor;
+  private DigitalInput tailSensor;
   public double indexCount = 0;
 
-  public BallHandlingSubsystem() {
+  public BallHandlingSubsystem(RobotMap map) {
+    this.intakeMotor = map.getIntakeMotor();
+    this.indexMotor = map.getIndexMotor();
+    this.magMotor = map.getMagMotor();
+    this.leftShooter = map.getMainShooter();
+    this.rightShooter = map.getSecondaryShooter();
+    this.headSensor = map.getIndexSensor();
+    this.abSensor = map.getMagSensor();
+    this.tailSensor = map.getShooterSensor();
   }
 
   @Override
@@ -33,31 +42,39 @@ public class BallHandlingSubsystem extends SubsystemBase {
     indexMotor.set(value);
   }
 
+  public void runsyncIntdex(double value){
+    intakeMotor.set(-value);
+    indexMotor.set(-value);
+  }
+
   public void runmagMotor(double value){
     magMotor.set(value);
   }
 
+  public void runsyncMagdex(double value){
+    indexMotor.set(value);
+    magMotor.set(value);
+  }
+
   public void runShooter(double value) {
-    shooter.set(value);
   }
 
-  public boolean intakeSensorValue() {
-    return intakeSensor.get();
+  public boolean headSensorValue() {
+    return headSensor.get();
   }
 
-  public boolean indexSensorValue() {
-    return indexSensor.get();
+  public boolean abdomenSensorValue() {
+    return abSensor.get();
   }
 
-  public boolean shooterSensorValue() {
-    return shooterSensor.get();
+  public boolean tailSensorValue() {
+    return tailSensor.get();
   }
 
-  public void increment() {
-    indexCount = indexCount + 1;
-  }
-
-  public void decrement() {
-    indexCount = indexCount - 1;
+  public int getSensorSwitch() {
+    int head = headSensorValue() ? 0x1 : 0;
+    int abdomen = abdomenSensorValue() ? 0x2 : 0;
+    int tail = tailSensorValue() ? 0x4 : 0;
+    return head | abdomen | tail;
   }
 }

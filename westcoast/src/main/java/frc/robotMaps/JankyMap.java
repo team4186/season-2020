@@ -1,5 +1,9 @@
 package frc.robotMaps;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
@@ -54,6 +58,14 @@ public class JankyMap implements RobotMap {
         return pid;
     }
 
+    public PIDController makeStayOnTargetPIDs() {
+        PIDController pid = new PIDController(0.1, 0, 0);
+        pid.disableContinuousInput();
+        pid.setTolerance(0.2);
+        pid.reset();
+        return pid;
+    }
+
     public boolean getReversed() {
         return true;
     }
@@ -64,5 +76,45 @@ public class JankyMap implements RobotMap {
 
     public double getPTMult() {
         return 0;
+    }
+
+    @Override
+    public DigitalInput getIndexSensor() {
+        return new DigitalInput(0);
+    }
+
+    @Override
+    public DigitalInput getMagSensor() {
+        return null;
+    }
+
+    @Override
+    public DigitalInput getShooterSensor() {
+        return null;
+    }
+
+    @Override
+    public WPI_TalonSRX getMainShooter() {
+        return null;
+    }
+
+    @Override
+    public SpeedController getSecondaryShooter() {
+        return null;
+    }
+
+    @Override
+    public SpeedController getIntakeMotor() {
+        return null;
+    }
+
+    @Override
+    public SpeedController getIndexMotor() {
+        return null;
+    }
+
+    @Override
+    public SpeedController getMagMotor() {
+        return null;
     }
 }

@@ -19,13 +19,13 @@ public class CenterAutonomous extends SequentialCommandGroup {
     double angle,
     VisionRunner vision
 ) {
-    super(
+    addCommands(
       new LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
       new WaitCommand(1),
       new PerfectTurn(map, drive, leftEncoder, rightEncoder, angle),
       new WaitCommand(1),
       new AlignToTarget(map, drive, vision),
-      new Shoot()
+      parallel(new Shoot(), new StayOnTarget(map, drive, vision))
     );
   }
 }
