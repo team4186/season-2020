@@ -1,5 +1,11 @@
 package frc.robotMaps;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
@@ -73,4 +79,46 @@ public class DinkyMap implements RobotMap {
     public double getPTMult() {
         return 0;
     }
+
+    @Override
+    public DigitalInput getIndexSensor() {
+        return new DigitalInput(0);
+    }
+
+    @Override
+    public DigitalInput getMagSensor() {
+        return new DigitalInput(1);
+    }
+
+    @Override
+    public DigitalInput getShooterSensor() {
+        return new DigitalInput(2);
+    }
+
+    @Override
+    public WPI_TalonSRX getMainShooter() {
+        return new WPI_TalonSRX(8);
+    }
+
+    @Override
+    public SpeedController getSecondaryShooter() {
+        return new VictorSP(10);
+    }
+
+    @Override
+    public SpeedController getIntakeMotor() {
+        return new WPI_VictorSPX(7);
+    }
+
+    @Override
+    public SpeedController getIndexMotor() {
+        return new WPI_TalonSRX(9);
+    }
+
+    @Override
+    public SpeedController getMagMotor() {
+        return new VictorSP(12);
+    }
+
+    
 }

@@ -21,7 +21,7 @@ public class BallHandlingSubsystem extends SubsystemBase {
   public BallHandlingSubsystem(RobotMap map) {
     this.intakeMotor = map.getIntakeMotor();
     this.indexMotor = map.getIndexMotor();
-    this.magMotor = map.getMagMotor();
+    this.magMotor = map.getMainShooter(); //should be mag motor, but hardware is off
     this.leftShooter = map.getMainShooter();
     this.rightShooter = map.getSecondaryShooter();
     this.headSensor = map.getIndexSensor();
@@ -31,7 +31,7 @@ public class BallHandlingSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("IndexCount", indexCount);
+    SmartDashboard.putNumber("Sensor", getSensorSwitch());
   }
 
   public void runintakeMotor(double value){
@@ -43,8 +43,8 @@ public class BallHandlingSubsystem extends SubsystemBase {
   }
 
   public void runsyncIntdex(double value){
-    intakeMotor.set(-value);
-    indexMotor.set(-value);
+    intakeMotor.set(value);
+    indexMotor.set(value-0.2);
   }
 
   public void runmagMotor(double value){
@@ -53,22 +53,30 @@ public class BallHandlingSubsystem extends SubsystemBase {
 
   public void runsyncMagdex(double value){
     indexMotor.set(value);
-    magMotor.set(value);
+    magMotor.set(value+0.5);
   }
 
   public void runShooter(double value) {
   }
 
+  public void stopMotors() {
+    intakeMotor.stopMotor();
+    indexMotor.stopMotor();
+    magMotor.stopMotor();
+    leftShooter.stopMotor();
+    rightShooter.stopMotor();
+  }
+
   public boolean headSensorValue() {
-    return headSensor.get();
+    return !headSensor.get();
   }
 
   public boolean abdomenSensorValue() {
-    return abSensor.get();
+    return !abSensor.get();
   }
 
   public boolean tailSensorValue() {
-    return tailSensor.get();
+    return !tailSensor.get();
   }
 
   public int getSensorSwitch() {

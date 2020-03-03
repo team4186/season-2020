@@ -11,6 +11,7 @@ public class IndexLogic extends CommandBase {
     BallHandlingSubsystem ballHandler
   ) {
     this.ballHandler=ballHandler;
+    addRequirements(ballHandler);
   }
 
   @Override
@@ -20,13 +21,13 @@ public class IndexLogic extends CommandBase {
   @Override
   public void execute() {
     switch (ballHandler.getSensorSwitch())  {
-      case 0x0: ballHandler.runsyncMagdex(0.5); //No sensors see anything.
+      case 0x0: ballHandler.runsyncMagdex(0.23); //No sensors see anything.
         break;
-      case 0x1: ballHandler.runsyncMagdex(0.5); //Intake sensor sees something.
+      case 0x1: ballHandler.runsyncMagdex(0.23); //Intake sensor sees something.
         break;
       case 0x2: end = true; //Index sensor sees something.
         break;
-      case 0x3: ballHandler.runsyncMagdex(0.5); //Both Index sensor and Intake sensor see something (all balls after first)
+      case 0x3: ballHandler.runsyncMagdex(0.23); //Both Index sensor and Intake sensor see something (all balls after first)
         break;
       case 0x4: end = true; //End sensor sees something (shouldn't happen).
         break;
@@ -41,6 +42,8 @@ public class IndexLogic extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    System.out.println("Index Complete");
+    ballHandler.stopMotors();
   }
 
   @Override

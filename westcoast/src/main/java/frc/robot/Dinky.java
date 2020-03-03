@@ -3,17 +3,17 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
-import com.kauailabs.navx.frc.AHRS;
 import frc.commands.BallHandlers.*;
 import edu.wpi.first.wpilibj.*;
 import frc.motorFactory.*;
 import frc.subsystems.*;
 import frc.robotMaps.*;
 import frc.commands.*;
+import frc.vision.*;
 
 public class Dinky extends TimedRobot {
 
-  //Robot Map
+  // Robot Map
   private final RobotMap map = new DinkyMap();
 
   // Drivetrain
@@ -25,6 +25,9 @@ public class Dinky extends TimedRobot {
   // Subsystems
   private final BallHandlingSubsystem ballHandler = new BallHandlingSubsystem(map);
 
+  // Vision
+  private final VisionRunner vision = new RioVisionRunner();
+
   // Inputs
   private final Joystick joystick = new Joystick(0);
   private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
@@ -32,7 +35,7 @@ public class Dinky extends TimedRobot {
   // private final JoystickButton deepTrigger = new JoystickButton(joystick, 15);
   private final JoystickButton buttonA = new JoystickButton(joystick, 3);
   // private final JoystickButton buttonB = new JoystickButton(joystick, 4);
-  // private final JoystickButton buttonC = new JoystickButton(joystick, 5);
+  private final JoystickButton buttonC = new JoystickButton(joystick, 5);
   
   // Commands
   private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
@@ -40,22 +43,28 @@ public class Dinky extends TimedRobot {
   @Override
   public void robotInit() {
     drive.setSafetyEnabled(false);
+
+    vision.init();
   }
 
   @Override
   public void robotPeriodic() {
-
   }
 
   @Override
   public void teleopInit() {
     teleop.cancel();
 
+    CommandScheduler.getInstance().registerSubsystem(ballHandler);
+
     final Command ballIn = new IntakeAndIndex(ballHandler);
+    final Command ballOut = new IntakeOut(ballHandler);
+    final Command align = new AlignToTarget(map, drive, vision);
 
     topTrigger.whenPressed(ballIn);
-    bottomTrigger.whileHeld(() -> ballHandler.runintakeMotor(0.4));
+    bottomTrigger.whileHeld(ballOut);
     buttonA.cancelWhenPressed(ballIn);
+    buttonC.whenPressed(align);
 
     // teleop.schedule();
   }
@@ -63,5 +72,10 @@ public class Dinky extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
+  }
+
+  @Override
+  public void disabledInit(){
+    CommandScheduler.getInstance().cancelAll();
   }
 }

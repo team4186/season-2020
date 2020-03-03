@@ -9,6 +9,7 @@ public class IntakeLogic extends CommandBase {
 
   public IntakeLogic(BallHandlingSubsystem ballHandler) {
     this.ballHandler = ballHandler;
+    addRequirements(ballHandler);
   }
 
   @Override
@@ -23,6 +24,7 @@ public class IntakeLogic extends CommandBase {
       case 0x1: end = true; //Intake sensor sees something.
         break;
       case 0x2: ballHandler.runsyncIntdex(0.4); //Index sensor sees something.
+        System.out.println("aaa");
         break;
       case 0x3: end = true; //Both Index sensor and Intake sensor see something (all balls after first)
         break;
@@ -39,6 +41,8 @@ public class IntakeLogic extends CommandBase {
 
   @Override
   public void end(boolean interrupted) {
+    System.out.println("Intake Complete");
+    ballHandler.stopMotors();
   }
 
   @Override
