@@ -1,4 +1,4 @@
-package frc.commands;
+package frc.commands.Pneumatics;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;

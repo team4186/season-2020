@@ -14,6 +14,7 @@ public class IntakeLogic extends CommandBase {
 
   @Override
   public void initialize() {
+    end = false;
   }
 
   @Override
@@ -24,15 +25,14 @@ public class IntakeLogic extends CommandBase {
       case 0x1: end = true; //Intake sensor sees something.
         break;
       case 0x2: ballHandler.runsyncIntdex(0.4); //Index sensor sees something.
-        System.out.println("aaa");
         break;
       case 0x3: end = true; //Both Index sensor and Intake sensor see something (all balls after first)
         break;
       case 0x4: end = true; //End sensor sees something (shouldn't happen).
         break;
-      case 0x5: end = true; //Intake sensor and End sensor see something (shouldn't happen).
+      case 0x5: ballHandler.runsyncIntdex(0.4); //Intake sensor and End sensor see something (shouldn't happen).
         break;
-      case 0x6: end = true; //End sensor and Index sensor sees something (happens when 4 balls are in the system).
+      case 0x6: ballHandler.runsyncIntdex(0.4); //End sensor and Index sensor sees something (happens when 4 balls are in the system).
         break;
       case 0x7: end = true; //All sensors are saturated (happens with 5 balls).
         break;

@@ -21,7 +21,7 @@ public class BallHandlingSubsystem extends SubsystemBase {
   public BallHandlingSubsystem(RobotMap map) {
     this.intakeMotor = map.getIntakeMotor();
     this.indexMotor = map.getIndexMotor();
-    this.magMotor = map.getMainShooter(); //should be mag motor, but hardware is off
+    this.magMotor = map.getMagMotor(); //should be mag motor, but hardware is off
     this.leftShooter = map.getMainShooter();
     this.rightShooter = map.getSecondaryShooter();
     this.headSensor = map.getIndexSensor();
@@ -57,6 +57,8 @@ public class BallHandlingSubsystem extends SubsystemBase {
   }
 
   public void runShooter(double value) {
+    leftShooter.set(-value);
+    rightShooter.set(value);
   }
 
   public void stopMotors() {

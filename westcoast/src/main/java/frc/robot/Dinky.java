@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
 import frc.commands.BallHandlers.*;
 import edu.wpi.first.wpilibj.*;
+import frc.vision.Targeting.*;
 import frc.motorFactory.*;
 import frc.subsystems.*;
 import frc.robotMaps.*;
@@ -36,6 +37,7 @@ public class Dinky extends TimedRobot {
   private final JoystickButton buttonA = new JoystickButton(joystick, 3);
   // private final JoystickButton buttonB = new JoystickButton(joystick, 4);
   private final JoystickButton buttonC = new JoystickButton(joystick, 5);
+  private final JoystickButton buttonD = new JoystickButton(joystick, 7);
   
   // Commands
   private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
@@ -59,12 +61,15 @@ public class Dinky extends TimedRobot {
 
     final Command ballIn = new IntakeAndIndex(ballHandler);
     final Command ballOut = new IntakeOut(ballHandler);
+    final Command spitOut = new EverythingOut(ballHandler);
     final Command align = new AlignToTarget(map, drive, vision);
+    final Command shoot = new Shoot(ballHandler);
 
     topTrigger.whenPressed(ballIn);
     bottomTrigger.whileHeld(ballOut);
     buttonA.cancelWhenPressed(ballIn);
-    buttonC.whenPressed(align);
+    buttonC.whenPressed(shoot);
+    buttonD.whileHeld(spitOut);
 
     // teleop.schedule();
   }
@@ -72,10 +77,5 @@ public class Dinky extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
-  }
-
-  @Override
-  public void disabledInit(){
-    CommandScheduler.getInstance().cancelAll();
   }
 }

@@ -1,21 +1,20 @@
-package frc.vision;
+package frc.vision.Targeting;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robotMaps.*;
 import frc.math.Maths;
+import frc.vision.*;
+import frc.robotMaps.RobotMap;
 
-public class ConstantlyAlignToTarget extends CommandBase {
-  private DifferentialDrive drive;
-  private PIDController turn;
-  private PIDController forward;
-  private double value;
-  private double distance;
-  private VisionRunner vision;
+public class StayOnTarget extends CommandBase {
   private RobotMap map;
+  private PIDController pid;
+  private DifferentialDrive drive;
+  private VisionRunner vision;
+  private double value;
 
-  public ConstantlyAlignToTarget(
+  public StayOnTarget(
     RobotMap map,
     DifferentialDrive drive,
     VisionRunner vision
@@ -27,24 +26,21 @@ public class ConstantlyAlignToTarget extends CommandBase {
 
   @Override
   public void initialize() {
-    turn = map.makeTurnCAlignPIDs();
-    forward = map.makeForwardCAlignPIDs();
+    pid = map.makeStayOnTargetPIDs();
   }
 
   @Override
   public void execute() {
     value = vision.getAlignX();
-    distance = vision.getDistance();
-    
-    double turnpower = Maths.clamp(turn.calculate(value, 0), 0.4);
-    double forwardpower = Maths.clamp(forward.calculate(distance, 5), 0.4);
 
-    drive.arcadeDrive(-forwardpower, turnpower, false);
+    double turn = Maths.clamp(pid.calculate(value, 0), 0.4);
+
+    drive.arcadeDrive(0, turn, false);
   }
 
   @Override
   public void end(boolean interrupted) {
-    turn.reset();
+    pid.reset();
     drive.stopMotor();
   }
 

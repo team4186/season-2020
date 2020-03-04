@@ -1,11 +1,11 @@
-package frc.commands;
+package frc.commands.BallHandlers;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
-public class Shoot extends CommandBase {
+public class ShooterLogic extends CommandBase {
   private boolean end;
 
-  public Shoot() {
+  public ShooterLogic() {
   }
 
   @Override

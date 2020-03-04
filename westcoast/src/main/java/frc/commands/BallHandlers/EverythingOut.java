@@ -3,10 +3,10 @@ package frc.commands.BallHandlers;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.subsystems.BallHandlingSubsystem;
 
-public class IntakeOut extends CommandBase {
+public class EverythingOut extends CommandBase {
   private final BallHandlingSubsystem ball;
 
-  public IntakeOut(
+  public EverythingOut(
     BallHandlingSubsystem ballHandler
   ) {
     this.ball = ballHandler;
@@ -20,6 +20,8 @@ public class IntakeOut extends CommandBase {
   @Override
   public void execute() {
     ball.runintakeMotor(-0.4);
+    ball.runindexMotor(-0.4);
+    ball.runmagMotor(-0.4);
   }
 
   @Override

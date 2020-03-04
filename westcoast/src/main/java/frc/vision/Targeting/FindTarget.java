@@ -1,7 +1,8 @@
-package frc.vision;
+package frc.vision.Targeting;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.vision.*;
 
 public class FindTarget extends CommandBase {
   private VisionRunner vision;

@@ -16,6 +16,7 @@ public class IndexLogic extends CommandBase {
 
   @Override
   public void initialize() {
+    end = false;
   }
 
   @Override

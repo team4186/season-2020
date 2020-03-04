@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
 import com.kauailabs.navx.frc.AHRS;
+import frc.commands.MotorControl.*;
 import frc.autonomousCommands.*;
 import edu.wpi.first.wpilibj.*;
 import frc.motorFactory.*;

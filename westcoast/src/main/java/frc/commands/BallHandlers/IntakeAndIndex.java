@@ -12,10 +12,12 @@ public class IntakeAndIndex extends SequentialCommandGroup {
       new IndexLogic(ball)
     );
     this.ball = ball;
+    addRequirements(ball);
   }
 
   @Override
   public void end(boolean interrupted) {
+    System.out.println("Ball Implemented!");
     ball.stopMotors();
   }
 }
