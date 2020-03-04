@@ -1,16 +1,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.*;
+import frc.subsystems.drive.motorfactory.*;
+import frc.subsystems.vision.targeting.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
-import frc.commands.BallHandlers.*;
+import frc.commands.ballhandling.*;
 import edu.wpi.first.wpilibj.*;
-import frc.vision.Targeting.*;
-import frc.motorFactory.*;
+import frc.subsystems.drive.*;
+import frc.subsystems.vision.*;
 import frc.subsystems.*;
-import frc.robotMaps.*;
-import frc.commands.*;
-import frc.vision.*;
+import frc.maps.*;
 
 public class Dinky extends TimedRobot {
 
@@ -62,14 +62,16 @@ public class Dinky extends TimedRobot {
     final Command ballIn = new IntakeAndIndex(ballHandler);
     final Command ballOut = new IntakeOut(ballHandler);
     final Command spitOut = new EverythingOut(ballHandler);
+    final Command shoot = new ShooterLogic();
     final Command align = new AlignToTarget(map, drive, vision);
-    final Command shoot = new Shoot(ballHandler);
 
-    topTrigger.whenPressed(ballIn);
+    // topTrigger.whenPressed(ballIn);
+    topTrigger.whenPressed(align);
     bottomTrigger.whileHeld(ballOut);
     buttonA.cancelWhenPressed(ballIn);
     buttonC.whenPressed(shoot);
     buttonD.whileHeld(spitOut);
+
 
     // teleop.schedule();
   }

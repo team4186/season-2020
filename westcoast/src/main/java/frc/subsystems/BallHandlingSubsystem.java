@@ -1,7 +1,7 @@
 package frc.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robotMaps.RobotMap;
+import frc.maps.*;
 
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.*;
@@ -53,7 +53,7 @@ public class BallHandlingSubsystem extends SubsystemBase {
 
   public void runsyncMagdex(double value){
     indexMotor.set(value);
-    magMotor.set(value+0.5);
+    magMotor.set(value);
   }
 
   public void runShooter(double value) {

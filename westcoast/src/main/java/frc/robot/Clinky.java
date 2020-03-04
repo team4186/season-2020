@@ -3,16 +3,16 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.button.*;
 import edu.wpi.first.wpilibj.smartdashboard.*;
 import com.ctre.phoenix.motorcontrol.can.*;
+import frc.subsystems.drive.motorfactory.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
 import com.kauailabs.navx.frc.AHRS;
-import frc.commands.MotorControl.*;
-import frc.autonomousCommands.*;
+import frc.subsystems.vision.*;
 import edu.wpi.first.wpilibj.*;
-import frc.motorFactory.*;
-import frc.robotMaps.*;
-import frc.commands.*;
-import frc.vision.*;
+import frc.subsystems.drive.*;
+import frc.commands.motors.*;
+import frc.commands.auto.*;
+import frc.maps.*;
 
 public class Clinky extends TimedRobot {
 
