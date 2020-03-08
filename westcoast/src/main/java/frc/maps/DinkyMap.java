@@ -101,8 +101,8 @@ public class DinkyMap implements RobotMap {
     }
 
     @Override
-    public SpeedController getSecondaryShooter() {
-        return new VictorSP(10);
+    public WPI_TalonSRX getSecondaryShooter() {
+        return new WPI_TalonSRX(9);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class DinkyMap implements RobotMap {
 
     @Override
     public SpeedController getIndexMotor() {
-        return new WPI_TalonSRX(9);
+        return new VictorSP(10);
     }
 
     @Override

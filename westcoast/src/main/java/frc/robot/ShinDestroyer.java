@@ -11,6 +11,7 @@ import com.kauailabs.navx.frc.AHRS;
 import frc.commands.auto.demo.*;
 import edu.wpi.first.wpilibj.*;
 import frc.subsystems.vision.*;
+import frc.subsystems.BallHandlingSubsystem;
 import frc.subsystems.drive.*;
 import frc.commands.motors.*;
 import frc.commands.auto.*;
@@ -31,6 +32,7 @@ public class ShinDestroyer extends TimedRobot {
   private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
   // private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
   // private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
+  private final BallHandlingSubsystem ballHandler = new BallHandlingSubsystem(map);
 
   // Sensors
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
@@ -52,12 +54,12 @@ public class ShinDestroyer extends TimedRobot {
 
   // Autonomous Commands
   private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
-  private Command autonomous = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, -3, vision);
-  private final TargetAutonomous autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, -3, vision);
-  private final CenterAutonomous autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, -3, -30, vision);
-  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, -3, -40, vision);
+  private Command autonomous = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, -3, vision, ballHandler);
+  private final TargetAutonomous autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, -3, vision, ballHandler);
+  private final CenterAutonomous autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, -3, -30, vision, ballHandler);
+  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, -3, -40, vision, ballHandler);
   private final Command spinnyCommand = new SequentialCommandGroup(new FindTarget(drive, vision), new AlignToTarget(map, drive, vision));
-  private final FlexAuto phlexAuto = new FlexAuto(map, drive, leftEncoder, rightEncoder, vision);
+  private final FlexAuto phlexAuto = new FlexAuto(map, drive, leftEncoder, rightEncoder, vision, ballHandler);
 
   @Override
   public void robotInit() {

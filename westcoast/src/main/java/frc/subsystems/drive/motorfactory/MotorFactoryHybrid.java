@@ -1,6 +1,8 @@
 package frc.subsystems.drive.motorfactory;
 
 import edu.wpi.first.wpilibj.SpeedController;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -16,7 +18,8 @@ public class MotorFactoryHybrid implements MotorFactory {
         motorMain.configContinuousCurrentLimit(18);
         motorMain.configPeakCurrentLimit(20);
         motorMain.configPeakCurrentDuration(45);
-        motorMain.enableCurrentLimit(true);     
+        motorMain.enableCurrentLimit(true);
+        motorMain.setNeutralMode(NeutralMode.Brake);   
 
         return motorMain;
     }    

@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.commands.ballhandling.*;
+import frc.subsystems.BallHandlingSubsystem;
 import frc.subsystems.vision.*;
 import frc.subsystems.vision.targeting.*;
 import frc.maps.*;
@@ -18,7 +19,8 @@ public class LoadingBayAutonomous extends SequentialCommandGroup {
     Encoder rightEncoder,
     double distance,
     double angle,
-    VisionRunner vision
+    VisionRunner vision,
+    BallHandlingSubsystem ballHandler
   ) {
 
     super(
@@ -27,7 +29,7 @@ public class LoadingBayAutonomous extends SequentialCommandGroup {
       new PerfectTurn(map, drive, leftEncoder, rightEncoder, angle),
       new WaitCommand(1),
       new AlignToTarget(map, drive, vision),
-      parallel(new ShooterLogic(), new StayOnTarget(map, drive, vision))
+      parallel(new ShooterLogic(ballHandler), new StayOnTarget(map, drive, vision))
     );
   }
 }

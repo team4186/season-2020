@@ -62,7 +62,7 @@ public class Dinky extends TimedRobot {
     final Command ballIn = new IntakeAndIndex(ballHandler);
     final Command ballOut = new IntakeOut(ballHandler);
     final Command spitOut = new EverythingOut(ballHandler);
-    final Command shoot = new ShooterLogic();
+    final Command shoot = new ShooterLogic(null);
     final Command align = new AlignToTarget(map, drive, vision);
 
     // topTrigger.whenPressed(ballIn);

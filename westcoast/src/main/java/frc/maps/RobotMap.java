@@ -22,7 +22,7 @@ public interface RobotMap {
     public DigitalInput getMagSensor();
     public DigitalInput getShooterSensor();
     public WPI_TalonSRX getMainShooter();
-    public SpeedController getSecondaryShooter();
+    public WPI_TalonSRX getSecondaryShooter();
     public SpeedController getIntakeMotor();
     public SpeedController getIndexMotor();
     public SpeedController getMagMotor();

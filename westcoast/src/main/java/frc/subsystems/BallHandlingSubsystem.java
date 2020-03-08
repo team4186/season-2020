@@ -3,6 +3,8 @@ package frc.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.maps.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,7 +14,7 @@ public class BallHandlingSubsystem extends SubsystemBase {
   private SpeedController indexMotor;
   private SpeedController magMotor;
   private WPI_TalonSRX leftShooter;
-  private SpeedController rightShooter;
+  private WPI_TalonSRX rightShooter;
   private DigitalInput headSensor;
   private DigitalInput abSensor;
   private DigitalInput tailSensor;
@@ -59,6 +61,39 @@ public class BallHandlingSubsystem extends SubsystemBase {
   public void runShooter(double value) {
     leftShooter.set(-value);
     rightShooter.set(value);
+  }
+
+  public void shooterTune(){
+    leftShooter.configNominalOutputForward(0);
+    leftShooter.configNominalOutputReverse(0);
+    leftShooter.configPeakOutputForward(1);
+    leftShooter.configPeakOutputReverse(-1);
+    leftShooter.setNeutralMode(NeutralMode.Coast);
+    
+    leftShooter.config_kP(0, 0.1);
+    leftShooter.config_kI(0, 0.2);
+    leftShooter.config_kD(0, 0.0);
+
+    rightShooter.configNominalOutputForward(0);
+    rightShooter.configNominalOutputReverse(0);
+    rightShooter.configPeakOutputForward(1);
+    rightShooter.configPeakOutputReverse(-1);
+    rightShooter.setNeutralMode(NeutralMode.Coast);
+
+    
+    rightShooter.config_kP(0, 0.0);
+    rightShooter.config_kI(0, 0.0);
+    rightShooter.config_kD(0, 0.0);
+  }
+
+  public void runShooterCC(double value){
+    leftShooter.set(ControlMode.Current, value*9);
+    rightShooter.set(ControlMode.Current, value*9);
+  }
+
+  public void runShooterPercent(double value){
+    leftShooter.set(ControlMode.PercentOutput, value);
+    rightShooter.set(ControlMode.PercentOutput, value);
   }
 
   public void stopMotors() {

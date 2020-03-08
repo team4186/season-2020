@@ -99,17 +99,17 @@ public class ShinDestroyerMap implements RobotMap {
 
     @Override
     public WPI_TalonSRX getMainShooter() {
-        return new WPI_TalonSRX(14);
+        return new WPI_TalonSRX(7);
     }
 
     @Override
-    public SpeedController getSecondaryShooter() {
-        return new WPI_VictorSPX(15);
+    public WPI_TalonSRX getSecondaryShooter() {
+        return new WPI_TalonSRX(9);
     }
 
     @Override
     public SpeedController getIntakeMotor() {
-        return new WPI_VictorSPX(13);
+        return new WPI_VictorSPX(4);
     }
 
     @Override

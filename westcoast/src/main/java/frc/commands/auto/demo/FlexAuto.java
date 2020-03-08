@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.commands.ballhandling.*;
 import frc.maps.*;
+import frc.subsystems.BallHandlingSubsystem;
 import frc.subsystems.vision.*;
 import frc.subsystems.vision.targeting.*;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -17,7 +18,8 @@ public class FlexAuto extends SequentialCommandGroup {
     DifferentialDrive drive,
     Encoder leftEncoder,
     Encoder rightEncoder,
-    VisionRunner vision
+    VisionRunner vision,
+    BallHandlingSubsystem ballHandler
   ) {
 
     super(
@@ -30,7 +32,7 @@ public class FlexAuto extends SequentialCommandGroup {
       new PerfectTurn(map, drive, leftEncoder, rightEncoder, 180),
       new WaitCommand(0),
       new AlignToTarget(map, drive, vision),
-      new ShooterLogic()
+      new ShooterLogic(ballHandler)
     );
   }
 }

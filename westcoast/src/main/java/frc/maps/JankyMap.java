@@ -99,7 +99,7 @@ public class JankyMap implements RobotMap {
     }
 
     @Override
-    public SpeedController getSecondaryShooter() {
+    public WPI_TalonSRX getSecondaryShooter() {
         return null;
     }
 
