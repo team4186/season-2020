@@ -1,4 +1,4 @@
-package frc.vision;
+package frc.subsystems.vision;
 
 import java.util.ArrayList;
 import java.util.List;
