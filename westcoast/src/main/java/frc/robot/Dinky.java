@@ -1,83 +1,81 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.*;
-import frc.subsystems.drive.motorfactory.*;
-import frc.subsystems.vision.targeting.*;
+import com.ctre.phoenix.motorcontrol.can.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
-import frc.commands.ballhandling.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.*;
-import frc.subsystems.drive.*;
 import frc.subsystems.vision.*;
-import frc.subsystems.*;
+import frc.subsystems.vision.targeting.*;
+import frc.subsystems.drive.motorfactory.*;
 import frc.maps.*;
+import frc.subsystems.drive.*;
+import frc.commands.ballhandling.ShooterLogic;
+import frc.commands.motors.*;
 
 public class Dinky extends TimedRobot {
 
-  // Robot Map
+  //Robot Map
   private final RobotMap map = new DinkyMap();
 
   // Drivetrain
-  MotorFactory hybridFactory = new MotorFactoryHybrid();
-  private final SpeedController leftMain = hybridFactory.create(2, 1, 3);
-  private final SpeedController rightMain = hybridFactory.create(5, 4 ,6);
-  private final DifferentialDrive drive = new DifferentialDrive(leftMain, rightMain);
 
-  // Subsystems
-  private final BallHandlingSubsystem ballHandler = new BallHandlingSubsystem(map);
+  // Subsystem Motors
+  private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
+  private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(8);
+  private final WPI_TalonSRX index = new WPI_TalonSRX(9);
+  private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(5);
+  private final VictorSP mag = new VictorSP(12);
+  // private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
+  // private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
 
-  // Vision
+  // Sensors
+  private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
   private final VisionRunner vision = new RioVisionRunner();
 
   // Inputs
   private final Joystick joystick = new Joystick(0);
-  private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
-  private final JoystickButton bottomTrigger = new JoystickButton(joystick, 6);
-  // private final JoystickButton deepTrigger = new JoystickButton(joystick, 15);
-  private final JoystickButton buttonA = new JoystickButton(joystick, 3);
-  // private final JoystickButton buttonB = new JoystickButton(joystick, 4);
-  private final JoystickButton buttonC = new JoystickButton(joystick, 5);
-  private final JoystickButton buttonD = new JoystickButton(joystick, 7);
+  private final XboxController xboxController = new XboxController(0);
+  private final JoystickButton lB = new JoystickButton(xboxController, 5);
+  private final JoystickButton lT = new JoystickButton(xboxController, 7);
+  private final JoystickButton rB = new JoystickButton(xboxController, 6);
+  private final JoystickButton rT = new JoystickButton(xboxController, 8);
   
   // Commands
-  private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
+  // private final GyroDrive teleop = new GyroDrive(drive, joystick, ahrs);
+  // private final Command setIntake = new SetMotor(intake, -0.4);
+
+  // Autonomous Commands
 
   @Override
   public void robotInit() {
-    drive.setSafetyEnabled(false);
-
+    ahrs.reset();
     vision.init();
   }
 
   @Override
   public void robotPeriodic() {
+    SmartDashboard.putNumber("alignX", vision.getAlignX());
   }
 
   @Override
   public void teleopInit() {
-    teleop.cancel();
+    final Command intakedex = new SetTwoMotors(intake, index, 0.5, true);
+    final Command ingazine = new SetTwoMotors(index, mag, 0.4);
+    final Command setShooter = new ShooterLogic(rightShooter, leftShooter);
+    final Command constFeedShot = new SetMotor(mag, 0.3);
+    final Command shoot = new ShooterLogic(rightShooter, leftShooter);
 
-    CommandScheduler.getInstance().registerSubsystem(ballHandler);
-
-    final Command ballIn = new IntakeAndIndex(ballHandler);
-    final Command ballOut = new IntakeOut(ballHandler);
-    final Command spitOut = new EverythingOut(ballHandler);
-    final Command shoot = new ShooterLogic();
-    final Command align = new AlignToTarget(map, drive, vision);
-
-    // topTrigger.whenPressed(ballIn);
-    topTrigger.whenPressed(align);
-    bottomTrigger.whileHeld(ballOut);
-    buttonA.cancelWhenPressed(ballIn);
-    buttonC.whenPressed(shoot);
-    buttonD.whileHeld(spitOut);
-
-
-    // teleop.schedule();
+    lB.whileHeld(ingazine);
+    lT.whileHeld(intakedex);
+    rT.whileHeld((setShooter.raceWith(new WaitCommand(1))).andThen(shoot.alongWith(constFeedShot)));
   }
 
   @Override
   public void teleopPeriodic() {
     CommandScheduler.getInstance().run();
+    SmartDashboard.putNumber("Amps", rightShooter.getSupplyCurrent());
   }
 }
