@@ -29,7 +29,7 @@ public class LoadingBayAutonomous extends SequentialCommandGroup {
       new PerfectTurn(map, drive, leftEncoder, rightEncoder, angle),
       new WaitCommand(1),
       new AlignToTarget(map, drive, vision),
-      parallel(new ShooterLogic(ballHandler), new StayOnTarget(map, drive, vision))
+      parallel(new ShooterAccelerator(ballHandler), new StayOnTarget(map, drive, vision))
     );
   }
 }

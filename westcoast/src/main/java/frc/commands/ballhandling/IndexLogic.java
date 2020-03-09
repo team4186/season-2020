@@ -22,14 +22,14 @@ public class IndexLogic extends CommandBase {
   @Override
   public void execute() {
     switch (ballHandler.getSensorSwitch())  {
-      case 0x0: ballHandler.runsyncMagdex(0.23); //No sensors see anything.
+      case 0x0: ballHandler.runsyncMagdex(0.3); //No sensors see anything.
         break;
-      case 0x1: ballHandler.runsyncMagdex(0.23); //Intake sensor sees something.
+      case 0x1: ballHandler.runsyncMagdex(0.3); //Intake sensor sees something.
         break;
       case 0x2: end = true; //Index sensor sees something.
         break;
-      case 0x3: ballHandler.runindexMotor(0.23); //Both Index sensor and Intake sensor see something (all balls after first)
-        ballHandler.runmagMotor(0.3); //Boosts magazines speed so as to avoid magazine still seeing ball while index get's cleared (could also be fixed by moving sensor positions)
+      case 0x3: ballHandler.runindexMotor(0.3); //Both Index sensor and Intake sensor see something (all balls after first)
+        ballHandler.runmagMotor(0.32); //Boosts magazines speed so as to avoid magazine still seeing ball while index get's cleared (could also be fixed by moving sensor positions)
         break;
       case 0x4: end = true; //End sensor sees something (shouldn't happen).
         break;

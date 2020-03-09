@@ -37,7 +37,7 @@ public class DinkyMap implements RobotMap {
     }
 
     public PIDController makeAlignPIDs() {
-        PIDController pid = new PIDController(0.2, 0.15, 0);
+        PIDController pid = new PIDController(0.3, 0.1, 0.01);
         pid.disableContinuousInput();
         pid.setTolerance(0.1);
         pid.reset();

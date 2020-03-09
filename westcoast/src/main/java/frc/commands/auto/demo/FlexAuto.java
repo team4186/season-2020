@@ -32,7 +32,7 @@ public class FlexAuto extends SequentialCommandGroup {
       new PerfectTurn(map, drive, leftEncoder, rightEncoder, 180),
       new WaitCommand(0),
       new AlignToTarget(map, drive, vision),
-      new ShooterLogic(ballHandler)
+      new ShooterAccelerator(ballHandler)
     );
   }
 }

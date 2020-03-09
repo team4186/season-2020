@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.drive.*;
 import com.kauailabs.navx.frc.AHRS;
 import frc.subsystems.vision.*;
 import edu.wpi.first.wpilibj.*;
+import frc.subsystems.BallHandlingSubsystem;
 import frc.subsystems.drive.*;
 import frc.commands.motors.*;
 import frc.commands.auto.*;
@@ -29,6 +30,7 @@ public class Clinky extends TimedRobot {
   private final WPI_VictorSPX intake = new WPI_VictorSPX(7);
   // private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
   // private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
+  private final BallHandlingSubsystem ballHandler = new BallHandlingSubsystem(map);
 
   // Sensors
   private final AHRS ahrs = new AHRS(SPI.Port.kMXP);
@@ -51,9 +53,9 @@ public class Clinky extends TimedRobot {
   // Autonomous Commands
   private final SendableChooser<Command> autonomousChooser = new SendableChooser<>();
   private Command autonomous;
-  private final TargetAutonomous autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, 3, vision);
-  private final CenterAutonomous autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, 3, 30, vision);
-  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, 3, -40, vision);
+  private final TargetAutonomous autonTarget = new TargetAutonomous(map, drive, leftEncoder, rightEncoder, 3, vision, ballHandler);
+  private final CenterAutonomous autonCenter = new CenterAutonomous(map, drive, leftEncoder, rightEncoder, 3, 30, vision, ballHandler);
+  private final LoadingBayAutonomous autonBay = new LoadingBayAutonomous(map, drive, leftEncoder, rightEncoder, 3, -40, vision, ballHandler);
 
   @Override
   public void robotInit() {

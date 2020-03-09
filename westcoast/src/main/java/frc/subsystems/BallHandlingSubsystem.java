@@ -18,7 +18,9 @@ public class BallHandlingSubsystem extends SubsystemBase {
   private DigitalInput headSensor;
   private DigitalInput abSensor;
   private DigitalInput tailSensor;
-  public double indexCount = 0;
+  private double val = 0;
+  private double amps = 0;
+  private double percent = 0;
 
   public BallHandlingSubsystem(RobotMap map) {
     this.intakeMotor = map.getIntakeMotor();
@@ -46,7 +48,7 @@ public class BallHandlingSubsystem extends SubsystemBase {
 
   public void runsyncIntdex(double value){
     intakeMotor.set(value);
-    indexMotor.set(value-0.2);
+    indexMotor.set(value);
   }
 
   public void runmagMotor(double value){
@@ -55,45 +57,75 @@ public class BallHandlingSubsystem extends SubsystemBase {
 
   public void runsyncMagdex(double value){
     indexMotor.set(value);
-    magMotor.set(value);
+    magMotor.set(value+0.1);
   }
 
   public void runShooter(double value) {
-    leftShooter.set(-value);
+    leftShooter.set(value);
     rightShooter.set(value);
   }
 
   public void shooterTune(){
     leftShooter.configNominalOutputForward(0);
     leftShooter.configNominalOutputReverse(0);
-    leftShooter.configPeakOutputForward(1);
-    leftShooter.configPeakOutputReverse(-1);
+    leftShooter.configPeakOutputForward(100);
+    leftShooter.configPeakOutputReverse(-100);
     leftShooter.setNeutralMode(NeutralMode.Coast);
     
     leftShooter.config_kP(0, 0.1);
-    leftShooter.config_kI(0, 0.2);
+    leftShooter.config_kI(0, 0.4);
     leftShooter.config_kD(0, 0.0);
 
     rightShooter.configNominalOutputForward(0);
     rightShooter.configNominalOutputReverse(0);
-    rightShooter.configPeakOutputForward(1);
-    rightShooter.configPeakOutputReverse(-1);
+    rightShooter.configPeakOutputForward(100);
+    rightShooter.configPeakOutputReverse(-100);
     rightShooter.setNeutralMode(NeutralMode.Coast);
 
     
-    rightShooter.config_kP(0, 0.0);
-    rightShooter.config_kI(0, 0.0);
+    rightShooter.config_kP(0, 0.1);
+    rightShooter.config_kI(0, 0.4);
     rightShooter.config_kD(0, 0.0);
+
+    rightShooter.setInverted(true);
   }
 
   public void runShooterCC(double value){
+    this.amps = value*9;
     leftShooter.set(ControlMode.Current, value*9);
     rightShooter.set(ControlMode.Current, value*9);
   }
 
+  public void getCurrentLevels(){
+    SmartDashboard.putNumber("Left Current", leftShooter.getSupplyCurrent());
+    SmartDashboard.putNumber("Right Current", rightShooter.getSupplyCurrent());
+  }
+
   public void runShooterPercent(double value){
+    this.percent = value;
     leftShooter.set(ControlMode.PercentOutput, value);
     rightShooter.set(ControlMode.PercentOutput, value);
+  }
+
+  public void setShooterPercent(){
+    this.val = leftShooter.getMotorOutputPercent();
+  }
+
+  public double getShooterPercent(){
+    return val;
+  }
+
+  public void getMotorOutputPercent(){
+    SmartDashboard.putNumber("Left Current", leftShooter.getMotorOutputPercent());
+    SmartDashboard.putNumber("Right Current", rightShooter.getMotorOutputPercent());
+  }
+
+  public boolean shooterEndCC(){
+    return (leftShooter.getSupplyCurrent() == amps) && (rightShooter.getSupplyCurrent() == amps);
+  }
+
+  public boolean shooterEndPercent() {
+    return (leftShooter.getMotorOutputPercent() == percent) && (rightShooter.getMotorOutputPercent() == percent);
   }
 
   public void stopMotors() {
