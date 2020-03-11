@@ -2,6 +2,7 @@ package frc.subsystems.vision;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class LimelightRunner implements VisionRunner{
     private double tv;
@@ -16,6 +17,12 @@ public class LimelightRunner implements VisionRunner{
     public void init(){
 
     }
+
+    public void periodic(){
+        SmartDashboard.putBoolean("Has Target?", hasTarget());
+        SmartDashboard.putNumber("Alignment Offset", getAlignX());
+        SmartDashboard.putNumber("Distance", getDistance());
+      }
 
     public boolean hasTarget(){
         if(yOffset() >= 0) tv = table.getEntry("tv").getDouble(0);

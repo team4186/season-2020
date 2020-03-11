@@ -21,12 +21,14 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     ball.runShooter(0.78);
-    ball.runsyncMagdex(0.5);
+    ball.runmagMotor(0.3);
+    ball.runindexMotor(0.25);
   }
 
   @Override
   public void end(boolean interrupted) {
     ball.stopMotors();
+    ball.resetIndexCount();
   }
 
   @Override

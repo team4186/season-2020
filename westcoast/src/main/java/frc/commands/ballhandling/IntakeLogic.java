@@ -43,6 +43,7 @@ public class IntakeLogic extends CommandBase {
   public void end(boolean interrupted) {
     System.out.println("Intake Complete");
     ballHandler.stopMotors();
+    ballHandler.incrementIndexCount();
   }
 
   @Override

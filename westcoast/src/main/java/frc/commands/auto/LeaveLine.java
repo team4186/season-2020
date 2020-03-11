@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.math.Maths;
-import frc.maps.*;
+import frc.robot.maps.RobotMap;
 
 public class LeaveLine extends CommandBase {
   private DifferentialDrive drive;

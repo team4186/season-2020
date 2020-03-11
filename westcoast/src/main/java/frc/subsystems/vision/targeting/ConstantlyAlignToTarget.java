@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.math.Maths;
+import frc.robot.maps.RobotMap;
 import frc.subsystems.vision.*;
-import frc.maps.*;
 
 public class ConstantlyAlignToTarget extends CommandBase {
   private DifferentialDrive drive;

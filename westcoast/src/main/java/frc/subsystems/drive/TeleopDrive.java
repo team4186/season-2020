@@ -3,7 +3,7 @@ package frc.subsystems.drive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.maps.*;
+import frc.robot.maps.RobotMap;
 
 public class TeleopDrive extends CommandBase {
   private DifferentialDrive drive;
@@ -54,7 +54,7 @@ public class TeleopDrive extends CommandBase {
         return (0.5*v);
     }
     else{
-        return (Math.signum(v) * Math.pow(Math.abs(v), 1.2));
+        return (Math.signum(v) * Math.pow(Math.abs(v), 2));
     }
 }
 }

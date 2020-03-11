@@ -6,6 +6,7 @@ import org.opencv.imgproc.Imgproc;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.vision.VisionThread;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RioVisionRunner implements VisionRunner{
   private VisionThread visionThread;
@@ -13,6 +14,7 @@ public class RioVisionRunner implements VisionRunner{
   private double centerX = 0.0;
   private double centerY = 0.0;
   private double height = 0.0;
+  private boolean target;
 
   public RioVisionRunner(){
 
@@ -31,6 +33,7 @@ public class RioVisionRunner implements VisionRunner{
             centerX = r.x + (r.width / 2);
             centerY = r.y + (r.height / 2);
             height = r.height;
+            target = true;
         }
       }
       else{
@@ -38,14 +41,21 @@ public class RioVisionRunner implements VisionRunner{
           centerX = 160;
           centerY = 120;
           height = 0;
+          target = false;
         }
       }
     });
     visionThread.start();
   }
 
+  public void periodic(){
+    SmartDashboard.putBoolean("Has Target?", hasTarget());
+    SmartDashboard.putNumber("Alignment Offset", getAlignX());
+    SmartDashboard.putNumber("Distance", getDistance());
+  }
+
   public boolean hasTarget(){
-    return true;
+    return target;
   }
 
   public double getAlignX(){

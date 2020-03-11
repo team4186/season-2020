@@ -1,4 +1,4 @@
-package frc.maps;
+package frc.robot.maps;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 

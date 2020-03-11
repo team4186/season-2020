@@ -4,8 +4,9 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.commands.auto.*;
-import frc.maps.*;
+import frc.commands.auto.LeaveLine;
+import frc.commands.auto.PerfectTurn;
+import frc.robot.maps.RobotMap;
 
 public class Square extends SequentialCommandGroup {
 

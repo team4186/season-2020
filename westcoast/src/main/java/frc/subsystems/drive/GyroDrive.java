@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.maps.*;
 import frc.math.Maths;
+import frc.robot.maps.RobotMap;
 
 
 public class GyroDrive extends CommandBase {

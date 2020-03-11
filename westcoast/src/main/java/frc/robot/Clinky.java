@@ -13,7 +13,7 @@ import frc.subsystems.BallHandlingSubsystem;
 import frc.subsystems.drive.*;
 import frc.commands.motors.*;
 import frc.commands.auto.*;
-import frc.maps.*;
+import frc.robot.maps.*;
 
 public class Clinky extends TimedRobot {
 

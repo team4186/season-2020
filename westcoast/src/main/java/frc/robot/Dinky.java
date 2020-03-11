@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.subsystems.drive.motorfactory.*;
-import frc.subsystems.vision.targeting.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
 import frc.commands.ballhandling.*;
@@ -10,7 +9,7 @@ import edu.wpi.first.wpilibj.*;
 import frc.subsystems.drive.*;
 import frc.subsystems.vision.*;
 import frc.subsystems.*;
-import frc.maps.*;
+import frc.robot.maps.*;
 
 public class Dinky extends TimedRobot {
 
@@ -51,6 +50,7 @@ public class Dinky extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    vision.periodic();
   }
 
   @Override
@@ -67,9 +67,8 @@ public class Dinky extends TimedRobot {
     topTrigger.whenPressed(ballIn);
     bottomTrigger.whileHeld(ballOut);
     buttonA.cancelWhenPressed(ballIn);
-    buttonC.whileHeld(shoot);
+    buttonC.toggleWhenPressed(shoot);
     buttonD.whileHeld(spitOut);
-
 
     teleop.schedule();
   }

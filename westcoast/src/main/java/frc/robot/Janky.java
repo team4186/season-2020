@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.drive.*;
 import edu.wpi.first.wpilibj.*;
 import frc.subsystems.vision.*;
 import frc.subsystems.drive.*;
-import frc.maps.*;
+import frc.robot.maps.*;
 
 public class Janky extends TimedRobot {
 

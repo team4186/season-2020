@@ -15,6 +15,7 @@ public class EverythingOut extends CommandBase {
 
   @Override
   public void initialize() {
+    ball.resetIndexCount();
   }
 
   @Override

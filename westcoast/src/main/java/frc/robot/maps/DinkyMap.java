@@ -1,14 +1,16 @@
-package frc.maps;
+package frc.robot.maps;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.VictorSP;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
 
-public class JankyMap implements RobotMap {
+public class DinkyMap implements RobotMap {
 
     public ProfiledPIDController makeLLPIDs() {
         ProfiledPIDController pid = new ProfiledPIDController(0.1, 0, 0, new Constraints(600, 500));
@@ -35,7 +37,7 @@ public class JankyMap implements RobotMap {
     }
 
     public PIDController makeAlignPIDs() {
-        PIDController pid = new PIDController(0.2, 0.15, 0);
+        PIDController pid = new PIDController(0.3, 0.1, 0.01);
         pid.disableContinuousInput();
         pid.setTolerance(0.1);
         pid.reset();
@@ -67,7 +69,7 @@ public class JankyMap implements RobotMap {
     }
 
     public boolean getReversed() {
-        return true;
+        return false;
     }
 
     public double getLLMult() {
@@ -85,36 +87,38 @@ public class JankyMap implements RobotMap {
 
     @Override
     public DigitalInput getMagSensor() {
-        return null;
+        return new DigitalInput(1);
     }
 
     @Override
     public DigitalInput getShooterSensor() {
-        return null;
+        return new DigitalInput(2);
     }
 
     @Override
     public WPI_TalonSRX getMainShooter() {
-        return null;
+        return new WPI_TalonSRX(8);
     }
 
     @Override
     public WPI_TalonSRX getSecondaryShooter() {
-        return null;
+        return new WPI_TalonSRX(9);
     }
 
     @Override
     public SpeedController getIntakeMotor() {
-        return null;
+        return new WPI_VictorSPX(7);
     }
 
     @Override
     public SpeedController getIndexMotor() {
-        return null;
+        return new VictorSP(10);
     }
 
     @Override
     public SpeedController getMagMotor() {
-        return null;
+        return new VictorSP(12);
     }
+
+    
 }

@@ -11,11 +11,11 @@ import com.kauailabs.navx.frc.AHRS;
 import frc.commands.auto.demo.*;
 import edu.wpi.first.wpilibj.*;
 import frc.subsystems.vision.*;
-import frc.subsystems.BallHandlingSubsystem;
 import frc.subsystems.drive.*;
 import frc.commands.motors.*;
 import frc.commands.auto.*;
-import frc.maps.*;
+import frc.robot.maps.*;
+import frc.subsystems.*;
 
 public class ShinDestroyer extends TimedRobot {
 

@@ -1,8 +1,7 @@
 package frc.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.maps.*;
-
+import frc.robot.maps.RobotMap;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.*;
@@ -21,6 +20,7 @@ public class BallHandlingSubsystem extends SubsystemBase {
   private double val = 0;
   private double amps = 0;
   private double percent = 0;
+  private double indexCount = 0;
 
   public BallHandlingSubsystem(RobotMap map) {
     this.intakeMotor = map.getIntakeMotor();
@@ -52,12 +52,12 @@ public class BallHandlingSubsystem extends SubsystemBase {
   }
 
   public void runmagMotor(double value){
-    magMotor.set(value);
+    magMotor.set(-value);
   }
 
   public void runsyncMagdex(double value){
     indexMotor.set(value);
-    magMotor.set(value+0.1);
+    magMotor.set(-value);
   }
 
   public void runShooter(double value) {
@@ -153,5 +153,18 @@ public class BallHandlingSubsystem extends SubsystemBase {
     int abdomen = abdomenSensorValue() ? 0x2 : 0;
     int tail = tailSensorValue() ? 0x4 : 0;
     return head | abdomen | tail;
+  }
+
+  public double getIndexCount() {
+    return indexCount;
+  }
+
+  public double incrementIndexCount() {
+    indexCount = indexCount + 1;
+    return indexCount;
+  }
+
+  public void resetIndexCount() {
+    indexCount = 0;
   }
 }

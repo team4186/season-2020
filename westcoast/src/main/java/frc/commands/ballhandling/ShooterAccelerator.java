@@ -5,7 +5,6 @@ import frc.subsystems.BallHandlingSubsystem;
 
 public class ShooterAccelerator extends CommandBase {
   private BallHandlingSubsystem ball;
-  private double time;
 
   public ShooterAccelerator(
     BallHandlingSubsystem ballHandler
@@ -16,7 +15,6 @@ public class ShooterAccelerator extends CommandBase {
 
   @Override
   public void initialize() {
-    time = System.currentTimeMillis() + 1000;
     ball.shooterTune();
   }
 
@@ -34,6 +32,6 @@ public class ShooterAccelerator extends CommandBase {
 
   @Override
   public boolean isFinished() {
-    return System.currentTimeMillis() >= time;
+    return false;
   }
 }

@@ -1,7 +1,6 @@
-package frc.maps;
+package frc.robot.maps;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedController;
@@ -9,10 +8,10 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.trajectory.TrapezoidProfile.Constraints;
 
-public class ShinDestroyerMap implements RobotMap {
+public class JankyMap implements RobotMap {
 
     public ProfiledPIDController makeLLPIDs() {
-        ProfiledPIDController pid = new ProfiledPIDController(0.02, 0, 0.001, new Constraints(1000, 750));
+        ProfiledPIDController pid = new ProfiledPIDController(0.1, 0, 0, new Constraints(600, 500));
         pid.setTolerance(5, 100);
         pid.disableContinuousInput();
         pid.reset(0, 0);
@@ -20,7 +19,7 @@ public class ShinDestroyerMap implements RobotMap {
     }
 
     public ProfiledPIDController makePTPIDs() {
-        ProfiledPIDController pid = new ProfiledPIDController(0.05, 0, 0, new Constraints(500, 300)); //untuned
+        ProfiledPIDController pid = new ProfiledPIDController(0.1, 0, 0, new Constraints(150, 150));
         pid.setTolerance(5, 50);
         pid.disableContinuousInput();
         pid.reset(0, 0);
@@ -28,7 +27,7 @@ public class ShinDestroyerMap implements RobotMap {
     }
 
     public PIDController makeDrivePIDs() {
-        PIDController pid = new PIDController(0.4, 0.12, 0.01);
+        PIDController pid = new PIDController(0.5, 0.15, 0);
         pid.setTolerance(0.5);
         pid.disableContinuousInput();
         pid.reset();
@@ -36,10 +35,7 @@ public class ShinDestroyerMap implements RobotMap {
     }
 
     public PIDController makeAlignPIDs() {
-        // PIDController pid = new PIDController(0.12, 0.1, 0.03);
-        // pid.disableContinuousInput();
-        // pid.setTolerance(0.1);
-        PIDController pid = new PIDController(0.7, 0.1, 0.07);
+        PIDController pid = new PIDController(0.2, 0.15, 0);
         pid.disableContinuousInput();
         pid.setTolerance(0.1);
         pid.reset();
@@ -47,17 +43,17 @@ public class ShinDestroyerMap implements RobotMap {
     }
 
     public PIDController makeForwardCAlignPIDs() {
-        PIDController pid = new PIDController(0.2, 0, 0.03); //untuned
-        pid.disableContinuousInput(); 
-        pid.setTolerance(0); //untuned
+        PIDController pid = new PIDController(0.2, 0, 0.03);
+        pid.disableContinuousInput();
+        pid.setTolerance(0);
         pid.reset();
         return pid;
     }
 
     public PIDController makeTurnCAlignPIDs() {
-        PIDController pid = new PIDController(0.1, 0, 0.01); //untuned
+        PIDController pid = new PIDController(0.1, 0, 0.01);
         pid.disableContinuousInput();
-        pid.setTolerance(0.2); //untuned
+        pid.setTolerance(0.2);
         pid.reset();
         return pid;
     }
@@ -71,15 +67,15 @@ public class ShinDestroyerMap implements RobotMap {
     }
 
     public boolean getReversed() {
-        return false;
+        return true;
     }
 
     public double getLLMult() {
-    return 62;
+        return 0;
     }
 
     public double getPTMult() {
-        return 1.04;
+        return 0;
     }
 
     @Override
@@ -89,36 +85,36 @@ public class ShinDestroyerMap implements RobotMap {
 
     @Override
     public DigitalInput getMagSensor() {
-        return new DigitalInput(1);
+        return null;
     }
 
     @Override
     public DigitalInput getShooterSensor() {
-        return new DigitalInput(2);
+        return null;
     }
 
     @Override
     public WPI_TalonSRX getMainShooter() {
-        return new WPI_TalonSRX(7);
+        return null;
     }
 
     @Override
     public WPI_TalonSRX getSecondaryShooter() {
-        return new WPI_TalonSRX(9);
+        return null;
     }
 
     @Override
     public SpeedController getIntakeMotor() {
-        return new WPI_VictorSPX(4);
+        return null;
     }
 
     @Override
     public SpeedController getIndexMotor() {
-        return new WPI_TalonSRX(11);
+        return null;
     }
 
     @Override
     public SpeedController getMagMotor() {
-        return new WPI_VictorSPX(12);
+        return null;
     }
 }

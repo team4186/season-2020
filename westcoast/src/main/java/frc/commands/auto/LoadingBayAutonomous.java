@@ -2,13 +2,12 @@ package frc.commands.auto;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.commands.ballhandling.*;
-import frc.subsystems.BallHandlingSubsystem;
-import frc.subsystems.vision.*;
-import frc.subsystems.vision.targeting.*;
-import frc.maps.*;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.maps.RobotMap;
+import frc.subsystems.BallHandlingSubsystem;
+import frc.subsystems.vision.VisionRunner;
+import frc.subsystems.vision.targeting.AlignToTarget;
 
 public class LoadingBayAutonomous extends SequentialCommandGroup {
 
@@ -28,8 +27,7 @@ public class LoadingBayAutonomous extends SequentialCommandGroup {
       new WaitCommand(1),
       new PerfectTurn(map, drive, leftEncoder, rightEncoder, angle),
       new WaitCommand(1),
-      new AlignToTarget(map, drive, vision),
-      parallel(new ShooterAccelerator(ballHandler), new StayOnTarget(map, drive, vision))
+      new AlignToTarget(map, drive, vision)
     );
   }
 }

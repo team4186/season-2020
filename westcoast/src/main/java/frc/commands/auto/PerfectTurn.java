@@ -1,11 +1,11 @@
 package frc.commands.auto;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj.Encoder;
-import frc.maps.*;
-import frc.math.*;
+import frc.math.Maths;
+import frc.robot.maps.RobotMap;
 
 public class PerfectTurn extends CommandBase {
   private DifferentialDrive drive;

@@ -2,14 +2,14 @@ package frc.commands.auto.demo;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.commands.ballhandling.*;
-import frc.maps.*;
-import frc.subsystems.BallHandlingSubsystem;
-import frc.subsystems.vision.*;
-import frc.subsystems.vision.targeting.*;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.commands.auto.*;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.commands.auto.LeaveLine;
+import frc.commands.auto.PerfectTurn;
+import frc.robot.maps.RobotMap;
+import frc.subsystems.BallHandlingSubsystem;
+import frc.subsystems.vision.VisionRunner;
+import frc.subsystems.vision.targeting.AlignToTarget;
 
 public class FlexAuto extends SequentialCommandGroup {
 
@@ -31,8 +31,7 @@ public class FlexAuto extends SequentialCommandGroup {
       new WaitCommand(0),
       new PerfectTurn(map, drive, leftEncoder, rightEncoder, 180),
       new WaitCommand(0),
-      new AlignToTarget(map, drive, vision),
-      new ShooterAccelerator(ballHandler)
+      new AlignToTarget(map, drive, vision)
     );
   }
 }
