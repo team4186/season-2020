@@ -1,10 +1,9 @@
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.*;
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
+import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.*;
-import frc.subsystems.vision.*;
 import frc.subsystems.drive.*;
 import frc.robot.maps.*;
 
@@ -24,9 +23,11 @@ public class Janky extends TimedRobot {
   // Commands
   private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
 
-  //Vision
-  // private final AlignToTarget align = new AlignToTarget(drive);
-  private final LimelightRunner lime = new LimelightRunner();
+  // Network Table
+  private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+  private final NetworkTable table = inst.getTable("Jetson");
+  NetworkTableEntry view1 = table.getEntry("view1");
+  NetworkTableEntry view2 = table.getEntry("view2");
 
   @Override
   public void robotInit() {
@@ -35,7 +36,8 @@ public class Janky extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
-    SmartDashboard.putBoolean("Target Lock", lime.hasTarget());
+    view1.setBoolean(!joystick.getRawButton(5));
+    view2.setBoolean(joystick.getRawButton(5));
   }
 
   @Override
