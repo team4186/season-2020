@@ -2,6 +2,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.*;
 import edu.wpi.first.wpilibj.drive.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.analog.adis16448.frc.ADIS16448_IMU;
+
 import edu.wpi.first.networktables.*;
 import edu.wpi.first.wpilibj.*;
 import frc.subsystems.drive.*;
@@ -20,8 +24,12 @@ public class Janky extends TimedRobot {
   // Inputs
   private final Joystick joystick = new Joystick(0);
   
+  // Sensors
+  private final ADIS16448_IMU adis = new ADIS16448_IMU();
+
   // Commands
   private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
+  //private final AdisDrive teleop = new AdisDrive(map, drive, joystick, adis);
 
   // Network Table
   private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -38,6 +46,7 @@ public class Janky extends TimedRobot {
   public void robotPeriodic() {
     view1.setBoolean(!joystick.getRawButton(5));
     view2.setBoolean(joystick.getRawButton(5));
+    SmartDashboard.putNumber("ADIS Value", adis.getRate());
   }
 
   @Override

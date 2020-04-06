@@ -27,7 +27,7 @@ public class JankyMap implements RobotMap {
     }
 
     public PIDController makeDrivePIDs() {
-        PIDController pid = new PIDController(0.5, 0.15, 0);
+        PIDController pid = new PIDController(0.2, 0, 0);
         pid.setTolerance(0.5);
         pid.disableContinuousInput();
         pid.reset();
