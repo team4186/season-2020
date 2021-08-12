@@ -15,18 +15,18 @@ import edu.wpi.first.wpilibj.RobotBase;
  * change the parameter class to the startRobot call.
  */
 public final class Main {
-  private Main() {
-  }
+    private Main() {
+    }
 
-  /**
-   * Main initialization function. Do not perform any initialization here.
-   *
-   * <p>If you change your main robot class, change the parameter type.
-   */
-  public static void main(String... args) {
-    // RobotBase.startRobot(Clinky::new);
-    RobotBase.startRobot(Dinky::new);
-    // RobotBase.startRobot(Janky::new);
-    // RobotBase.startRobot(ShinDestroyer::new);
-  }
+    /**
+     * Main initialization function. Do not perform any initialization here.
+     *
+     * <p>If you change your main robot class, change the parameter type.
+     */
+    public static void main(String... args) {
+        // RobotBase.startRobot(Clinky::new);
+        RobotBase.startRobot(Dinky::new);
+        // RobotBase.startRobot(Janky::new);
+        // RobotBase.startRobot(ShinDestroyer::new);
+    }
 }

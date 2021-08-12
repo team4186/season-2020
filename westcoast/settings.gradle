@@ -7,10 +7,7 @@ pluginManagement {
         String frcYear = '2020'
         File frcHome
         if (OperatingSystem.current().isWindows()) {
-            String publicFolder = System.getenv('PUBLIC')
-            if (publicFolder == null) {
-                publicFolder = "C:\\Users\\Public"
-            }
+            String publicFolder = System.getenv('PUBLIC') ?: "C:\\Users\\Public"
             def homeRoot = new File(publicFolder, "wpilib")
             frcHome = new File(homeRoot, frcYear)
         } else {

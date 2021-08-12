@@ -13,25 +13,25 @@ import frc.subsystems.vision.targeting.AlignToTarget;
 
 public class FlexAuto extends SequentialCommandGroup {
 
-  public FlexAuto(
-    RobotMap map,
-    DifferentialDrive drive,
-    Encoder leftEncoder,
-    Encoder rightEncoder,
-    VisionRunner vision,
-    BallHandlingSubsystem ballHandler
-  ) {
+    public FlexAuto(
+            RobotMap map,
+            DifferentialDrive drive,
+            Encoder leftEncoder,
+            Encoder rightEncoder,
+            VisionRunner vision,
+            BallHandlingSubsystem ballHandler
+    ) {
 
-    super(
-      new LeaveLine(map, drive, leftEncoder, rightEncoder, -1),
-      new WaitCommand(0),
-      new PerfectTurn(map, drive, leftEncoder, rightEncoder, 180),
-      new WaitCommand(0),
-      new LeaveLine(map, drive, leftEncoder, rightEncoder, 9),
-      new WaitCommand(0),
-      new PerfectTurn(map, drive, leftEncoder, rightEncoder, 180),
-      new WaitCommand(0),
-      new AlignToTarget(map, drive, vision)
-    );
-  }
+        super(
+                new LeaveLine(map, drive, leftEncoder, rightEncoder, -1),
+                new WaitCommand(0),
+                new PerfectTurn(map, drive, leftEncoder, rightEncoder, 180),
+                new WaitCommand(0),
+                new LeaveLine(map, drive, leftEncoder, rightEncoder, 9),
+                new WaitCommand(0),
+                new PerfectTurn(map, drive, leftEncoder, rightEncoder, 180),
+                new WaitCommand(0),
+                new AlignToTarget(map, drive, vision)
+        );
+    }
 }

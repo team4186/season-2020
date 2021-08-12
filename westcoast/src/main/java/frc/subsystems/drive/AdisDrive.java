@@ -1,7 +1,6 @@
 package frc.subsystems.drive;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -11,64 +10,63 @@ import frc.robot.maps.RobotMap;
 
 
 public class AdisDrive extends CommandBase {
-  private DifferentialDrive drive;
-  private PIDController pid;
-  private Joystick joy;
-  private ADIS16448_IMU ahrs;
-  private double direction;
-  private RobotMap map;
+    private final DifferentialDrive drive;
+    private PIDController pid;
+    private final Joystick joy;
+    private final ADIS16448_IMU ahrs;
+    private double direction;
+    private final RobotMap map;
 
-  /**
-   * Driving more accurately.
-   * 
-   * @param drive    The drivetrain.
-   * @param joystick The joystick.
-   * @param ahrs     The navX.
-   */
-  public AdisDrive(
-    RobotMap map,
-    DifferentialDrive drive,
-    Joystick joystick,
-    ADIS16448_IMU adis
-    
-  ) {
-    this.map = map;
-    this.drive = drive;
-    this.joy = joystick;
-    this.ahrs = adis;
-  }
+    /**
+     * Driving more accurately.
+     *
+     * @param drive    The drivetrain.
+     * @param joystick The joystick.
+     * @param adis     The navX.
+     */
+    public AdisDrive(
+            RobotMap map,
+            DifferentialDrive drive,
+            Joystick joystick,
+            ADIS16448_IMU adis
 
-  @Override
-  public void initialize() {
-    direction = map.getReversed() ? -1.0 : 1.0;
+    ) {
+        this.map = map;
+        this.drive = drive;
+        this.joy = joystick;
+        this.ahrs = adis;
+    }
 
-    pid = map.makeDrivePIDs();
+    @Override
+    public void initialize() {
+        direction = map.getReversed() ? -1.0 : 1.0;
 
-    ahrs.reset();
-  }
+        pid = map.makeDrivePIDs();
 
-  @Override
-  public void execute() {
-    double input = Maths.pidclean(scale(ahrs.getRate()), 6, 0.3);
-    double pidraw = pid.calculate(input, Maths.joyclean(direction*joy.getX(), 0.05)*4.6);
-    double output = Maths.pidclean(-pidraw, 0.8, 0.05);
-    drive.arcadeDrive(Maths.attenuate(direction*joy.getY()), output, false);
-  }
+        ahrs.reset();
+    }
 
-  @Override
-  public void end(boolean interrupted) {
-    drive.stopMotor();
-    ahrs.reset();
-    pid.reset();
-  }
+    @Override
+    public void execute() {
+        double input = Maths.pidclean(scale(ahrs.getRate()), 6.0, 0.3);
+        double pidraw = pid.calculate(input, Maths.joyclean(direction * joy.getX(), 0.05) * 4.6);
+        double output = Maths.pidclean(-pidraw, 0.8, 0.05);
+        drive.arcadeDrive(Maths.attenuate(direction * joy.getY()), output, false);
+    }
 
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    @Override
+    public void end(boolean interrupted) {
+        drive.stopMotor();
+        ahrs.reset();
+        pid.reset();
+    }
 
-  private double scale(double value) {
-    double scaled = (value / 100);
-    return scaled;
-  }
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
+
+    private double scale(double value) {
+      return (value / 100.0);
+    }
 }

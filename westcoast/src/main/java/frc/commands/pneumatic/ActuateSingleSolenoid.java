@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class ActuateSingleSolenoid extends CommandBase {
-  private Solenoid solenoid;
+  private final Solenoid solenoid;
 
   public ActuateSingleSolenoid(Solenoid solenoid) {
     this.solenoid = solenoid;
