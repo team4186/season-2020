@@ -2,7 +2,6 @@ package frc.robot.maps;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -48,7 +47,7 @@ public class ShinDestroyerMap implements RobotMap {
 
     public PIDController makeForwardCAlignPIDs() {
         PIDController pid = new PIDController(0.2, 0, 0.03); //untuned
-        pid.disableContinuousInput(); 
+        pid.disableContinuousInput();
         pid.setTolerance(0); //untuned
         pid.reset();
         return pid;
@@ -75,7 +74,7 @@ public class ShinDestroyerMap implements RobotMap {
     }
 
     public double getLLMult() {
-    return 62;
+        return 62;
     }
 
     public double getPTMult() {

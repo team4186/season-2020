@@ -11,23 +11,23 @@ import frc.subsystems.vision.targeting.AlignToTarget;
 
 public class LoadingBayAutonomous extends SequentialCommandGroup {
 
-  public LoadingBayAutonomous(
-    RobotMap map,
-    DifferentialDrive drive,
-    Encoder leftEncoder,
-    Encoder rightEncoder,
-    double distance,
-    double angle,
-    VisionRunner vision,
-    BallHandlingSubsystem ballHandler
-  ) {
+    public LoadingBayAutonomous(
+            RobotMap map,
+            DifferentialDrive drive,
+            Encoder leftEncoder,
+            Encoder rightEncoder,
+            double distance,
+            double angle,
+            VisionRunner vision,
+            BallHandlingSubsystem ballHandler
+    ) {
 
-    super(
-      new LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
-      new WaitCommand(1),
-      new PerfectTurn(map, drive, leftEncoder, rightEncoder, angle),
-      new WaitCommand(1),
-      new AlignToTarget(map, drive, vision)
-    );
-  }
+        super(
+                new LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
+                new WaitCommand(1),
+                new PerfectTurn(map, drive, leftEncoder, rightEncoder, angle),
+                new WaitCommand(1),
+                new AlignToTarget(map, drive, vision)
+        );
+    }
 }

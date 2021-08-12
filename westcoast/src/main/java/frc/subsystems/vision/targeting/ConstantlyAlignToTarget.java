@@ -5,52 +5,50 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.math.Maths;
 import frc.robot.maps.RobotMap;
-import frc.subsystems.vision.*;
+import frc.subsystems.vision.VisionRunner;
 
 public class ConstantlyAlignToTarget extends CommandBase {
-  private DifferentialDrive drive;
-  private PIDController turn;
-  private PIDController forward;
-  private double value;
-  private double distance;
-  private VisionRunner vision;
-  private RobotMap map;
+    private final DifferentialDrive drive;
+    private PIDController turn;
+    private PIDController forward;
+    private final VisionRunner vision;
+    private final RobotMap map;
 
-  public ConstantlyAlignToTarget(
-    RobotMap map,
-    DifferentialDrive drive,
-    VisionRunner vision
-  ) {
-    this.map = map;
-    this.drive = drive;
-    this.vision = vision;
-  }
+    public ConstantlyAlignToTarget(
+            RobotMap map,
+            DifferentialDrive drive,
+            VisionRunner vision
+    ) {
+        this.map = map;
+        this.drive = drive;
+        this.vision = vision;
+    }
 
-  @Override
-  public void initialize() {
-    turn = map.makeTurnCAlignPIDs();
-    forward = map.makeForwardCAlignPIDs();
-  }
+    @Override
+    public void initialize() {
+        turn = map.makeTurnCAlignPIDs();
+        forward = map.makeForwardCAlignPIDs();
+    }
 
-  @Override
-  public void execute() {
-    value = vision.getAlignX();
-    distance = vision.getDistance();
-    
-    double turnpower = Maths.clamp(turn.calculate(value, 0), 0.4);
-    double forwardpower = Maths.clamp(forward.calculate(distance, 5), 0.4);
+    @Override
+    public void execute() {
+        double value = vision.getAlignX();
+        double distance = vision.getDistance();
 
-    drive.arcadeDrive(-forwardpower, turnpower, false);
-  }
+        double turnpower = Maths.clamp(turn.calculate(value, 0), 0.4);
+        double forwardpower = Maths.clamp(forward.calculate(distance, 5), 0.4);
 
-  @Override
-  public void end(boolean interrupted) {
-    turn.reset();
-    drive.stopMotor();
-  }
+        drive.arcadeDrive(-forwardpower, turnpower, false);
+    }
 
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    @Override
+    public void end(boolean interrupted) {
+        turn.reset();
+        drive.stopMotor();
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

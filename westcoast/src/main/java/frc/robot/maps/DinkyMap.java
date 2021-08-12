@@ -2,7 +2,6 @@ package frc.robot.maps;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.VictorSP;
@@ -120,5 +119,5 @@ public class DinkyMap implements RobotMap {
         return new VictorSP(12);
     }
 
-    
+
 }

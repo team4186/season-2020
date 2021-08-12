@@ -7,25 +7,25 @@ import frc.robot.maps.RobotMap;
 
 public class AVeryMarkCommand extends SequentialCommandGroup {
 
-  public AVeryMarkCommand(
-    RobotMap map,
-    DifferentialDrive drive,
-    Encoder rightEncoder,
-    Encoder leftEncoder
-  ) {
-    super(
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90), 
-    new Square(map, drive, rightEncoder, leftEncoder, 10, 90)
-    );
-  }
+    public AVeryMarkCommand(
+            RobotMap map,
+            DifferentialDrive drive,
+            Encoder rightEncoder,
+            Encoder leftEncoder
+    ) {
+        super(
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90),
+                new Square(map, drive, rightEncoder, leftEncoder, 10, 90)
+        );
+    }
 }
