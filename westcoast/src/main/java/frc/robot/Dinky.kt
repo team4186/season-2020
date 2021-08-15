@@ -1,89 +1,79 @@
-package frc.robot;
+package frc.robot
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.commands.ballhandling.EverythingOut;
-import frc.commands.ballhandling.IntakeAndIndex;
-import frc.commands.ballhandling.IntakeOut;
-import frc.commands.ballhandling.Shooting;
-import frc.robot.maps.DinkyMap;
-import frc.robot.maps.RobotMap;
-import frc.subsystems.BallHandlingSubsystem;
-import frc.subsystems.drive.TeleopDrive;
-import frc.subsystems.drive.motorfactory.MotorFactory;
-import frc.subsystems.drive.motorfactory.MotorFactoryHybrid;
-import frc.subsystems.vision.RioVisionRunner;
-import frc.subsystems.vision.VisionRunner;
+import edu.wpi.first.wpilibj.Joystick
+import edu.wpi.first.wpilibj.TimedRobot
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
+import edu.wpi.first.wpilibj2.command.Command
+import edu.wpi.first.wpilibj2.command.CommandScheduler
+import edu.wpi.first.wpilibj2.command.button.JoystickButton
+import frc.commands.ballhandling.EverythingOut
+import frc.commands.ballhandling.IntakeAndIndex
+import frc.commands.ballhandling.IntakeOut
+import frc.commands.ballhandling.Shooting
+import frc.robot.maps.DinkyMap
+import frc.robot.maps.RobotMap
+import frc.subsystems.BallHandlingSubsystem
+import frc.subsystems.drive.TeleopDrive
+import frc.subsystems.drive.motorfactory.MotorFactory
+import frc.subsystems.drive.motorfactory.MotorFactoryHybrid
+import frc.subsystems.vision.RioVisionRunner
+import frc.subsystems.vision.VisionRunner
 
-public class Dinky extends TimedRobot {
+class Dinky : TimedRobot() {
+  // Robot Map
+  private val map: RobotMap = DinkyMap()
 
-    // Robot Map
-    private final RobotMap map = new DinkyMap();
+  // Drivetrain
+  var hybridFactory: MotorFactory = MotorFactoryHybrid()
+  private val leftMain = hybridFactory.create(2, 1, 3)
+  private val rightMain = hybridFactory.create(5, 4, 6)
+  private val drive = DifferentialDrive(leftMain, rightMain)
 
-    // Drivetrain
-    MotorFactory hybridFactory = new MotorFactoryHybrid();
-    private final SpeedController leftMain = hybridFactory.create(2, 1, 3);
-    private final SpeedController rightMain = hybridFactory.create(5, 4, 6);
-    private final DifferentialDrive drive = new DifferentialDrive(leftMain, rightMain);
+  // Subsystems
+  private val ballHandler = BallHandlingSubsystem(map)
 
-    // Subsystems
-    private final BallHandlingSubsystem ballHandler = new BallHandlingSubsystem(map);
+  // Vision
+  private val vision: VisionRunner = RioVisionRunner()
 
-    // Vision
-    private final VisionRunner vision = new RioVisionRunner();
+  // Inputs
+  private val joystick = Joystick(0)
+  private val topTrigger = JoystickButton(joystick, 1)
+  private val bottomTrigger = JoystickButton(joystick, 6)
 
-    // Inputs
-    private final Joystick joystick = new Joystick(0);
-    private final JoystickButton topTrigger = new JoystickButton(joystick, 1);
-    private final JoystickButton bottomTrigger = new JoystickButton(joystick, 6);
-    // private final JoystickButton deepTrigger = new JoystickButton(joystick, 15);
-    private final JoystickButton buttonA = new JoystickButton(joystick, 3);
-    // private final JoystickButton buttonB = new JoystickButton(joystick, 4);
-    private final JoystickButton buttonC = new JoystickButton(joystick, 5);
-    private final JoystickButton buttonD = new JoystickButton(joystick, 7);
+  // private final JoystickButton deepTrigger = new JoystickButton(joystick, 15);
+  private val buttonA = JoystickButton(joystick, 3)
 
-    // Commands
-    private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
+  // private final JoystickButton buttonB = new JoystickButton(joystick, 4);
+  private val buttonC = JoystickButton(joystick, 5)
+  private val buttonD = JoystickButton(joystick, 7)
 
-    @Override
-    public void robotInit() {
-        drive.setSafetyEnabled(false);
+  // Commands
+  private val teleop = TeleopDrive(map, drive, joystick)
+  override fun robotInit() {
+    drive.isSafetyEnabled = false
+    vision.init()
+  }
 
-        vision.init();
-    }
+  override fun robotPeriodic() {
+    vision.periodic()
+  }
 
-    @Override
-    public void robotPeriodic() {
-        vision.periodic();
-    }
+  override fun teleopInit() {
+    teleop.cancel()
+    CommandScheduler.getInstance().registerSubsystem(ballHandler)
+    val ballIn: Command = IntakeAndIndex(ballHandler)
+    val ballOut: Command = IntakeOut(ballHandler)
+    val spitOut: Command = EverythingOut(ballHandler)
+    val shoot: Command = Shooting(map, drive, vision, ballHandler)
+    topTrigger.whenPressed(ballIn)
+    bottomTrigger.whileHeld(ballOut)
+    buttonA.cancelWhenPressed(ballIn)
+    buttonC.toggleWhenPressed(shoot)
+    buttonD.whileHeld(spitOut)
+    teleop.schedule()
+  }
 
-    @Override
-    public void teleopInit() {
-        teleop.cancel();
-
-        CommandScheduler.getInstance().registerSubsystem(ballHandler);
-
-        final Command ballIn = new IntakeAndIndex(ballHandler);
-        final Command ballOut = new IntakeOut(ballHandler);
-        final Command spitOut = new EverythingOut(ballHandler);
-        final Command shoot = new Shooting(map, drive, vision, ballHandler);
-
-        topTrigger.whenPressed(ballIn);
-        bottomTrigger.whileHeld(ballOut);
-        buttonA.cancelWhenPressed(ballIn);
-        buttonC.toggleWhenPressed(shoot);
-        buttonD.whileHeld(spitOut);
-
-        teleop.schedule();
-    }
-
-    @Override
-    public void teleopPeriodic() {
-        CommandScheduler.getInstance().run();
-    }
+  override fun teleopPeriodic() {
+    CommandScheduler.getInstance().run()
+  }
 }

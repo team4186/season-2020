@@ -1,85 +1,53 @@
-package frc.commands.auto;
+package frc.commands.auto
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.controller.ProfiledPIDController;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.math.Maths;
-import frc.robot.maps.RobotMap;
+import edu.wpi.first.wpilibj.Encoder
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
+import edu.wpi.first.wpilibj2.command.CommandBase
+import frc.math.Maths
+import frc.robot.maps.RobotMap
 
-public class PerfectTurn extends CommandBase {
-    private final DifferentialDrive drive;
-    private ProfiledPIDController turnRight;
-    private ProfiledPIDController turnLeft;
-    private final double angle;
-    private final Encoder leftEncoder;
-    private final Encoder rightEncoder;
-    private double wait;
-    private final RobotMap map;
+class PerfectTurn(
+    private val map: RobotMap,
+    private val drive: DifferentialDrive,
+    private val leftEncoder: Encoder,
+    private val rightEncoder: Encoder,
+    private val angle: Double
+) : CommandBase() {
+  private var turnRight: ProfiledPIDController? = null
+  private var turnLeft: ProfiledPIDController? = null
+  private var wait = 0.0
+  override fun initialize() {
+    wait = 0.0
+    leftEncoder.reset()
+    rightEncoder.reset()
+    turnLeft = map.makePTPIDs()
+    turnRight = map.makePTPIDs()
+  }
 
-    /**
-     * Turns to a certain angle defined by "angle"
-     *
-     * @param drive        The drivetrain.
-     * @param leftEncoder  The drivetrain leftEncoder.
-     * @param rightEncoder The drivetrain rightEncoder.
-     * @param angle        The angle it turns to.
-     */
-
-    public PerfectTurn(
-            RobotMap map,
-            DifferentialDrive drive,
-            Encoder leftEncoder,
-            Encoder rightEncoder,
-            double angle
-    ) {
-        this.map = map;
-        this.drive = drive;
-        this.angle = angle;
-        this.leftEncoder = leftEncoder;
-        this.rightEncoder = rightEncoder;
+  override fun execute() {
+    val setpoint: Double = angle * map.pTMult
+    val rightside = Maths.clamp(turnRight!!.calculate(-rightEncoder.distance, -setpoint), 0.4)
+    val leftside = Maths.clamp(turnLeft!!.calculate(-leftEncoder.distance, setpoint), 0.4)
+    drive.tankDrive(leftside, rightside, false)
+    wait = if (turnRight!!.atGoal() && turnLeft!!.atGoal()) {
+      wait + 1
     }
-
-    @Override
-    public void initialize() {
-        wait = 0;
-
-        leftEncoder.reset();
-        rightEncoder.reset();
-
-        turnLeft = map.makePTPIDs();
-        turnRight = map.makePTPIDs();
+    else {
+      0.0
     }
+  }
 
-    @Override
-    public void execute() {
-        double setpoint = angle * map.getPTMult();
-        double rightside = Maths.clamp(turnRight.calculate(-rightEncoder.getDistance(), -setpoint), 0.4);
-        double leftside = Maths.clamp(turnLeft.calculate(-leftEncoder.getDistance(), setpoint), 0.4);
+  override fun end(interrupted: Boolean) {
+    rightEncoder.reset()
+    leftEncoder.reset()
+    drive.stopMotor()
+    turnRight!!.reset(0.0, 0.0)
+    turnLeft!!.reset(0.0, 0.0)
+    println("Turn Finished!")
+  }
 
-        drive.tankDrive(leftside, rightside, false);
-
-        if (turnRight.atGoal() && turnLeft.atGoal()) {
-            wait = wait + 1;
-        } else {
-            wait = 0;
-        }
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        rightEncoder.reset();
-        leftEncoder.reset();
-
-        drive.stopMotor();
-        turnRight.reset(0, 0);
-        turnLeft.reset(0, 0);
-
-        System.out.println("Turn Finished!");
-    }
-
-    @Override
-    public boolean isFinished() {
-        return wait >= 10;
-    }
+  override fun isFinished(): Boolean {
+    return wait >= 10
+  }
 }

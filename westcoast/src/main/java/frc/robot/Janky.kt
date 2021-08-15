@@ -1,64 +1,56 @@
-package frc.robot;
+package frc.robot
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.maps.JankyMap;
-import frc.robot.maps.RobotMap;
-import frc.subsystems.drive.TeleopDrive;
+import com.analog.adis16448.frc.ADIS16448_IMU
+import edu.wpi.first.networktables.NetworkTableInstance
+import edu.wpi.first.wpilibj.Joystick
+import edu.wpi.first.wpilibj.Spark
+import edu.wpi.first.wpilibj.TimedRobot
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import edu.wpi.first.wpilibj2.command.CommandScheduler
+import frc.robot.maps.JankyMap
+import frc.robot.maps.RobotMap
+import frc.subsystems.drive.TeleopDrive
 
-public class Janky extends TimedRobot {
+class Janky : TimedRobot() {
+  //Robot Map
+  private val map: RobotMap = JankyMap()
 
-    //Robot Map
-    private final RobotMap map = new JankyMap();
+  // Drivetrain
+  private val rightMotor = Spark(0)
+  private val leftMotor = Spark(1)
+  private val drive = DifferentialDrive(leftMotor, rightMotor)
 
-    // Drivetrain
-    private final Spark rightMotor = new Spark(0);
-    private final Spark leftMotor = new Spark(1);
-    private final DifferentialDrive drive = new DifferentialDrive(leftMotor, rightMotor);
+  // Inputs
+  private val joystick = Joystick(0)
 
-    // Inputs
-    private final Joystick joystick = new Joystick(0);
+  // Sensors
+  private val adis = ADIS16448_IMU()
 
-    // Sensors
-    private final ADIS16448_IMU adis = new ADIS16448_IMU();
+  // Commands
+  private val teleop = TeleopDrive(map, drive, joystick)
 
-    // Commands
-    private final TeleopDrive teleop = new TeleopDrive(map, drive, joystick);
-    //private final AdisDrive teleop = new AdisDrive(map, drive, joystick, adis);
+  //private final AdisDrive teleop = new AdisDrive(map, drive, joystick, adis);
+  // Network Table
+  private val inst = NetworkTableInstance.getDefault()
+  private val table = inst.getTable("Jetson")
+  var view1 = table.getEntry("view1")
+  var view2 = table.getEntry("view2")
+  override fun robotInit() {
+    drive.isSafetyEnabled = false
+  }
 
-    // Network Table
-    private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    private final NetworkTable table = inst.getTable("Jetson");
-    NetworkTableEntry view1 = table.getEntry("view1");
-    NetworkTableEntry view2 = table.getEntry("view2");
+  override fun robotPeriodic() {
+    view1.setBoolean(!joystick.getRawButton(5))
+    view2.setBoolean(joystick.getRawButton(5))
+    SmartDashboard.putNumber("ADIS Value", adis.rate)
+  }
 
-    @Override
-    public void robotInit() {
-        drive.setSafetyEnabled(false);
-    }
+  override fun teleopInit() {
+    teleop.schedule()
+  }
 
-    @Override
-    public void robotPeriodic() {
-        view1.setBoolean(!joystick.getRawButton(5));
-        view2.setBoolean(joystick.getRawButton(5));
-        SmartDashboard.putNumber("ADIS Value", adis.getRate());
-    }
-
-    @Override
-    public void teleopInit() {
-        teleop.schedule();
-    }
-
-    @Override
-    public void teleopPeriodic() {
-        CommandScheduler.getInstance().run();
-    }
+  override fun teleopPeriodic() {
+    CommandScheduler.getInstance().run()
+  }
 }

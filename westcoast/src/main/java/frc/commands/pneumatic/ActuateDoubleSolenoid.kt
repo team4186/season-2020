@@ -1,41 +1,23 @@
-package frc.commands.pneumatic;
+package frc.commands.pneumatic
 
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.DoubleSolenoid
+import edu.wpi.first.wpilibj2.command.CommandBase
 
-public class ActuateDoubleSolenoid extends CommandBase {
-    private final DoubleSolenoid solenoid;
-    private final Value direction;
-    private final Value endDirection;
+class ActuateDoubleSolenoid(
+    private val solenoid: DoubleSolenoid,
+    private val direction: DoubleSolenoid.Value,
+    private val endDirection: DoubleSolenoid.Value
+) : CommandBase() {
+  override fun initialize() {}
+  override fun execute() {
+    solenoid.set(direction)
+  }
 
-    public ActuateDoubleSolenoid(
-            DoubleSolenoid solenoid,
-            Value direction,
-            Value endDirection
-    ) {
-        this.direction = direction;
-        this.solenoid = solenoid;
-        this.endDirection = endDirection;
-    }
+  override fun end(interrupted: Boolean) {
+    solenoid.set(endDirection)
+  }
 
-    @Override
-    public void initialize() {
-
-    }
-
-    @Override
-    public void execute() {
-        solenoid.set(direction);
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        solenoid.set(endDirection);
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  override fun isFinished(): Boolean {
+    return false
+  }
 }

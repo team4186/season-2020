@@ -1,51 +1,42 @@
-package frc.commands.motors;
+package frc.commands.motors
 
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.SpeedController
+import edu.wpi.first.wpilibj2.command.CommandBase
 
-public class DistanceMotor extends CommandBase {
-    private final SpeedController motor;
-    private int i;
-    private boolean end;
-    private final
-    double time;
-    private final double speed;
+class DistanceMotor(
+    private val motor: SpeedController,
+    private val speed: Double,
+    time: Double
+) : CommandBase() {
+  private var i = 0
+  private var end = false
+  private val time: Double
+  override fun initialize() {
+    i = 0
+    end = false
+  }
 
-    public DistanceMotor(
-            SpeedController motor,
-            double speed,
-            double time
-    ) {
-        this.motor = motor;
-        this.speed = speed;
-        this.time = time * 50;
+  override fun execute() {
+    if (i <= time) {
+      motor.set(speed)
+      i = i + 1
     }
-
-    @Override
-    public void initialize() {
-        i = 0;
-        end = false;
+    else {
+      end = true
     }
+    println(i)
+  }
 
-    @Override
-    public void execute() {
-        if (i <= time) {
-            motor.set(speed);
-            i = i + 1;
-        } else {
-            end = true;
-        }
-        System.out.println(i);
-    }
+  override fun end(interrupted: Boolean) {
+    motor.stopMotor()
+    i = 0
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-        motor.stopMotor();
-        i = 0;
-    }
+  override fun isFinished(): Boolean {
+    return end
+  }
 
-    @Override
-    public boolean isFinished() {
-        return end;
-    }
+  init {
+    this.time = time * 50
+  }
 }

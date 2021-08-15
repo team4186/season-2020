@@ -1,19 +1,12 @@
-package frc.subsystems.vision;
+package frc.subsystems.vision
 
-public interface VisionRunner {
-    void init();
-
-    void periodic();
-
-    boolean hasTarget();
-
-    double xOffset();
-
-    double getAlignX();
-
-    double yOffset();
-
-    double height();
-
-    double getDistance();
+interface VisionRunner {
+  fun init()
+  fun periodic()
+  fun hasTarget(): Boolean
+  fun xOffset(): Double
+  val alignX: Double
+  fun yOffset(): Double
+  fun height(): Double
+  val distance: Double
 }

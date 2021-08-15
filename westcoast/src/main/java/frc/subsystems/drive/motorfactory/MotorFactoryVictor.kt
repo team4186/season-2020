@@ -1,17 +1,15 @@
-package frc.subsystems.drive.motorfactory;
+package frc.subsystems.drive.motorfactory
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import edu.wpi.first.wpilibj.SpeedController;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX
+import edu.wpi.first.wpilibj.SpeedController
 
-public class MotorFactoryVictor implements MotorFactory {
-    public SpeedController create(int channelMain, int channel1, int channel2) {
-        WPI_VictorSPX motorMain = new WPI_VictorSPX(channelMain);
-        WPI_VictorSPX motor1 = new WPI_VictorSPX(channel1);
-        WPI_VictorSPX motor2 = new WPI_VictorSPX(channel2);
-
-        motor1.follow(motorMain);
-        motor2.follow(motorMain);
-
-        return motorMain;
-    }
+class MotorFactoryVictor : MotorFactory {
+  override fun create(channelMain: Int, channel1: Int, channel2: Int): SpeedController {
+    val motorMain = WPI_VictorSPX(channelMain)
+    val motor1 = WPI_VictorSPX(channel1)
+    val motor2 = WPI_VictorSPX(channel2)
+    motor1.follow(motorMain)
+    motor2.follow(motorMain)
+    return motorMain
+  }
 }

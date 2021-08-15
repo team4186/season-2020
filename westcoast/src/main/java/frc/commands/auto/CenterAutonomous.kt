@@ -1,32 +1,34 @@
-package frc.commands.auto;
+package frc.commands.auto
 
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.maps.RobotMap;
-import frc.subsystems.BallHandlingSubsystem;
-import frc.subsystems.vision.VisionRunner;
-import frc.subsystems.vision.targeting.AlignToTarget;
+import edu.wpi.first.wpilibj.Encoder
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
+import edu.wpi.first.wpilibj2.command.WaitCommand
+import frc.commands.auto.demo.Square
+import edu.wpi.first.wpilibj2.command.CommandBase
+import edu.wpi.first.wpilibj.controller.ProfiledPIDController
+import frc.robot.maps.RobotMap
+import frc.subsystems.BallHandlingSubsystem
+import frc.subsystems.vision.VisionRunner
+import frc.subsystems.vision.targeting.AlignToTarget
 
-public class CenterAutonomous extends SequentialCommandGroup {
-
-    public CenterAutonomous(
-            RobotMap map,
-            DifferentialDrive drive,
-            Encoder leftEncoder,
-            Encoder rightEncoder,
-            double distance,
-            double angle,
-            VisionRunner vision,
-            BallHandlingSubsystem ballHandler
-    ) {
-        addCommands(
-                new LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
-                new WaitCommand(1),
-                new PerfectTurn(map, drive, leftEncoder, rightEncoder, angle),
-                new WaitCommand(1),
-                new AlignToTarget(map, drive, vision)
-        );
-    }
+class CenterAutonomous(
+    map: RobotMap,
+    drive: DifferentialDrive,
+    leftEncoder: Encoder,
+    rightEncoder: Encoder,
+    distance: Double,
+    angle: Double,
+    vision: VisionRunner?,
+    ballHandler: BallHandlingSubsystem?
+) : SequentialCommandGroup() {
+  init {
+    addCommands(
+        LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
+        WaitCommand(1.0),
+        PerfectTurn(map, drive, leftEncoder, rightEncoder, angle),
+        WaitCommand(1.0),
+        AlignToTarget(map, drive, vision!!)
+    )
+  }
 }

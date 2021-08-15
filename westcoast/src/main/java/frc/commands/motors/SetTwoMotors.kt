@@ -1,53 +1,36 @@
-package frc.commands.motors;
+package frc.commands.motors
 
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj.SpeedController
+import edu.wpi.first.wpilibj2.command.CommandBase
 
-public class SetTwoMotors extends CommandBase {
-    private final SpeedController mainMotor;
-    private final SpeedController reversibleMotor;
-    private final double speed;
-    private final boolean inverted;
+class SetTwoMotors(
+    private val mainMotor: SpeedController,
+    private val reversibleMotor: SpeedController,
+    private val speed: Double,
+    private val inverted: Boolean
+) : CommandBase() {
+  constructor(
+      mainMotor: SpeedController,
+      secondMotor: SpeedController,
+      speed: Double
+  ) : this(mainMotor, secondMotor, speed, false) {
+  }
 
-    public SetTwoMotors(
-            SpeedController mainMotor,
-            SpeedController reversibleMotor,
-            double speed,
-            boolean isInverted
-    ) {
-        this.mainMotor = mainMotor;
-        this.reversibleMotor = reversibleMotor;
-        this.speed = speed;
-        this.inverted = isInverted;
-    }
+  override fun initialize() {
+    reversibleMotor.inverted = inverted
+  }
 
-    public SetTwoMotors(
-            SpeedController mainMotor,
-            SpeedController secondMotor,
-            double speed
-    ) {
-        this(mainMotor, secondMotor, speed, false);
-    }
+  override fun execute() {
+    mainMotor.set(speed)
+    reversibleMotor.set(speed)
+  }
 
-    @Override
-    public void initialize() {
-        reversibleMotor.setInverted(inverted);
-    }
+  override fun end(interrupted: Boolean) {
+    mainMotor.stopMotor()
+    reversibleMotor.stopMotor()
+  }
 
-    @Override
-    public void execute() {
-        mainMotor.set(speed);
-        reversibleMotor.set(speed);
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        mainMotor.stopMotor();
-        reversibleMotor.stopMotor();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  override fun isFinished(): Boolean {
+    return false
+  }
 }

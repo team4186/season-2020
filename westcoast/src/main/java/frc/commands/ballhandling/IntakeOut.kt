@@ -1,34 +1,25 @@
-package frc.commands.ballhandling;
+package frc.commands.ballhandling
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.subsystems.BallHandlingSubsystem;
+import edu.wpi.first.wpilibj2.command.CommandBase
+import frc.subsystems.BallHandlingSubsystem
 
-public class IntakeOut extends CommandBase {
-    private final BallHandlingSubsystem ball;
+class IntakeOut(
+    private val ball: BallHandlingSubsystem
+) : CommandBase() {
+  override fun initialize() {}
+  override fun execute() {
+    ball.runintakeMotor(-0.4)
+  }
 
-    public IntakeOut(
-            BallHandlingSubsystem ballHandler
-    ) {
-        this.ball = ballHandler;
-        addRequirements(ballHandler);
-    }
+  override fun end(interrupted: Boolean) {
+    ball.stopMotors()
+  }
 
-    @Override
-    public void initialize() {
-    }
+  override fun isFinished(): Boolean {
+    return false
+  }
 
-    @Override
-    public void execute() {
-        ball.runintakeMotor(-0.4);
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        ball.stopMotors();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  init {
+    addRequirements(ball)
+  }
 }

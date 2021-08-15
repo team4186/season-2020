@@ -1,38 +1,31 @@
-package frc.commands.ballhandling;
+package frc.commands.ballhandling
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.subsystems.BallHandlingSubsystem;
+import edu.wpi.first.wpilibj2.command.CommandBase
+import frc.subsystems.BallHandlingSubsystem
 
-public class Shoot extends CommandBase {
-    private final BallHandlingSubsystem ball;
+class Shoot(
+    private val ball: BallHandlingSubsystem
+) : CommandBase() {
+  override fun initialize() {
+    ball.shooterTune()
+  }
 
-    public Shoot(
-            BallHandlingSubsystem ballHandler
-    ) {
-        this.ball = ballHandler;
-        addRequirements(ball);
-    }
+  override fun execute() {
+    ball.runShooter(0.78)
+    ball.runmagMotor(0.3)
+    ball.runindexMotor(0.25)
+  }
 
-    @Override
-    public void initialize() {
-        ball.shooterTune();
-    }
+  override fun end(interrupted: Boolean) {
+    ball.stopMotors()
+    ball.resetIndexCount()
+  }
 
-    @Override
-    public void execute() {
-        ball.runShooter(0.78);
-        ball.runmagMotor(0.3);
-        ball.runindexMotor(0.25);
-    }
+  override fun isFinished(): Boolean {
+    return false
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-        ball.stopMotors();
-        ball.resetIndexCount();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  init {
+    addRequirements(ball)
+  }
 }

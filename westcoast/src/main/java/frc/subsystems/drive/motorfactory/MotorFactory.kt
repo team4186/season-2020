@@ -1,7 +1,7 @@
-package frc.subsystems.drive.motorfactory;
+package frc.subsystems.drive.motorfactory
 
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.SpeedController
 
-public interface MotorFactory {
-    SpeedController create(int channelMain, int channel1, int channel2);
+interface MotorFactory {
+  fun create(channelMain: Int, channel1: Int, channel2: Int): SpeedController
 }

@@ -1,72 +1,47 @@
-package frc.subsystems.drive;
+package frc.subsystems.drive
 
-import com.analog.adis16448.frc.ADIS16448_IMU;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.math.Maths;
-import frc.robot.maps.RobotMap;
+import com.analog.adis16448.frc.ADIS16448_IMU
+import edu.wpi.first.wpilibj.Joystick
+import edu.wpi.first.wpilibj.controller.PIDController
+import edu.wpi.first.wpilibj.drive.DifferentialDrive
+import edu.wpi.first.wpilibj2.command.CommandBase
+import frc.math.Maths.attenuate
+import frc.math.Maths.joyclean
+import frc.math.Maths.pidclean
+import frc.robot.maps.RobotMap
 
+class AdisDrive(
+    private val map: RobotMap,
+    private val drive: DifferentialDrive,
+    private val joy: Joystick,
+    private val ahrs: ADIS16448_IMU
+) : CommandBase() {
+  private var pid: PIDController? = null
+  private var direction = 0.0
+  override fun initialize() {
+    direction = if (map.reversed) -1.0 else 1.0
+    pid = map.makeDrivePIDs()
+    ahrs.reset()
+  }
 
-public class AdisDrive extends CommandBase {
-    private final DifferentialDrive drive;
-    private PIDController pid;
-    private final Joystick joy;
-    private final ADIS16448_IMU ahrs;
-    private double direction;
-    private final RobotMap map;
+  override fun execute() {
+    val input = pidclean(scale(ahrs.rate), 6.0, 0.3)
+    val pidraw = pid!!.calculate(input, joyclean(direction * joy.x, 0.05) * 4.6)
+    val output = pidclean(-pidraw, 0.8, 0.05)
+    drive.arcadeDrive(attenuate(direction * joy.y), output, false)
+  }
 
-    /**
-     * Driving more accurately.
-     *
-     * @param drive    The drivetrain.
-     * @param joystick The joystick.
-     * @param adis     The navX.
-     */
-    public AdisDrive(
-            RobotMap map,
-            DifferentialDrive drive,
-            Joystick joystick,
-            ADIS16448_IMU adis
+  override fun end(interrupted: Boolean) {
+    drive.stopMotor()
+    ahrs.reset()
+    pid!!.reset()
+  }
 
-    ) {
-        this.map = map;
-        this.drive = drive;
-        this.joy = joystick;
-        this.ahrs = adis;
-    }
+  override fun isFinished(): Boolean {
+    return false
+  }
 
-    @Override
-    public void initialize() {
-        direction = map.getReversed() ? -1.0 : 1.0;
-
-        pid = map.makeDrivePIDs();
-
-        ahrs.reset();
-    }
-
-    @Override
-    public void execute() {
-        double input = Maths.pidclean(scale(ahrs.getRate()), 6.0, 0.3);
-        double pidraw = pid.calculate(input, Maths.joyclean(direction * joy.getX(), 0.05) * 4.6);
-        double output = Maths.pidclean(-pidraw, 0.8, 0.05);
-        drive.arcadeDrive(Maths.attenuate(direction * joy.getY()), output, false);
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        drive.stopMotor();
-        ahrs.reset();
-        pid.reset();
-    }
-
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
-
-    private double scale(double value) {
-      return (value / 100.0);
-    }
+  private fun scale(value: Double): Double {
+    return value / 100.0
+  }
 }

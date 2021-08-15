@@ -1,27 +1,19 @@
-package frc.commands.motors;
+package frc.commands.motors
 
-import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.SpeedController
+import edu.wpi.first.wpilibj.SpeedControllerGroup
 
-public class StopAllMotors {
-    private final SpeedControllerGroup motors;
+class StopAllMotors @JvmOverloads constructor(
+    motor1: SpeedController?,
+    motor2: SpeedController?,
+    motor3: SpeedController? = motor1
+) {
+  private val motors: SpeedControllerGroup
+  fun stop() {
+    motors.stopMotor()
+  }
 
-    public StopAllMotors(
-            SpeedController motor1,
-            SpeedController motor2,
-            SpeedController motor3
-    ) {
-        motors = new SpeedControllerGroup(motor1, motor2, motor3);
-    }
-
-    public StopAllMotors(
-            SpeedController motor1,
-            SpeedController motor2
-    ) {
-        this(motor1, motor2, motor1);
-    }
-
-    public void stop() {
-        motors.stopMotor();
-    }
+  init {
+    motors = SpeedControllerGroup(motor1, motor2, motor3)
+  }
 }
