@@ -15,8 +15,4 @@ class SetMotor(
   override fun end(interrupted: Boolean) {
     motor.stopMotor()
   }
-
-  override fun isFinished(): Boolean {
-    return false
-  }
 }

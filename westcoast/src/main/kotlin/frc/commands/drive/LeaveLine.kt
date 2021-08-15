@@ -1,50 +1,41 @@
 package frc.commands.drive
 
-import edu.wpi.first.wpilibj.Encoder
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
-import edu.wpi.first.wpilibj2.command.CommandBase
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController
-import frc.math.Maths
-import frc.robot.maps.RobotMap
+import edu.wpi.first.wpilibj2.command.CommandBase
+import frc.robot.data.DoubleParameter
+import frc.subsystems.DriveTrainSubsystem
 
 class LeaveLine(
-    private val map: RobotMap,
-    private val drive: DifferentialDrive,
-    private val leftEncoder: Encoder,
-    private val rightEncoder: Encoder,
-    private val dist: Double
+    private val distance: Double,
+    private val distanceMultiplier: DoubleParameter<LeaveLine>,
+    private val left: ProfiledPIDController,
+    private val right: ProfiledPIDController,
+    private val drive: DriveTrainSubsystem,
 ) : CommandBase() {
-  private var left: ProfiledPIDController? = null
-  private var right: ProfiledPIDController? = null
-  private var wait = 0.0
+  private var wait = 0
   override fun initialize() {
-    wait = 0.0
-    rightEncoder.reset()
-    leftEncoder.reset()
-    right = map.makeLLPIDs()
-    left = map.makeLLPIDs()
+    wait = 0
+    drive.rightEncoder.reset()
+    drive.leftEncoder.reset()
+    right.reset(0.0, 0.0)
+    left.reset(0.0, 0.0)
   }
 
   override fun execute() {
-    val distance: Double = dist * map.lLMult
-    val rightOut = Maths.clamp(right!!.calculate(rightEncoder.distance, distance), 0.4)
-    val leftOut = Maths.clamp(left!!.calculate(leftEncoder.distance, distance), 0.4)
-    drive.tankDrive(-leftOut, -rightOut, false)
-    wait = if (right!!.atGoal() && left!!.atGoal()) {
+    val distance = distance * distanceMultiplier.value
+    val rightOut = right.calculate(drive.rightEncoder.distance, distance).coerceIn(-0.4, 0.4)
+    val leftOut = left.calculate(drive.leftEncoder.distance, distance).coerceIn(-0.4, 0.4)
+    drive.tank(-leftOut, -rightOut, false)
+    wait = if (right.atGoal() && left.atGoal()) {
       wait + 1
     }
     else {
-      0.0
+      0
     }
   }
 
   override fun end(interrupted: Boolean) {
-    rightEncoder.reset()
-    leftEncoder.reset()
-    drive.stopMotor()
-    right!!.reset(0.0, 0.0)
-    left!!.reset(0.0, 0.0)
-    println("Line Left!")
+    drive.stop()
   }
 
   override fun isFinished(): Boolean {

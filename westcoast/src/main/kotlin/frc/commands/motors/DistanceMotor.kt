@@ -6,37 +6,27 @@ import edu.wpi.first.wpilibj2.command.CommandBase
 class DistanceMotor(
     private val motor: SpeedController,
     private val speed: Double,
-    time: Double
+    private val time: Double,
+    private val timeMultiplier: Double = 50.0,
 ) : CommandBase() {
-  private var i = 0
-  private var end = false
-  private val time: Double
+  private var frame = 0
   override fun initialize() {
-    i = 0
-    end = false
+    frame = 0
   }
 
   override fun execute() {
-    if (i <= time) {
+    if (!isFinished) {
       motor.set(speed)
-      i = i + 1
+      frame += 1
     }
-    else {
-      end = true
-    }
-    println(i)
+    println(frame)
   }
 
   override fun end(interrupted: Boolean) {
     motor.stopMotor()
-    i = 0
   }
 
   override fun isFinished(): Boolean {
-    return end
-  }
-
-  init {
-    this.time = time * 50
+    return frame > time * timeMultiplier
   }
 }

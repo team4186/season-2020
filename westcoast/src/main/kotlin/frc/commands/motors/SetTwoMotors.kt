@@ -7,14 +7,8 @@ class SetTwoMotors(
     private val mainMotor: SpeedController,
     private val reversibleMotor: SpeedController,
     private val speed: Double,
-    private val inverted: Boolean
+    private val inverted: Boolean = false
 ) : CommandBase() {
-  constructor(
-      mainMotor: SpeedController,
-      secondMotor: SpeedController,
-      speed: Double
-  ) : this(mainMotor, secondMotor, speed, false) {
-  }
 
   override fun initialize() {
     reversibleMotor.inverted = inverted

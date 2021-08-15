@@ -8,16 +8,11 @@ class ActuateDoubleSolenoid(
     private val direction: DoubleSolenoid.Value,
     private val endDirection: DoubleSolenoid.Value
 ) : CommandBase() {
-  override fun initialize() {}
   override fun execute() {
     solenoid.set(direction)
   }
 
   override fun end(interrupted: Boolean) {
     solenoid.set(endDirection)
-  }
-
-  override fun isFinished(): Boolean {
-    return false
   }
 }

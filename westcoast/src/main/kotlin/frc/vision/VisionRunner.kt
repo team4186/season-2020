@@ -1,12 +1,12 @@
 package frc.vision
 
 interface VisionRunner {
-  fun init()
+  fun init() {}
   fun periodic()
-  fun hasTarget(): Boolean
-  fun xOffset(): Double
+  val hasTarget: Boolean
+  val xOffset: Double
   val alignX: Double
-  fun yOffset(): Double
-  fun height(): Double
+  val yOffset: Double
+  val height: Double
   val distance: Double
 }

@@ -4,28 +4,24 @@ import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.subsystems.MagazineSubsystem
 
 class Shoot(
-    private val ball: MagazineSubsystem
+    private val magazine: MagazineSubsystem
 ) : CommandBase() {
   override fun initialize() {
-    ball.shooterTune()
+    magazine.shooterTune()
   }
 
   override fun execute() {
-    ball.runShooter(0.78)
-    ball.runmagMotor(0.3)
-    ball.runindexMotor(0.25)
+    magazine.runShooter(0.78)
+    magazine.runMagMotor(0.3)
+    magazine.runIndexMotor(0.25)
   }
 
   override fun end(interrupted: Boolean) {
-    ball.stopMotors()
-    ball.resetIndexCount()
-  }
-
-  override fun isFinished(): Boolean {
-    return false
+    magazine.stopMotors()
+    magazine.resetIndexCount()
   }
 
   init {
-    addRequirements(ball)
+    addRequirements(magazine)
   }
 }

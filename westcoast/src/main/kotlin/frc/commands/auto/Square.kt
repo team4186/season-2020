@@ -1,45 +1,27 @@
 package frc.commands.auto
 
-import edu.wpi.first.wpilibj.Encoder
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.WaitCommand
-import frc.commands.drive.LeaveLine
-import frc.commands.drive.PerfectTurn
-import frc.robot.maps.RobotMap
+import frc.robot.data.Data
 
-class Square
-/**
- * Runs a group of commands sequentially.
- *
- * @param drive        The drivetrain.
- * @param rightEncoder The drivetrain rightEncoder.
- * @param leftEncoder  The drivetrain leftEncoder.
- * @param distance     The distance for a command to go to.
- * @param rotation     The angle for a command to turn to.
- */
-(
-    map: RobotMap,
-    drive: DifferentialDrive,
-    rightEncoder: Encoder,
-    leftEncoder: Encoder,
-    distance: Double,
-    rotation: Double
-) : SequentialCommandGroup(
-    LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
-    WaitCommand(1.0),
-    PerfectTurn(map, drive, leftEncoder, rightEncoder, rotation),
-    WaitCommand(1.0),
-    LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
-    WaitCommand(1.0),
-    PerfectTurn(map, drive, leftEncoder, rightEncoder, rotation),
-    WaitCommand(1.0),
-    LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
-    WaitCommand(1.0),
-    PerfectTurn(map, drive, leftEncoder, rightEncoder, rotation),
-    WaitCommand(1.0),
-    LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
-    WaitCommand(1.0),
-    PerfectTurn(map, drive, leftEncoder, rightEncoder, rotation),
-    WaitCommand(1.0)
-)
+fun Data.square(size: Double) =
+    SequentialCommandGroup(
+        commands.drive.leaveLine(size),
+        WaitCommand(1.0),
+        commands.drive.perfectTurn(90.0),
+        WaitCommand(1.0),
+
+        commands.drive.leaveLine(size),
+        WaitCommand(1.0),
+        commands.drive.perfectTurn(90.0),
+        WaitCommand(1.0),
+
+        commands.drive.leaveLine(size),
+        WaitCommand(1.0),
+        commands.drive.perfectTurn(90.0),
+        WaitCommand(1.0),
+
+        commands.drive.leaveLine(size),
+        WaitCommand(1.0),
+        commands.drive.perfectTurn(90.0),
+    )

@@ -1,42 +1,41 @@
 package frc.commands.drive
 
 import edu.wpi.first.wpilibj.Joystick
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.CommandBase
-import frc.robot.maps.RobotMap
-import kotlin.math.abs
+import edu.wpi.first.wpilibj2.command.button.Button
+import frc.subsystems.DriveTrainSubsystem
 import kotlin.math.pow
 import kotlin.math.sign
 
 class TeleopDrive(
-    private val map: RobotMap,
-    private val drive: DifferentialDrive,
-    private val joy: Joystick
+    private val forward: Double,
+    private val joystick: Joystick,
+    private val attenuate: Button,
+    private val drive: DriveTrainSubsystem,
 ) : CommandBase() {
-  private var direction = 0.0
+
+  private var processRef = ::full
+
+  init {
+    addRequirements(drive)
+  }
+
   override fun initialize() {
-    direction = if (map.reversed) -1.0 else 1.0
+    attenuate
+        .whenPressed(Runnable { processRef = ::attenuated })
+        .whenReleased(Runnable { processRef = ::full })
   }
 
   override fun execute() {
-    drive.arcadeDrive(attenuate(direction * joy.y), attenuate(-direction * joy.x))
+    val process = processRef // NOTE commiting to current processRef value
+    drive.arcade(process(forward * joystick.y), process(-forward * joystick.x))
   }
 
   override fun end(interrupted: Boolean) {
-    drive.stopMotor()
+    drive.stop()
   }
 
-  override fun isFinished(): Boolean {
-    return false
-  }
 
-  private fun attenuate(value: Double): Double {
-    val raw = joy.getRawButton(5)
-    return if (raw) {
-      0.5 * value
-    }
-    else {
-      sign(value) * abs(value).pow(2.0)
-    }
-  }
+  private fun full(value: Double): Double = sign(value) * value.pow(2.0)
+  private fun attenuated(value: Double): Double = 0.5 * value
 }

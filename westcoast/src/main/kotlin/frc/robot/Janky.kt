@@ -2,24 +2,28 @@ package frc.robot
 
 import com.analog.adis16448.frc.ADIS16448_IMU
 import edu.wpi.first.networktables.NetworkTableInstance
+import edu.wpi.first.wpilibj.Encoder
 import edu.wpi.first.wpilibj.Joystick
 import edu.wpi.first.wpilibj.Spark
 import edu.wpi.first.wpilibj.TimedRobot
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.CommandScheduler
-import frc.robot.maps.JankyMap
-import frc.robot.maps.RobotMap
+import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.commands.drive.TeleopDrive
+import frc.hardware.SaitekX52Buttons
+import frc.subsystems.DriveTrainSubsystem
+import frc.vision.RioVisionRunner
 
 class Janky : TimedRobot() {
-  //Robot Map
-  private val map: RobotMap = JankyMap()
-
   // Drivetrain
-  private val rightMotor = Spark(0)
-  private val leftMotor = Spark(1)
-  private val drive = DifferentialDrive(leftMotor, rightMotor)
+  private val drive = DriveTrainSubsystem(
+      left = Spark(1),
+      right = Spark(0),
+      leftEncoder = Encoder(9, 8).apply { distancePerPulse = 0.390625 },
+      rightEncoder = Encoder(6, 7).apply { distancePerPulse = 0.390625 },
+      gyro = ADIS16448_IMU(),
+      vision = RioVisionRunner(),
+  )
 
   // Inputs
   private val joystick = Joystick(0)
@@ -27,17 +31,31 @@ class Janky : TimedRobot() {
   // Sensors
   private val adis = ADIS16448_IMU()
 
-  // Commands
-  private val teleop = TeleopDrive(map, drive, joystick)
+  private val teleop = TeleopDrive(
+      forward = 1.0,
+      joystick = joystick,
+      attenuate = JoystickButton(joystick, SaitekX52Buttons.FIRE_C + 1),
+      drive = drive,
+  )
 
-  //private final AdisDrive teleop = new AdisDrive(map, drive, joystick, adis);
+//  private val teleop = GyroDrive(
+//      forward = 1.0,
+//      controller = PIDController(0.2, 0.0, 0.0).apply {
+//        setTolerance(0.5)
+//        disableContinuousInput()
+//      },
+//      joystick = joystick,
+//      drive = drive,
+//  )
+
   // Network Table
   private val inst = NetworkTableInstance.getDefault()
   private val table = inst.getTable("Jetson")
-  var view1 = table.getEntry("view1")
-  var view2 = table.getEntry("view2")
+  private val view1 = table.getEntry("view1")
+  private val view2 = table.getEntry("view2")
+
   override fun robotInit() {
-    drive.isSafetyEnabled = false
+    drive.initialize()
   }
 
   override fun robotPeriodic() {

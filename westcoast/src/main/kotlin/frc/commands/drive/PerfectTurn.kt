@@ -1,50 +1,43 @@
 package frc.commands.drive
 
-import edu.wpi.first.wpilibj.Encoder
 import edu.wpi.first.wpilibj.controller.ProfiledPIDController
-import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.CommandBase
-import frc.math.Maths
-import frc.robot.maps.RobotMap
+import frc.robot.data.DoubleParameter
+import frc.subsystems.DriveTrainSubsystem
 
 class PerfectTurn(
-    private val map: RobotMap,
-    private val drive: DifferentialDrive,
-    private val leftEncoder: Encoder,
-    private val rightEncoder: Encoder,
-    private val angle: Double
+    private val angle: Double,
+    private val angleMultiplier: DoubleParameter<PerfectTurn>,
+    private val right: ProfiledPIDController,
+    private val left: ProfiledPIDController,
+    private val drive: DriveTrainSubsystem,
 ) : CommandBase() {
-  private var turnRight: ProfiledPIDController? = null
-  private var turnLeft: ProfiledPIDController? = null
-  private var wait = 0.0
+  private var wait = 0
   override fun initialize() {
-    wait = 0.0
-    leftEncoder.reset()
-    rightEncoder.reset()
-    turnLeft = map.makePTPIDs()
-    turnRight = map.makePTPIDs()
+    wait = 0
+    drive.leftEncoder.reset()
+    drive.rightEncoder.reset()
+    right.reset(0.0, 0.0)
+    left.reset(0.0, 0.0)
   }
 
   override fun execute() {
-    val setpoint: Double = angle * map.pTMult
-    val rightside = Maths.clamp(turnRight!!.calculate(-rightEncoder.distance, -setpoint), 0.4)
-    val leftside = Maths.clamp(turnLeft!!.calculate(-leftEncoder.distance, setpoint), 0.4)
-    drive.tankDrive(leftside, rightside, false)
-    wait = if (turnRight!!.atGoal() && turnLeft!!.atGoal()) {
+    val setpoint = angle * angleMultiplier.value
+    drive.tank(
+        left.calculate(-drive.leftEncoder.distance, setpoint).coerceIn(-0.4, 0.4),
+        right.calculate(-drive.rightEncoder.distance, -setpoint).coerceIn(-0.4, 0.4),
+        squareInputs = false
+    )
+    wait = if (right.atGoal() && left.atGoal()) {
       wait + 1
     }
     else {
-      0.0
+      0
     }
   }
 
   override fun end(interrupted: Boolean) {
-    rightEncoder.reset()
-    leftEncoder.reset()
-    drive.stopMotor()
-    turnRight!!.reset(0.0, 0.0)
-    turnLeft!!.reset(0.0, 0.0)
-    println("Turn Finished!")
+    drive.stop()
   }
 
   override fun isFinished(): Boolean {

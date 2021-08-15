@@ -1,19 +1,16 @@
 package frc.commands.motors
 
 import edu.wpi.first.wpilibj.SpeedController
-import edu.wpi.first.wpilibj.SpeedControllerGroup
+import edu.wpi.first.wpilibj2.command.InstantCommand
 
-class StopAllMotors @JvmOverloads constructor(
-    motor1: SpeedController?,
-    motor2: SpeedController?,
-    motor3: SpeedController? = motor1
-) {
-  private val motors: SpeedControllerGroup
-  fun stop() {
-    motors.stopMotor()
-  }
-
-  init {
-    motors = SpeedControllerGroup(motor1, motor2, motor3)
+class StopAllMotors constructor(
+    private val motor1: SpeedController,
+    private val motor2: SpeedController,
+    private val motor3: SpeedController,
+) : InstantCommand() {
+  override fun execute() {
+    motor1.stopMotor()
+    motor2.stopMotor()
+    motor3.stopMotor()
   }
 }
