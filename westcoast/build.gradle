@@ -1,6 +1,7 @@
 import edu.wpi.first.gradlerio.GradleRIOPlugin
 
 plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.5.21"
     id "java"
     id "edu.wpi.first.GradleRIO" version "2021.3.1"
 }
@@ -8,17 +9,11 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
-def ROBOT_MAIN_CLASS = "frc.robot.Main"
+def ROBOT_MAIN_CLASS = "frc.robot.MainKt"
 
-// Define my targets (RoboRIO) and artifacts (deployable files)
-// This is added by GradleRIO's backing project EmbeddedTools.
 deploy {
     targets {
         roboRIO("roborio") {
-            // Team number is loaded either from the .wpilib/wpilib_preferences.json
-            // or from command line. If not found an exception will be thrown.
-            // You can use getTeamOrDefault(team) instead of getTeamNumber if you
-            // want to store a team number in this file.
             team = frc.getTeamOrDefault(4186)
         }
     }
@@ -28,22 +23,19 @@ deploy {
             // Debug can be overridden by command line, for use with VSCode
             debug = frc.getDebugOrDefault(false)
         }
+
         // Built in artifact to deploy arbitrary files to the roboRIO.
-        fileTreeArtifact('frcStaticFileDeploy') {
+        fileTreeArtifact("frcStaticFileDeploy") {
             // The directory below is the local directory to deploy
-            files = fileTree(dir: 'src/main/deploy')
+            files = fileTree(dir: "src/main/deploy")
+
             // Deploy to RoboRIO target, into /home/lvuser/deploy
             targets << "roborio"
-            directory = '/home/lvuser/deploy'
+            directory = "/home/lvuser/deploy"
         }
     }
 }
 
-// Set this to true to enable desktop support.
-def includeDesktopSupport = true
-
-// Defining my dependencies. In this case, WPILib (+ friends), and vendor libraries.
-// Also defines JUnit 4.
 dependencies {
     implementation wpi.deps.wpilib()
     nativeZip wpi.deps.wpilibJni(wpi.platforms.roborio)
@@ -54,24 +46,25 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    testImplementation 'junit:junit:4.13.2'
+    // We need to add the Kotlin stdlib in order to use most Kotlin language features.
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.5.21'
 
-    // Enable simulation gui support. Must check the box in vscode to enable support
-    // upon debugging
     simulation wpi.deps.sim.gui(wpi.platforms.desktop, false)
 }
 
-// Setting up my Jar File. In this case, adding all libraries into the main jar ('fat jar')
-// in order to make them all available at runtime. Also adding the manifest so WPILib
-// knows where to look for our Robot Class.
 jar {
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
     manifest GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
 }
 
+sim {
+    // Sets the websocket client remote host.
+    // envVar "HALSIMWS_HOST", "10.0.0.2"
+}
+
 repositories {
     maven {
-        url 'https://repo.maven.apache.org/maven2'
-        name 'Maven Central'
+        url "https://repo.maven.apache.org/maven2"
+        name "Maven Central"
     }
 }
