@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.robot.maps.RobotMap
 import frc.subsystems.BallHandlingSubsystem
-import frc.subsystems.vision.VisionRunner
-import frc.subsystems.vision.targeting.AlignToTarget
-import frc.subsystems.vision.targeting.StayOnTarget
+import frc.subsystems.VisionRunner
+import frc.subsystems.targeting.AlignToTarget
+import frc.subsystems.targeting.StayOnTarget
 
 class Shooting(map: RobotMap?, drive: DifferentialDrive?, vision: VisionRunner?, ballHandler: BallHandlingSubsystem) : SequentialCommandGroup() {
   init {

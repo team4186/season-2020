@@ -1,8 +1,9 @@
-package frc.subsystems.vision
+package frc.subsystems
 
 import edu.wpi.first.cameraserver.CameraServer
 import edu.wpi.first.vision.VisionThread
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
+import frc.subsystems.vision.GripPipeline
 import org.opencv.imgproc.Imgproc
 
 class RioVisionRunner : VisionRunner {

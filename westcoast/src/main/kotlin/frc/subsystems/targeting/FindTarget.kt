@@ -1,8 +1,8 @@
-package frc.subsystems.vision.targeting
+package frc.subsystems.targeting
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.CommandBase
-import frc.subsystems.vision.VisionRunner
+import frc.subsystems.VisionRunner
 
 class FindTarget(
     private val drive: DifferentialDrive,

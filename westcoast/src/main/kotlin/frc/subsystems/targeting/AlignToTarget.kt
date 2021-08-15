@@ -1,11 +1,11 @@
-package frc.subsystems.vision.targeting
+package frc.subsystems.targeting
 
 import edu.wpi.first.wpilibj.controller.PIDController
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.math.Maths.clamp
 import frc.robot.maps.RobotMap
-import frc.subsystems.vision.VisionRunner
+import frc.subsystems.VisionRunner
 
 class AlignToTarget
 /**

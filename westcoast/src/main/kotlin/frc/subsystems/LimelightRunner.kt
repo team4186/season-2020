@@ -1,4 +1,4 @@
-package frc.subsystems.vision
+package frc.subsystems
 
 import edu.wpi.first.networktables.NetworkTableInstance
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard

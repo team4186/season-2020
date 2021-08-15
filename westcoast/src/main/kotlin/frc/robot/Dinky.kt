@@ -16,8 +16,8 @@ import frc.subsystems.BallHandlingSubsystem
 import frc.subsystems.drive.TeleopDrive
 import frc.subsystems.drive.motorfactory.MotorFactory
 import frc.subsystems.drive.motorfactory.MotorFactoryHybrid
-import frc.subsystems.vision.RioVisionRunner
-import frc.subsystems.vision.VisionRunner
+import frc.subsystems.RioVisionRunner
+import frc.subsystems.VisionRunner
 
 class Dinky : TimedRobot() {
   // Robot Map

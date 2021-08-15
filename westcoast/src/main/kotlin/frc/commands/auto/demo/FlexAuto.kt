@@ -8,8 +8,8 @@ import frc.commands.auto.LeaveLine
 import frc.commands.auto.PerfectTurn
 import frc.robot.maps.RobotMap
 import frc.subsystems.BallHandlingSubsystem
-import frc.subsystems.vision.VisionRunner
-import frc.subsystems.vision.targeting.AlignToTarget
+import frc.subsystems.VisionRunner
+import frc.subsystems.targeting.AlignToTarget
 
 class FlexAuto(
     map: RobotMap,

@@ -1,30 +1,34 @@
-package frc.subsystems.vision.targeting
+package frc.subsystems.targeting
 
 import edu.wpi.first.wpilibj.controller.PIDController
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.CommandBase
 import frc.math.Maths.clamp
 import frc.robot.maps.RobotMap
-import frc.subsystems.vision.VisionRunner
+import frc.subsystems.VisionRunner
 
-class StayOnTarget(
+class ConstantlyAlignToTarget(
     private val map: RobotMap,
     private val drive: DifferentialDrive,
     private val vision: VisionRunner
 ) : CommandBase() {
-  private var pid: PIDController? = null
+  private var turn: PIDController? = null
+  private var forward: PIDController? = null
   override fun initialize() {
-    pid = map.makeStayOnTargetPIDs()
+    turn = map.makeTurnCAlignPIDs()
+    forward = map.makeForwardCAlignPIDs()
   }
 
   override fun execute() {
     val value = vision.alignX
-    val turn = clamp(pid!!.calculate(value, 0.0), 0.4)
-    drive.arcadeDrive(0.0, turn, false)
+    val distance = vision.distance
+    val turnpower = clamp(turn!!.calculate(value, 0.0), 0.4)
+    val forwardpower = clamp(forward!!.calculate(distance, 5.0), 0.4)
+    drive.arcadeDrive(-forwardpower, turnpower, false)
   }
 
   override fun end(interrupted: Boolean) {
-    pid!!.reset()
+    turn!!.reset()
     drive.stopMotor()
   }
 

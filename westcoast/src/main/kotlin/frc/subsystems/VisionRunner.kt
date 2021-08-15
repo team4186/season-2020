@@ -1,4 +1,4 @@
-package frc.subsystems.vision
+package frc.subsystems
 
 interface VisionRunner {
   fun init()
