@@ -18,12 +18,12 @@ import frc.commands.auto.TargetAutonomous
 import frc.commands.motors.SetMotor
 import frc.robot.maps.ClinkyMap
 import frc.robot.maps.RobotMap
-import frc.subsystems.BallHandlingSubsystem
-import frc.subsystems.drive.GyroDrive
-import frc.subsystems.drive.motorfactory.MotorFactory
-import frc.subsystems.drive.motorfactory.MotorFactoryHybrid
-import frc.subsystems.RioVisionRunner
-import frc.subsystems.VisionRunner
+import frc.subsystems.MagazineSubsystem
+import frc.commands.drive.GyroDrive
+import frc.robot.motorfactory.MotorFactory
+import frc.robot.motorfactory.MotorFactoryHybrid
+import frc.vision.RioVisionRunner
+import frc.vision.VisionRunner
 
 class Clinky : TimedRobot() {
   // Robot Map
@@ -40,7 +40,7 @@ class Clinky : TimedRobot() {
 
   // private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
   // private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
-  private val ballHandler = BallHandlingSubsystem(map)
+  private val ballHandler = MagazineSubsystem(map)
 
   // Sensors
   private val ahrs = AHRS(SPI.Port.kMXP)

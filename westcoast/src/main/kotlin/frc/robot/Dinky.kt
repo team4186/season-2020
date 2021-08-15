@@ -6,18 +6,18 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.Command
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import edu.wpi.first.wpilibj2.command.button.JoystickButton
-import frc.commands.ballhandling.EverythingOut
-import frc.commands.ballhandling.IntakeAndIndex
-import frc.commands.ballhandling.IntakeOut
-import frc.commands.ballhandling.Shooting
+import frc.commands.magazine.EverythingOut
+import frc.commands.magazine.IntakeAndIndex
+import frc.commands.magazine.IntakeOut
+import frc.commands.magazine.Shooting
 import frc.robot.maps.DinkyMap
 import frc.robot.maps.RobotMap
-import frc.subsystems.BallHandlingSubsystem
-import frc.subsystems.drive.TeleopDrive
-import frc.subsystems.drive.motorfactory.MotorFactory
-import frc.subsystems.drive.motorfactory.MotorFactoryHybrid
-import frc.subsystems.RioVisionRunner
-import frc.subsystems.VisionRunner
+import frc.subsystems.MagazineSubsystem
+import frc.commands.drive.TeleopDrive
+import frc.robot.motorfactory.MotorFactory
+import frc.robot.motorfactory.MotorFactoryHybrid
+import frc.vision.RioVisionRunner
+import frc.vision.VisionRunner
 
 class Dinky : TimedRobot() {
   // Robot Map
@@ -30,7 +30,7 @@ class Dinky : TimedRobot() {
   private val drive = DifferentialDrive(leftMain, rightMain)
 
   // Subsystems
-  private val ballHandler = BallHandlingSubsystem(map)
+  private val ballHandler = MagazineSubsystem(map)
 
   // Vision
   private val vision: VisionRunner = RioVisionRunner()

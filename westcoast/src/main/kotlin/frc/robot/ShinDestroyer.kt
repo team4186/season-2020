@@ -16,18 +16,18 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton
 import frc.commands.auto.CenterAutonomous
 import frc.commands.auto.LoadingBayAutonomous
 import frc.commands.auto.TargetAutonomous
-import frc.commands.auto.demo.FlexAuto
+import frc.commands.auto.FlexAuto
 import frc.commands.motors.SetMotor
 import frc.robot.maps.RobotMap
 import frc.robot.maps.ShinDestroyerMap
-import frc.subsystems.BallHandlingSubsystem
-import frc.subsystems.drive.GyroDrive
-import frc.subsystems.drive.motorfactory.MotorFactory
-import frc.subsystems.drive.motorfactory.MotorFactoryHybrid
-import frc.subsystems.LimelightRunner
-import frc.subsystems.VisionRunner
-import frc.subsystems.targeting.AlignToTarget
-import frc.subsystems.targeting.FindTarget
+import frc.subsystems.MagazineSubsystem
+import frc.commands.drive.GyroDrive
+import frc.robot.motorfactory.MotorFactory
+import frc.robot.motorfactory.MotorFactoryHybrid
+import frc.vision.LimelightRunner
+import frc.vision.VisionRunner
+import frc.commands.targeting.AlignToTarget
+import frc.commands.targeting.FindTarget
 
 class ShinDestroyer : TimedRobot() {
   // Robot Map
@@ -44,7 +44,7 @@ class ShinDestroyer : TimedRobot() {
 
   // private final WPI_TalonSRX leftShooter = new WPI_TalonSRX(8);
   // private final WPI_TalonSRX rightShooter = new WPI_TalonSRX(9);
-  private val ballHandler = BallHandlingSubsystem(map)
+  private val ballHandler = MagazineSubsystem(map)
 
   // Sensors
   private val ahrs = AHRS(SPI.Port.kMXP)

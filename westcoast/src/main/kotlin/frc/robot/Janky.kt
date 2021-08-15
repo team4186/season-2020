@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.CommandScheduler
 import frc.robot.maps.JankyMap
 import frc.robot.maps.RobotMap
-import frc.subsystems.drive.TeleopDrive
+import frc.commands.drive.TeleopDrive
 
 class Janky : TimedRobot() {
   //Robot Map

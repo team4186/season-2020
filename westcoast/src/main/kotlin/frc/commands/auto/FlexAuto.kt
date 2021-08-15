@@ -5,21 +5,27 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.WaitCommand
 import frc.commands.drive.LeaveLine
+import frc.commands.drive.PerfectTurn
 import frc.robot.maps.RobotMap
 import frc.subsystems.MagazineSubsystem
 import frc.vision.VisionRunner
 import frc.commands.targeting.AlignToTarget
 
-class TargetAutonomous(
+class FlexAuto(
     map: RobotMap,
     drive: DifferentialDrive,
     leftEncoder: Encoder,
     rightEncoder: Encoder,
-    distance: Double,
     vision: VisionRunner?,
     ballHandler: MagazineSubsystem?
 ) : SequentialCommandGroup(
-    LeaveLine(map, drive, leftEncoder, rightEncoder, distance),
-    WaitCommand(1.0),
+    LeaveLine(map, drive, leftEncoder, rightEncoder, -1.0),
+    WaitCommand(0.0),
+    PerfectTurn(map, drive, leftEncoder, rightEncoder, 180.0),
+    WaitCommand(0.0),
+    LeaveLine(map, drive, leftEncoder, rightEncoder, 9.0),
+    WaitCommand(0.0),
+    PerfectTurn(map, drive, leftEncoder, rightEncoder, 180.0),
+    WaitCommand(0.0),
     AlignToTarget(map, drive, vision!!)
 )

@@ -4,10 +4,12 @@ import edu.wpi.first.wpilibj.Encoder
 import edu.wpi.first.wpilibj.drive.DifferentialDrive
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup
 import edu.wpi.first.wpilibj2.command.WaitCommand
+import frc.commands.drive.LeaveLine
+import frc.commands.drive.PerfectTurn
 import frc.robot.maps.RobotMap
-import frc.subsystems.BallHandlingSubsystem
-import frc.subsystems.VisionRunner
-import frc.subsystems.targeting.AlignToTarget
+import frc.subsystems.MagazineSubsystem
+import frc.vision.VisionRunner
+import frc.commands.targeting.AlignToTarget
 
 class CenterAutonomous(
     map: RobotMap,
@@ -17,7 +19,7 @@ class CenterAutonomous(
     distance: Double,
     angle: Double,
     vision: VisionRunner?,
-    ballHandler: BallHandlingSubsystem?
+    ballHandler: MagazineSubsystem?
 ) : SequentialCommandGroup() {
   init {
     addCommands(
