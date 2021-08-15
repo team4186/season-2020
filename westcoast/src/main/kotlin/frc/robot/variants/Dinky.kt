@@ -1,4 +1,4 @@
-package frc.robot
+package frc.robot.variants
 
 import frc.robot.data.Data
 
